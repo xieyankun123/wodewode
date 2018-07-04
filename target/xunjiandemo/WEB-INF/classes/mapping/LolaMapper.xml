@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="com.wxm.dao.LolaDao">
+
+    <!--<resultMap id="aaa" type="">
+
+    </resultMap>-->
+
+    <select id="selectLolaByTaskId" parameterType="java.lang.String" resultType="com.wxm.model.LolaModel">
+        SELECT `task_id`, `time`, `jd`, `wd`  FROM mission_realtime WHERE task_id = #{taskId};
+    </select>
+
+</mapper>
