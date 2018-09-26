@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="com.xyk.dao.u_rDao">
+    <!--根据住户姓名查找-->
+    <select id="selbyname" parameterType="java.lang.String" resultType="com.xyk.model.u_rModel">
+      SELECT * from user_room where user_name=#{user_name}
+    </select>
+    <!--根据住户房间号查找-->
+    <select id="selbyRid" parameterType="java.lang.String" resultType="com.xyk.model.u_rModel">
+      SELECT * from user_room where room_id=#{room_id}
+    </select>
+      <!--根据id查找-->
+    <select id="selbyid" parameterType="int" resultType="com.xyk.model.u_rModel">
+      SELECT * from user_room where id=#{id}
+    </select>
+    <!--列表-->
+    <select id="list" resultType="com.xyk.model.u_rModel">
+        select * from user_room
+    </select>
+    <!--增加信息-->
+    <insert id="add" parameterType="com.xyk.model.u_rModel">
+        insert into user_room(user_name,in_time,out_time,room_id,user_number) values
+        (#{user_name},#{in_time},#{out_time},#{room_id},#{user_number});
+    </insert>
+    <!-- 更新信息-->
+    <update id="update" parameterType="com.xyk.model.u_rModel">
+        update user_room set user_name=#{user_name},uin_time=#{in_time},out_time=#{out_time},room_id=#{room_id},user_number=#{user_number} where id=#{id}
+    </update>
+    <!--删除用户-->
+    <delete id="del" parameterType="int">
+        delete from user_room where id=#{id};
+    </delete>
+</mapper>

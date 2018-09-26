@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="com.xyk.dao.managerDao">
+    <!--根据姓名查找-->
+    <select id="selbyname" parameterType="java.lang.String" resultType="com.xyk.model.managerModel">
+      SELECT * from manager_info where manager_name=#{manager_name}
+    </select>
+    <!--根据手机号查找-->
+    <select id="selbytel" parameterType="java.lang.String" resultType="com.xyk.model.managerModel">
+      SELECT * from manager_info where manager_telephone=#{manager_telephone}
+    </select>
+    <!--获取权限-->
+    <select id="getqx" parameterType="java.lang.String" resultType="java.lang.String">
+      SELECT role from manager_info where manager_telephone=#{manager_telephone}
+    </select>
+    <!--列出所有管理员-->
+    <select id="list" resultType="com.xyk.model.managerModel">
+      SELECT * from manager_info
+    </select>
+    <!--增加管理员-->
+    <insert id="add" parameterType="com.xyk.model.managerModel">
+        insert into manager_info(manager_telephone,password,manager_nicheng,manager_name,manager_IDcard,headpic,role,nativeplace) values
+        (#{manager_telephone},#{password},#{manager_nicheng},#{manager_name},#{manager_IDcard},#{headpic},#{role},#{nativeplace});
+    </insert>
+    <!-- 更新管理员图片信息信息-->
+    <update id="updatepic" parameterType="com.xyk.model.managerModel">
+        update manager_info set headpic=#{headpic} where manager_telephone=#{manager_telephone}
+    </update>
+    <!-- 更新管理员信息信息-->
+    <update id="update" parameterType="com.xyk.model.managerModel">
+        update manager_info set password=#{password},manager_nicheng=#{manager_nicheng},manager_name=#{manager_name},manager_IDcard=#{manager_IDcard},headpic=#{headpic},role=#{role},nativeplace=#{nativeplace} where manager_telephone=#{manager_telephone}
+    </update>
+    <!--删除管理员-->
+    <delete id="del" parameterType="java.lang.String">
+        delete from manager_info where manager_telephone=#{manager_telephone};
+    </delete>
+    <!-- 批量删除 -->
+    <delete id="delAll" parameterType="String" flushCache="false">
+        delete from manager_info
+        where
+        manager_telephone in
+        <foreach item="tels" index="index" collection="array" open="(" separator="," close=")">
+            #{tels}
+        </foreach>
+    </delete>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="com.xyk.dao.apDao">
+    <!--根据仪器的id查找-->
+    <select id="selbyid" parameterType="java.lang.String" resultType="com.xyk.model.ApModel">
+      SELECT * from apparatus_data where apparatus_id=#{apparatus_id}
+    </select>
+    <!--根据r人查找-->
+    <select id="selbyp" parameterType="java.lang.String" resultType="com.xyk.model.ApModel">
+      SELECT * from apparatus_data where user_name_on=#{user_name_on}
+    </select>
+    <!--列表-->
+    <select id="list" resultType="com.xyk.model.ApModel">
+        select * from apparatus_data
+    </select>
+    <!--增加数据-->
+    <insert id="adddata" parameterType="com.xyk.model.ApModel">
+        insert into apparatus_data(apparatus_id,time,value,user_name_on,user_name_off) values
+        (#{apparatus_id},#{time},#{value},#{user_name_on},#{user_name_off});
+    </insert>
+</mapper>

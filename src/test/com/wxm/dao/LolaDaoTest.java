@@ -1,11 +1,11 @@
-package com.wxm.dao;
+package com.xyk.dao;
 
 import java.util.List;
 
 import javax.annotation.Resource;
 
-import com.wxm.model.LolaModel;
-import com.wxm.service.ILolaService;
+import com.xyk.model.LolaModel;
+import com.xyk.service.ILolaService;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

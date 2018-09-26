@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
-  <display-name>xunjiandemo</display-name>
-  <description>xunjian_0.0.1</description>
+  <display-name>chakongdemo</display-name>
+  <description>chakong_0.0.1</description>
 
   <!-- 编码过滤器 -->
   <filter>
@@ -30,7 +30,11 @@
 <!--  <listener>
     <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
   </listener>-->
-
+ <servlet-mapping>
+    <servlet-name>default</servlet-name>
+    <url-pattern>*.js</url-pattern>
+     <url-pattern>*.css</url-pattern>
+  </servlet-mapping>
   <!-- 配置DispatcherServlet -->
   <servlet>
     <servlet-name>SpringMVC</servlet-name>
@@ -47,7 +51,7 @@
   <servlet-mapping>
     <servlet-name>SpringMVC</servlet-name>
     <!-- 匹配*.do所有请求-->
-    <url-pattern>*.req</url-pattern>
+    <url-pattern>/</url-pattern>
   </servlet-mapping>
 
   <welcome-file-list>

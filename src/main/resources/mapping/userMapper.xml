@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="com.xyk.dao.userDao">
+    <!--根据住户姓名查找-->
+    <select id="selbyname" parameterType="java.lang.String" resultType="com.xyk.model.UserModel">
+      SELECT * from user_info where user_name=#{user_name}
+    </select>
+    <!--根据住户手机号查找-->
+    <select id="selbytel" parameterType="java.lang.String" resultType="com.xyk.model.UserModel">
+      SELECT * from user_info where user_telephone=#{user_telephone}
+    </select>
+    <!--列表-->
+    <select id="list" resultType="com.xyk.model.UserModel">
+        select * from user_info
+    </select>
+    <!--增加用户-->
+    <insert id="add" parameterType="com.xyk.model.UserModel">
+        insert into user_info(user_name,user_telephone,user_IDcard,user_address,user_sex,user_hobby,user_state,user_email) values
+        (#{user_name},#{user_telephone},#{user_IDcard},#{user_address},#{user_sex},#{user_hobby},#{user_state},#{user_email});
+    </insert>
+    <!-- 更新用户-->
+    <update id="update" parameterType="com.xyk.model.UserModel">
+        update user_info set user_name=#{user_name},user_telephone=#{user_telephone},user_IDcard=#{user_IDcard},user_address=#{user_address},user_sex=#{user_sex},user_hobby=#{user_hobby},user_state=#{user_state},user_email=#{user_email} where id=#{id}
+    </update>
+    <!--删除用户-->
+    <delete id="del" parameterType="int">
+        delete from user_info where id=#{id};
+    </delete>
+</mapper>
