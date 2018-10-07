@@ -6,16 +6,22 @@ public class roomModel {
     private String apartment_id;
     private String room_loc;
     private String room_str;
+    private int id;
 
-    @Override
-    public String toString() {
-        return "roomModel{" +
-                "room_id='" + room_id + '\'' +
-                ", useable=" + useable +
-                ", apparatus_id='" + apartment_id + '\'' +
-                ", room_loc='" + room_loc + '\'' +
-                ", room_str='" + room_str + '\'' +
-                '}';
+    public String getApartment_id() {
+        return apartment_id;
+    }
+
+    public void setApartment_id(String apartment_id) {
+        this.apartment_id = apartment_id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getRoom_id() {
@@ -32,14 +38,6 @@ public class roomModel {
 
     public void setUseable(int useable) {
         this.useable = useable;
-    }
-
-    public String getApparatus_id() {
-        return apartment_id;
-    }
-
-    public void setApparatus_id(String apparatus_id) {
-        this.apartment_id = apparatus_id;
     }
 
     public String getRoom_loc() {

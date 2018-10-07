@@ -11,9 +11,9 @@ import java.util.List;
 public class u_rService {
     @Resource
     private u_rDao u_r;
-    public List<u_rModel> selbyname(String user_name)
+    public List<u_rModel> selbyUtel(String user_telephone)
     {
-        return u_r.selbyname(user_name);
+        return u_r.selbyUtel(user_telephone);
     }
     public List<u_rModel> selbyRid(String room_id)
     {

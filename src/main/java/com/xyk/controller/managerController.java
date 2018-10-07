@@ -3,8 +3,10 @@ package com.xyk.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.xyk.model.UserModel;
 import com.xyk.model.managerModel;
 import com.xyk.service.managerService;
+import com.xyk.service.userService;
 import com.xyk.util.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Controller;
@@ -30,6 +32,8 @@ import java.util.Map;
 public class managerController {
     @Resource
     private managerService ms;
+    @Resource
+    private userService us;
     //列表
     @RequestMapping("/")
     public void list(HttpServletResponse response)
@@ -37,6 +41,16 @@ public class managerController {
         JSONObject result=new JSONObject();
         List<managerModel> a=ms.list();
         result.put("result",a);
+        result.put("msg","success");
+        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
+    }
+    //更新管理员信息
+    @RequestMapping("/update")
+    public void update(HttpServletResponse response,managerModel a)
+    {
+        JSONObject result=new JSONObject();
+        ms.update(a);
+        result.put("result","更新成功");
         result.put("msg","success");
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
@@ -56,16 +70,37 @@ public class managerController {
     public void add(HttpServletResponse response,managerModel a)
     {
         JSONObject result=new JSONObject();
-        boolean b=ms.add(a);
-        if(b==true)
-        {
-            result.put("result","插入成功");
-            result.put("msg","success");
+        try {
+            boolean b = ms.add(a);
+            if (b == true) {
+                result.put("result", "插入成功");
+                result.put("msg", "success");
+            } else {
+                result.put("result", "插入失败");
+                result.put("msg", "false");
+            }
         }
-        else
+        catch (Exception e)
         {
-            result.put("result","插入失败");
-            result.put("msg","false");
+            result.put("msg", "信息不完整或者手机号已存在"+e);
+            result.put("result", "10005");
+        }
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
+    //删除管理员
+    @RequestMapping("/del")
+    public void del(HttpServletRequest request,HttpServletResponse response)
+    {
+        JSONObject result=new JSONObject();
+        String tel=request.getParameter("manager_telephone");
+        try{ms.del(tel);
+        result.put("msg","success");
+        result.put("result","10006");
+        }
+        catch (Exception e)
+        {
+            result.put("msg","false"+" "+e);
+            result.put("result","10007");
         }
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
@@ -143,26 +178,44 @@ public class managerController {
         result.put("result", "10001");
         String manager_telephone = (String)request.getParameter("manager_telephone");
         String password = (String)request.getParameter("password");
-
-            if(manager_telephone=="")
-                        {result.put("errMsg", "账号不能为空");
-                           result.put("result","10004");}
-                  else {
-                        try {
-                               managerModel a = ms.login(manager_telephone, password);
-                         if (a == null) {
-                                       result.put("errMsg", "用户名或密码错误");
-                                        result.put("result","10002");
-                                   } else {
-                                        result.put("ehahah", "登陆成功");
-                                         result.put("result","10000");
-                                     }
-                                 } catch (Exception e) {
-                                   result.put("essMsg", e.getMessage());
-                                 }
-                       }
+        String code=request.getParameter("code");
+        System.out.println(code);
+        if(code.equals("abcd"))
+        {
+            if (manager_telephone == "") {
+                result.put("errMsg", "账号不能为空");
+                result.put("result", "10004");
+            } else {
+                try {
+                    managerModel a = ms.login(manager_telephone, password);
+                    if (a == null) {
+                        result.put("errMsg", "用户名或密码错误");
+                        result.put("result", "10002");
+                    } else {
+                        result.put("ehahah", "登陆成功");
+                        result.put("result", "10000");
+                    }
+                } catch (Exception e) {
+                    result.put("essMsg", e.getMessage());
+                }
+            }
+        }
+        else{
+            result.put("msg", "验证码错误");
+            result.put("result", "10000");
+        }
                    HttpOutUtil.outData(response, JSONObject.toJSONString(result));
-                 }
+    }
+    @RequestMapping("/homepage")
+    public void homepage(HttpServletResponse response)
+    {
+        JSONObject result=new JSONObject();
+        List<UserModel> a=us.list();
+        result.put("length",a.size());
+        System.out.println(a.size());
+        result.put("result",10007);
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
 }
 
 

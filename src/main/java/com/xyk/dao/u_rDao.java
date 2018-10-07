@@ -7,7 +7,7 @@ import java.util.List;
 
 @MapperScan
 public interface u_rDao {
-    List<u_rModel> selbyname(String user_name);
+    List<u_rModel> selbyUtel(String user_telephone);
     List<u_rModel> selbyRid(String room_id);
     List<u_rModel> list();
     u_rModel selbyid(int id);

@@ -3,29 +3,27 @@ package com.xyk.model;
 import java.util.Date;
 
 public class u_rModel {
-    private String user_name;
+    private int id;
+    private String user_telephone;
     private String in_time;
     private String out_time;
     private String room_id;
     private int user_number;
 
-    @Override
-    public String toString() {
-        return "u_rModel{" +
-                "user_name='" + user_name + '\'' +
-                ", in_time=" + in_time +
-                ", out_time=" + out_time +
-                ", room_id='" + room_id + '\'' +
-                ", user_number=" + user_number +
-                '}';
+    public int getId() {
+        return id;
     }
 
-    public String getUser_name() {
-        return user_name;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setUser_name(String user_name) {
-        this.user_name = user_name;
+    public String getUser_telephone() {
+        return user_telephone;
+    }
+
+    public void setUser_telephone(String user_telephone) {
+        this.user_telephone = user_telephone;
     }
 
     public String getIn_time() {

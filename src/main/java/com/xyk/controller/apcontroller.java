@@ -14,7 +14,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/ap")
-public class apcontroller {
+public class apController {
     @Resource
     private apService apservice;
     @RequestMapping("/selectbyid")

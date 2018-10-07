@@ -5,9 +5,9 @@
 
 
 <mapper namespace="com.xyk.dao.u_rDao">
-    <!--根据住户姓名查找-->
-    <select id="selbyname" parameterType="java.lang.String" resultType="com.xyk.model.u_rModel">
-      SELECT * from user_room where user_name=#{user_name}
+    <!--根据住户手机号查找-->
+    <select id="selbyUtel" parameterType="java.lang.String" resultType="com.xyk.model.u_rModel">
+      SELECT * from user_room where user_telephone=#{user_telephone}
     </select>
     <!--根据住户房间号查找-->
     <select id="selbyRid" parameterType="java.lang.String" resultType="com.xyk.model.u_rModel">
@@ -23,12 +23,12 @@
     </select>
     <!--增加信息-->
     <insert id="add" parameterType="com.xyk.model.u_rModel">
-        insert into user_room(user_name,in_time,out_time,room_id,user_number) values
-        (#{user_name},#{in_time},#{out_time},#{room_id},#{user_number});
+        insert into user_room(user_telephone,in_time,out_time,room_id,user_number) values
+        (#{user_telephone},#{in_time},#{out_time},#{room_id},#{user_number});
     </insert>
     <!-- 更新信息-->
     <update id="update" parameterType="com.xyk.model.u_rModel">
-        update user_room set user_name=#{user_name},uin_time=#{in_time},out_time=#{out_time},room_id=#{room_id},user_number=#{user_number} where id=#{id}
+        update user_room set user_telephone=#{user_telephone},uin_time=#{in_time},out_time=#{out_time},room_id=#{room_id},user_number=#{user_number} where id=#{id}
     </update>
     <!--删除用户-->
     <delete id="del" parameterType="int">

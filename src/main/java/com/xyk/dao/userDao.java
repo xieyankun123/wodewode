@@ -8,7 +8,7 @@ import java.util.List;
 @MapperScan
 public interface userDao {
     List<UserModel> list();
-    List<UserModel> selbyname(String user_name);
+    UserModel selbyid(int id);
     List<UserModel> selbytel(String user_telephone);
     boolean del(int id);
     boolean update(UserModel userModel);

@@ -6,8 +6,8 @@
 
 <mapper namespace="com.xyk.dao.userDao">
     <!--根据住户姓名查找-->
-    <select id="selbyname" parameterType="java.lang.String" resultType="com.xyk.model.UserModel">
-      SELECT * from user_info where user_name=#{user_name}
+    <select id="selbyid" parameterType="int" resultType="com.xyk.model.UserModel">
+      SELECT * from user_info where id=#{id}
     </select>
     <!--根据住户手机号查找-->
     <select id="selbytel" parameterType="java.lang.String" resultType="com.xyk.model.UserModel">

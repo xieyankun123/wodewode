@@ -15,9 +15,9 @@ public class userService {
     {
         return userdao.list();
     }
-    public List<UserModel> selbyname(String user_name)
+    public UserModel selbyid(int id)
     {
-        return userdao.selbyname(user_name);
+        return userdao.selbyid(id);
     }
     public List<UserModel> selbytel(String user_telephone)
     {
