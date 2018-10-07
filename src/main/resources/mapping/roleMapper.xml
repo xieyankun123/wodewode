@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="com.xyk.dao.roleDao">
+    <!--列出所有权限-->
+    <select id="list" resultType="com.xyk.model.roleModel">
+      SELECT * from role_info
+    </select>
+    <!--增加权限-->
+    <insert id="add" parameterType="com.xyk.model.roleModel">
+        insert into role_info(role_id,role_name,miaoshu,qx1,qx2,qx3) values(#{role_id},#{role_name},#{miaoshu},#{qx1},#{qx2},#{qx3})
+    </insert>
+    <!-- 更新权限信息-->
+    <update id="update" parameterType="com.xyk.model.roleModel">
+        update role_info set role_name=#{role_name},miaoshu=#{miaoshu},qx1=#{qx1},qx2=#{qx2},qx3=#{qx3} where role_id=#{role_id}
+    </update>
+    <!--删除权限-->
+    <delete id="del" parameterType="java.lang.String">
+        delete from role_info where role_id=#{role_id};
+    </delete>
+    <!--&lt;!&ndash; 批量删除 &ndash;&gt;-->
+    <!--<delete id="delAll" parameterType="String" flushCache="false">-->
+        <!--delete from manager_info-->
+        <!--where-->
+        <!--manager_telephone in-->
+        <!--<foreach item="tels" index="index" collection="array" open="(" separator="," close=")">-->
+            <!--#{tels}-->
+        <!--</foreach>-->
+    <!--</delete>-->
+</mapper>

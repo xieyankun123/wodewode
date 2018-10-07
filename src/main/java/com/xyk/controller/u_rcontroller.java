@@ -40,7 +40,22 @@ public class u_rController {
         result.put("result","10003");
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
-
+    @RequestMapping("/add")
+    public void add(HttpServletRequest request,HttpServletResponse response,int id)
+    {
+        JSONObject result=new JSONObject();
+        String room_id=request.getParameter("room_id");
+        String in_time=request.getParameter("in_time");
+        String out_time=request.getParameter("out_time");
+        u_rModel a=new u_rModel();
+        a.setUser_telephone(us.selbyid(id).getUser_telephone());
+        a.setRoom_id(room_id);
+        a.setIn_time(in_time);
+        a.setOut_time(out_time);
+        ur.add(a);
+        result.put("msg","插入成功");
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
     @RequestMapping("/intoout")
     public void intoout(HttpServletResponse response)
     {
