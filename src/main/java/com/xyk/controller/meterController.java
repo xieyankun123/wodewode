@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
 import java.util.List;
+//测试git
 
 @Controller
 @RequestMapping("/meter")
@@ -45,15 +46,16 @@ public class meterController {
         BigDecimal aa1=new BigDecimal(a.get(a.size()-1).getValue());
         BigDecimal aa2=new BigDecimal(a.get(0).getValue());
         Double aa=aa1.subtract(aa2).doubleValue();
-      // BigDecimal bb1=new BigDecimal(b.get(b.size()-1).getValue());
+     //  BigDecimal bb1=new BigDecimal(b.get(b.size()-1).getValue());
        // BigDecimal bb2=new BigDecimal(b.get(0).getValue());
-        //Double bb=bb1.subtract(bb2).doubleValue();
+      //  Double bb=bb1.subtract(bb2).doubleValue();
 //        BigDecimal cc1=new BigDecimal(c.get(c.size()-1).getValue());
 //        BigDecimal cc2=new BigDecimal(c.get(0).getValue());
 //        Double cc=cc1.subtract(cc2).doubleValue();
         System.out.println(aa);
+      //  System.out.println(bb);
         result.put("avalue",aa);
-        //result.put("gvalue",bb);
+      //  result.put("gvalue",bb);
 //        result.put("wvalue",cc);
         result.put("user",user);
         result.put("dian",a);
