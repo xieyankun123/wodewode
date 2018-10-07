@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="com.xyk.dao.meterDao">
+    <!--根据用户id查找-->
+    <select id="selbyAUid" parameterType="int" resultType="com.xyk.model.dianModel">
+      SELECT * from dian_meter_data where user_id=#{user_id}
+    </select>
+    <select id="selbyGUid" parameterType="int" resultType="com.xyk.model.gasModel">
+      SELECT * from gas_meter_data where user_id=#{user_id}
+    </select>
+    <select id="selbyWUid" parameterType="int" resultType="com.xyk.model.waterModel">
+      SELECT * from water_meter_data where user_id=#{user_id}
+    </select>
+    <!--根据ID_out查找-->
+    <select id="selbyAID" parameterType="java.lang.String" resultType="com.xyk.model.dianModel">
+      SELECT * from dian_meter_data where AID_out=#{AID_out}
+    </select>
+    <select id="selbyGID" parameterType="java.lang.String" resultType="com.xyk.model.gasModel">
+      SELECT * from gas_meter_data where GID_out=#{GID_out}
+    </select>
+    <select id="selbyWID" parameterType="java.lang.String" resultType="com.xyk.model.waterModel">
+      SELECT * from water_meter_data where WID_out=#{WID_out}
+    </select>
+    <!--插入信息-->
+    <insert id="addA" parameterType="com.xyk.model.dianModel">
+        insert into dian_meter_data(AID_out,user_id,time,value,picture) values
+        (#{AID_out},#{user_id},#{time},#{value},#{picture})
+    </insert>
+    <insert id="addG" parameterType="com.xyk.model.gasModel">
+        insert into gas_meter_data(GID_out,user_id,time,value,picture) values
+        (#{GID_out},#{user_id},#{time},#{value},#{picture})
+    </insert>
+    <insert id="addW" parameterType="com.xyk.model.waterModel">
+        insert into water_meter_data(WID_out,user_id,time,value,picture) values
+        (#{WID_out},#{user_id},#{time},#{value},#{picture})
+    </insert>
+</mapper>
