@@ -15,7 +15,7 @@
     </select>
     <!--更新数据-->
     <update id="update" parameterType="com.xyk.model.yqModel">
-        update apparatus_info set apparatus_id=#{apparatus_id},beizhu=#{beizhu},OEM=#{OEM},useable=#{useable},room_id=#{room_id}
+        update apparatus_info set beizhu=#{beizhu},OEM=#{OEM},useable=#{useable},room_id=#{room_id} where apparatus_id=#{apparatus_id}
     </update>
     <!--根据仪器id更新useable-->
     <update id="upbyid">

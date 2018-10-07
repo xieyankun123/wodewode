@@ -38,4 +38,14 @@
         insert into water_meter_data(WID_out,user_id,time,value,picture) values
         (#{WID_out},#{user_id},#{time},#{value},#{picture})
     </insert>
+    <!--更新信息-->
+    <update id="updateA" parameterType="com.xyk.model.dianModel">
+        update dian_meter_data set AID_out=#{AID_out},user_id=#{user_id},time=#{time},value=#{value},picture=#{picture} where id=#{id}
+    </update>
+    <update id="updateG" parameterType="com.xyk.model.gasModel">
+        update gas_meter_data set GID_out=#{GID_out},user_id=#{user_id},time=#{time},value=#{value},picture=#{picture} where id=#{id}
+    </update>
+    <update id="updateW" parameterType="com.xyk.model.waterModel">
+        update water_meter_data set WID_out=#{WID_out},user_id=#{user_id},time=#{time},value=#{value},picture=#{picture} where id=#{id}
+    </update>
 </mapper>

@@ -18,4 +18,7 @@ public interface meterDao {
     boolean addA(dianModel a);
     boolean addG(gasModel a);
     boolean addW(waterModel a);
+    boolean updateA(dianModel a);
+    boolean updateG(gasModel a);
+    boolean updateW(waterModel a);
 }

@@ -21,6 +21,21 @@ public class yqController {
     private yqService ys;
     @Resource
     private userService us;
+    @RequestMapping("/")
+    public void list(HttpServletResponse response)
+    {
+        JSONObject result=new JSONObject();
+        result.put("list",ys.list());
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
+    @RequestMapping("/update")
+    public void update(HttpServletResponse response,yqModel yq)
+    {
+        JSONObject result=new JSONObject();
+        ys.update(yq);
+        result.put("msg","更新成功");
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
     @RequestMapping("/yqinfoU")
     public void yqinfoU(HttpServletRequest request,int id, HttpServletResponse response)
     {

@@ -22,4 +22,7 @@ public class meterService {
     public boolean addA(dianModel a){return md.addA(a);}
     public boolean addG(gasModel a){return md.addG(a);}
     public boolean addW(waterModel a){return md.addW(a);}
+    public boolean updateA(dianModel a){return md.updateA(a);}
+    public boolean updateG(gasModel a){return md.updateG(a);}
+    public boolean updateW(waterModel a){return md.updateW(a);}
 }
