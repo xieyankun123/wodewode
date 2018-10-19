@@ -19,7 +19,7 @@
     </select>
     <!--增加数据-->
     <insert id="adddata" parameterType="com.xyk.model.ApModel">
-        insert into apparatus_data(apparatus_id,time,value,user_name_on,user_name_off) values
-        (#{apparatus_id},#{time},#{value},#{user_name_on},#{user_name_off});
+        insert into apparatus_data(apparatus_id,time,user_name_on,user_name_off) values
+        (#{apparatus_id},#{time},#{user_name_on},#{user_name_off});
     </insert>
 </mapper>

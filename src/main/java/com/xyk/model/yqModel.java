@@ -1,11 +1,47 @@
 package com.xyk.model;
 
 public class yqModel {
+    private String id;
     private String apparatus_id;
+    private String sessionID;
+    private String devID;
     private String beizhu;
+    private String beizhu2;
     private String OEM;
-    private int useable;
+    private String useable;
     private String room_id;
+
+    public String getSessionID() {
+        return sessionID;
+    }
+
+    public void setSessionID(String sessionID) {
+        this.sessionID = sessionID;
+    }
+
+    public String getDevID() {
+        return devID;
+    }
+
+    public void setDevID(String devID) {
+        this.devID = devID;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getBeizhu2() {
+        return beizhu2;
+    }
+
+    public void setBeizhu2(String beuzhu2) {
+        this.beizhu2 = beuzhu2;
+    }
 
     public String getApparatus_id() {
         return apparatus_id;
@@ -31,11 +67,11 @@ public class yqModel {
         this.OEM = OEM;
     }
 
-    public int getUseable() {
+    public String getUseable() {
         return useable;
     }
 
-    public void setUseable(int useable) {
+    public void setUseable(String useable) {
         this.useable = useable;
     }
 

@@ -15,25 +15,20 @@ public class userService {
     {
         return userdao.list();
     }
-    public UserModel selbyid(int id)
-    {
-        return userdao.selbyid(id);
-    }
-    public List<UserModel> selbytel(String user_telephone)
+    public UserModel selbytel(String user_telephone)
     {
         return userdao.selbytel(user_telephone);
     }
-    public boolean del(int id)
+    public boolean del(String user_telephone)
     {
-        return userdao.del(id);
+        return userdao.del(user_telephone);
     }
     public  boolean update(UserModel userModel)
     {
         return userdao.update(userModel);
     }
-    public  int add(UserModel userModel)
+    public boolean add(UserModel userModel)
     {
-       userdao.add(userModel);
-       return 0;
+       return userdao.add(userModel);
     }
 }

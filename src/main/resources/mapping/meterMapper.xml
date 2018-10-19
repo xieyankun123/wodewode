@@ -5,14 +5,14 @@
 
 
 <mapper namespace="com.xyk.dao.meterDao">
-    <!--根据用户id查找-->
-    <select id="selbyAUid" parameterType="int" resultType="com.xyk.model.dianModel">
+    <!--根据用户手机号查找-->
+    <select id="selbyAUid" parameterType="java.lang.String" resultType="com.xyk.model.dianModel">
       SELECT * from dian_meter_data where user_id=#{user_id}
     </select>
-    <select id="selbyGUid" parameterType="int" resultType="com.xyk.model.gasModel">
+    <select id="selbyGUid" parameterType="java.lang.String" resultType="com.xyk.model.gasModel">
       SELECT * from gas_meter_data where user_id=#{user_id}
     </select>
-    <select id="selbyWUid" parameterType="int" resultType="com.xyk.model.waterModel">
+    <select id="selbyWUid" parameterType="java.lang.String" resultType="com.xyk.model.waterModel">
       SELECT * from water_meter_data where user_id=#{user_id}
     </select>
     <!--根据ID_out查找-->
@@ -39,13 +39,13 @@
         (#{WID_out},#{user_id},#{time},#{value},#{picture})
     </insert>
     <!--更新信息-->
-    <update id="updateA" parameterType="com.xyk.model.dianModel">
-        update dian_meter_data set AID_out=#{AID_out},user_id=#{user_id},time=#{time},value=#{value},picture=#{picture} where id=#{id}
+    <update id="updateA" >
+        update dian_meter_data set value=#{value} where id=#{id}
     </update>
-    <update id="updateG" parameterType="com.xyk.model.gasModel">
-        update gas_meter_data set GID_out=#{GID_out},user_id=#{user_id},time=#{time},value=#{value},picture=#{picture} where id=#{id}
+    <update id="updateG" >
+        update gas_meter_data set value=#{value} where id=#{id}
     </update>
-    <update id="updateW" parameterType="com.xyk.model.waterModel">
-        update water_meter_data set WID_out=#{WID_out},user_id=#{user_id},time=#{time},value=#{value},picture=#{picture} where id=#{id}
+    <update id="updateW" >
+        update water_meter_data set value=#{value} where id=#{id}
     </update>
 </mapper>

@@ -4,7 +4,6 @@ public class ApModel {
     private String id;
     private String apparatus_id;
     private String time;
-    private String value;
     private String user_name_on;
     private String user_name_off;
 
@@ -30,14 +29,6 @@ public class ApModel {
 
     public void setTime(String time) {
         this.time = time;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public String getUser_name_on() {

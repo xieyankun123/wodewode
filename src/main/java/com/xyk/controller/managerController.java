@@ -4,8 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xyk.model.UserModel;
+import com.xyk.model.apdataModel;
 import com.xyk.model.managerModel;
+import com.xyk.service.apdataService;
 import com.xyk.service.managerService;
+import com.xyk.service.u_rService;
 import com.xyk.service.userService;
 import com.xyk.util.*;
 import org.junit.jupiter.api.Test;
@@ -15,17 +18,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.List;
-import java.util.Map;
+import javax.servlet.http.HttpSession;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static com.xyk.controller.yqController.connection;
+import static com.xyk.util.RandomValidateCode.RANDOMCODEKEY;
 
 @Controller
 @RequestMapping("/mg")
@@ -34,24 +42,67 @@ public class managerController {
     private managerService ms;
     @Resource
     private userService us;
-    //列表
-    @RequestMapping("/")
-    public void list(HttpServletResponse response)
+    @Resource
+    private u_rService ur;
+    @RequestMapping("/login_toLogin")
+    public String login_toLogin()
     {
-        JSONObject result=new JSONObject();
-        List<managerModel> a=ms.list();
-        result.put("result",a);
-        result.put("msg","success");
-        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
+        return "login";
     }
+    @RequestMapping("/index")
+    public String index()
+    {
+        return "index";
+    }
+    @RequestMapping("/home")
+    public String home()
+    {
+        return "home";
+    }
+    @RequestMapping("/guanliyuan")
+    public ModelAndView home1(HttpServletResponse response)
+    {
+        ModelAndView mv=new ModelAndView();
+       // JSONObject result=new JSONObject();
+        List<managerModel> a=ms.list();
+       // result.put("mg",a);
+        mv.addObject("mg",a);
+        //HttpOutUtil.outData(response, JSONObject.toJSONString(result));
+        mv.setViewName("administrator");
+        return mv;
+    }
+    @RequestMapping("/quanxian")
+    public String home2()
+    {
+        return "admin_Competence";
+    }
+//    //列表
+//    @RequestMapping("/")
+//    public void list(HttpServletResponse response)
+//    {
+//
+//    }
     //更新管理员信息
     @RequestMapping("/update")
     public void update(HttpServletResponse response,managerModel a)
     {
-        JSONObject result=new JSONObject();
-        ms.update(a);
-        result.put("result","更新成功");
-        result.put("msg","success");
+
+        JSONObject result = new JSONObject();
+        try {
+            boolean b=ms.update(a);
+            if(b)
+            {
+                result.put("msg","更新成功");
+            }
+            else
+            {
+                result.put("msg","更新失败，没有此用户");
+            }
+        }
+        catch (Exception e)
+        {
+            result.put("msg2","缺失参数");
+        }
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
     //通过手机号获取权限
@@ -72,18 +123,15 @@ public class managerController {
         JSONObject result=new JSONObject();
         try {
             boolean b = ms.add(a);
-            if (b == true) {
-                result.put("result", "插入成功");
-                result.put("msg", "success");
+            if (b) {
+                result.put("msg", "插入成功");
             } else {
-                result.put("result", "插入失败");
-                result.put("msg", "false");
+                result.put("msg", "插入失败");
             }
         }
         catch (Exception e)
         {
             result.put("msg", "信息不完整或者手机号已存在"+e);
-            result.put("result", "10005");
         }
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
@@ -172,28 +220,47 @@ public class managerController {
         }
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
+    @RequestMapping(value="/checkCode")
+    public void checkCode(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        //设置相应类型,告诉浏览器输出的内容为图片
+        response.setContentType("image/jpeg");
+        //设置响应头信息，告诉浏览器不要缓存此内容
+        response.setHeader("pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expire", 0);
+
+        RandomValidateCode randomValidateCode = new RandomValidateCode();
+        try {
+            randomValidateCode.getRandcode(request, response);//输出图片方法
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     @RequestMapping("/login")
     public void getdenglu(HttpServletRequest request, HttpServletResponse response) throws IOException {
         JSONObject result = new JSONObject();
-        result.put("result", "10001");
         String manager_telephone = (String)request.getParameter("manager_telephone");
         String password = (String)request.getParameter("password");
         String code=request.getParameter("code");
         System.out.println(code);
-        if(code.equals("abcd"))
+        RandomValidateCode rc = new RandomValidateCode();
+        HttpSession session = request.getSession();
+        String b= (String) session.getAttribute(RANDOMCODEKEY);
+        if(code.equals(b))
         {
             if (manager_telephone == "") {
-                result.put("errMsg", "账号不能为空");
+              //  result.put("errMsg", "账号不能为空");
                 result.put("result", "10004");
             } else {
                 try {
                     managerModel a = ms.login(manager_telephone, password);
                     if (a == null) {
-                        result.put("errMsg", "用户名或密码错误");
+                       // result.put("errMsg", "用户名或密码错误");
                         result.put("result", "10002");
                     } else {
-                        result.put("ehahah", "登陆成功");
-                        result.put("result", "10000");
+                        //result.put("ehahah", "登陆成功");
+                        result.put("result", "10005");
                     }
                 } catch (Exception e) {
                     result.put("essMsg", e.getMessage());
@@ -201,7 +268,7 @@ public class managerController {
             }
         }
         else{
-            result.put("msg", "验证码错误");
+          //  result.put("msg", "验证码错误");
             result.put("result", "10000");
         }
                    HttpOutUtil.outData(response, JSONObject.toJSONString(result));
@@ -217,5 +284,6 @@ public class managerController {
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
 }
+
 
 

@@ -15,14 +15,14 @@
     </select>
     <!--更新数据-->
     <update id="update" parameterType="com.xyk.model.yqModel">
-        update apparatus_info set beizhu=#{beizhu},OEM=#{OEM},useable=#{useable},room_id=#{room_id} where apparatus_id=#{apparatus_id}
+        update apparatus_info set beizhu=#{beizhu},beizhu2=#{beizhu2},OEM=#{OEM},useable=#{useable},room_id=#{room_id} where id=#{id}
     </update>
     <!--根据仪器id更新useable-->
     <update id="upbyid">
-    update apparatus_info set useable=#{useable} where apparatus_id=#{apparatus_id}
+    update apparatus_info set useable=#{useable} where id=#{id}
     </update>
-    <!--根据仪器id查找useable-->
+    <!--根据仪器id查找u-->
     <select id="selbyid" parameterType="java.lang.String" resultType="com.xyk.model.yqModel">
-        select * from apparatus_info where apparatus_id=#{apparatus_id}
+        select * from apparatus_info where id=#{id}
     </select>
 </mapper>

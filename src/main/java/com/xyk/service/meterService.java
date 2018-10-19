@@ -13,16 +13,16 @@ import java.util.List;
 public class meterService {
     @Resource
     private meterDao md;
-    public List<dianModel> selbyAUid(int user_id){return md.selbyAUid(user_id);}
-    public List<gasModel> selbyGUid(int user_id){return md.selbyGUid(user_id);}
-    public List<waterModel> selbyWUid(int user_id){return md.selbyWUid(user_id);}
+    public List<dianModel> selbyAUid(String user_id){return md.selbyAUid(user_id);}
+    public List<gasModel> selbyGUid(String user_id){return md.selbyGUid(user_id);}
+    public List<waterModel> selbyWUid(String user_id){return md.selbyWUid(user_id);}
     public List<dianModel> selbyAID(String AID_out){return md.selbyAID(AID_out);}
     public List<gasModel> selbyGID(String GID_out){return md.selbyGID(GID_out);}
     public List<waterModel> selbyWID(String WID_out){return md.selbyWID(WID_out);}
     public boolean addA(dianModel a){return md.addA(a);}
     public boolean addG(gasModel a){return md.addG(a);}
     public boolean addW(waterModel a){return md.addW(a);}
-    public boolean updateA(dianModel a){return md.updateA(a);}
-    public boolean updateG(gasModel a){return md.updateG(a);}
-    public boolean updateW(waterModel a){return md.updateW(a);}
+    public boolean updateA(String value,int id){return md.updateA(value,id);}
+    public boolean updateG(String value,int id){return md.updateG(value,id);}
+    public boolean updateW(String value,int id){return md.updateW(value,id);}
 }

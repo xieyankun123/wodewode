@@ -27,12 +27,12 @@
     </select>
     <!--增加信息-->
     <insert id="add" parameterType="com.xyk.model.roomModel">
-        insert into room_info(room_id,useable,apartment_id,room_loc,room_str,id) values
-        (#{room_id},#{useable},#{apartment_id},#{room_loc},#{room_str},#{id});
+        insert into room_info(room_id,useable,apartment_id,room_loc,room_str) values
+        (#{room_id},#{useable},#{apartment_id},#{room_loc},#{room_str});
     </insert>
     <!-- 更新信息-->
     <update id="update" parameterType="com.xyk.model.roomModel">
-        update room_info set room_id=#{room_id},useable=#{useable},apartment_id=#{apartment_id},room_loc=#{room_loc},room_str=#{room_str},id=#{id} where room_id=#{room_id}
+        update room_info set room_id=#{room_id},useable=#{useable},apartment_id=#{apartment_id},room_loc=#{room_loc},room_str=#{room_str} where room_id=#{room_id}
     </update>
     <!--删除房间-->
     <delete id="del" parameterType="java.lang.String">

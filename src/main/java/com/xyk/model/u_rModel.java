@@ -8,6 +8,16 @@ public class u_rModel {
     private String in_time;
     private String out_time;
     private String room_id;
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     private int user_number;
 
     public int getId() {

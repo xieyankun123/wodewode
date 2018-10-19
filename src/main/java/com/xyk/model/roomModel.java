@@ -6,7 +6,33 @@ public class roomModel {
     private String apartment_id;
     private String room_loc;
     private String room_str;
-    private int id;
+    private String xianzuke;
+    private String num;
+    private String own;
+
+    public String getNum() {
+        return num;
+    }
+
+    public void setNum(String num) {
+        this.num = num;
+    }
+
+    public String getOwn() {
+        return own;
+    }
+
+    public void setOwn(String own) {
+        this.own = own;
+    }
+
+    public String getXianzuke() {
+        return xianzuke;
+    }
+
+    public void setXianzuke(String xianzuke) {
+        this.xianzuke = xianzuke;
+    }
 
     public String getApartment_id() {
         return apartment_id;
@@ -14,14 +40,6 @@ public class roomModel {
 
     public void setApartment_id(String apartment_id) {
         this.apartment_id = apartment_id;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getRoom_id() {

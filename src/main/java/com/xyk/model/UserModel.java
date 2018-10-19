@@ -1,40 +1,24 @@
 package com.xyk.model;
 
 public class UserModel {
-    private int id;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     private String user_name;
     private String user_telephone;
     private String user_IDcard;
     private String user_address;
 
-    @Override
-    public String toString() {
-        return "UserModel{" +
-                "id=" + id +
-                ", user_name='" + user_name + '\'' +
-                ", user_telephone='" + user_telephone + '\'' +
-                ", user_IDcard='" + user_IDcard + '\'' +
-                ", user_address='" + user_address + '\'' +
-                ", user_sex='" + user_sex + '\'' +
-                ", user_hobby='" + user_hobby + '\'' +
-                ", user_state='" + user_state + '\'' +
-                ", user_email='" + user_email + '\'' +
-                '}';
-    }
-
     private String user_sex;
     private String user_hobby;
     private String user_state;
     private String user_email;
+    private String user_weixin;
+
+    public String getUser_weixin() {
+        return user_weixin;
+    }
+
+    public void setUser_weixin(String user_weixin) {
+        this.user_weixin = user_weixin;
+    }
 
     public String getUser_name() {
         return user_name;

@@ -5,10 +5,6 @@
 
 
 <mapper namespace="com.xyk.dao.userDao">
-    <!--根据住户姓名查找-->
-    <select id="selbyid" parameterType="int" resultType="com.xyk.model.UserModel">
-      SELECT * from user_info where id=#{id}
-    </select>
     <!--根据住户手机号查找-->
     <select id="selbytel" parameterType="java.lang.String" resultType="com.xyk.model.UserModel">
       SELECT * from user_info where user_telephone=#{user_telephone}
@@ -19,15 +15,15 @@
     </select>
     <!--增加用户-->
     <insert id="add" parameterType="com.xyk.model.UserModel">
-        insert into user_info(user_name,user_telephone,user_IDcard,user_address,user_sex,user_hobby,user_state,user_email) values
-        (#{user_name},#{user_telephone},#{user_IDcard},#{user_address},#{user_sex},#{user_hobby},#{user_state},#{user_email});
+        insert into user_info(user_name,user_telephone,user_IDcard,user_address,user_sex,user_hobby,user_state,user_email,user_weixin) values
+        (#{user_name},#{user_telephone},#{user_IDcard},#{user_address},#{user_sex},#{user_hobby},#{user_state},#{user_email},#{user_weixin});
     </insert>
     <!-- 更新用户-->
     <update id="update" parameterType="com.xyk.model.UserModel">
-        update user_info set user_name=#{user_name},user_telephone=#{user_telephone},user_IDcard=#{user_IDcard},user_address=#{user_address},user_sex=#{user_sex},user_hobby=#{user_hobby},user_state=#{user_state},user_email=#{user_email} where id=#{id}
+        update user_info set user_name=#{user_name},user_IDcard=#{user_IDcard},user_address=#{user_address},user_sex=#{user_sex},user_hobby=#{user_hobby},user_state=#{user_state},user_email=#{user_email},user_weixin=#{user_weixin} where user_telephone=#{user_telephone}
     </update>
     <!--删除用户-->
-    <delete id="del" parameterType="int">
-        delete from user_info where id=#{id};
+    <delete id="del" parameterType="java.lang.String">
+        delete from user_info where user_telephone=#{user_telephone};
     </delete>
 </mapper>

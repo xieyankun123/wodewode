@@ -3,7 +3,7 @@ package com.xyk.model;
 public class dianModel {
     private int id;
     private String AID_out;
-    private int user_id;
+    private String user_id;
     private String time;
     private Double value;
     private String picture;
@@ -24,11 +24,11 @@ public class dianModel {
         this.AID_out = AID_out;
     }
 
-    public int getUser_id() {
+    public String getUser_id() {
         return user_id;
     }
 
-    public void setUser_id(int user_id) {
+    public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
 

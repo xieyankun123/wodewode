@@ -4,12 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.xyk.model.UserModel;
 import com.xyk.model.roomModel;
 import com.xyk.model.u_rModel;
+import com.xyk.service.gyService;
 import com.xyk.service.roomService;
 import com.xyk.service.u_rService;
 import com.xyk.service.userService;
 import com.xyk.util.HttpOutUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 
 import javax.annotation.Resource;
@@ -29,6 +31,8 @@ public class u_rController {
     private userService us;
     @Resource
     private roomService rs;
+    @Resource
+    private gyService gs;
     //列表
     @RequestMapping("/")
     public void list(HttpServletResponse response)
@@ -41,14 +45,15 @@ public class u_rController {
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
     @RequestMapping("/add")
-    public void add(HttpServletRequest request,HttpServletResponse response,int id)
+    public void add(HttpServletRequest request,HttpServletResponse response)
     {
         JSONObject result=new JSONObject();
+        String user_telephone=request.getParameter("user_telephone");
         String room_id=request.getParameter("room_id");
         String in_time=request.getParameter("in_time");
         String out_time=request.getParameter("out_time");
         u_rModel a=new u_rModel();
-        a.setUser_telephone(us.selbyid(id).getUser_telephone());
+        a.setUser_telephone(user_telephone);
         a.setRoom_id(room_id);
         a.setIn_time(in_time);
         a.setOut_time(out_time);
@@ -70,27 +75,51 @@ public class u_rController {
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
     @RequestMapping("/historyU")
-    public void historyU(HttpServletResponse response,int id,HttpServletRequest request)
+    public ModelAndView historyU(HttpServletResponse response, HttpServletRequest request)
     {
-        JSONObject result=new JSONObject();
-        UserModel user=us.selbyid(id);
-        result.put("msg1",user);
+        System.out.println("123");
+        ModelAndView mv=new ModelAndView();
+        System.out.println("123");
+        String user_telephone=request.getParameter("user_telephone");
+        System.out.println(user_telephone);
+        //JSONObject result=new JSONObject();
+        UserModel user=us.selbytel(user_telephone);
+        //result.put("msg1",user);
         String a=user.getUser_telephone();
         List<u_rModel> user_room=ur.selbyUtel(a);
-        result.put("msg2",user_room);
-        result.put("result","10011");
-        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+        mv.addObject("user",user);
+        mv.addObject("user_room",user_room);
+        mv.setViewName("user_history");
+        return mv;
+
+       // result.put("msg2",user_room);
+       // result.put("result","10011");
+       // HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
     @RequestMapping("/historyR")
-    public void historyR(HttpServletResponse response,HttpServletRequest request)
+    public ModelAndView historyR(HttpServletResponse response,HttpServletRequest request)
     {
-        JSONObject result=new JSONObject();
+        ModelAndView mv=new ModelAndView();
+
+        //JSONObject result=new JSONObject();
         String room_id=request.getParameter("room_id");
         roomModel room=rs.selbyRid(room_id);
-        result.put("msg1",room);
+        room.setOwn(gs.selbyid(room.getApartment_id()).getOwner());
+        if(ur.selbyRid(room.getRoom_id()).size()>0)
+        room.setNum(ur.selbyRid(room.getRoom_id()).get(ur.selbyRid(room.getRoom_id()).size()-1).getUser_telephone());
+        System.out.println("123"+room.getNum()+"123");
+        mv.addObject("room",room);
+        //result.put("msg1",room);
         List<u_rModel> user_room=ur.selbyRid(room_id);
-        result.put("msg2",user_room);
-        result.put("result","10012");
-        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+        for(int i=0;i<user_room.size();i++)
+        {
+            user_room.get(i).setUsername(us.selbytel(user_room.get(i).getUser_telephone()).getUser_name());
+        }
+        mv.addObject("user_room",user_room);
+        mv.setViewName("house_history");
+        return mv;
+       // result.put("msg2",user_room);
+       // result.put("result","10012");
+       // HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
 }

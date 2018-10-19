@@ -11,6 +11,6 @@ public interface yqDao {
     List<yqModel> selbyRid(String room_id);
     List<yqModel> list();
     boolean update(yqModel yq);
-    boolean upbyid(@Param("useable")int useable,@Param("apparatus_id")String apparatus_id);
-    yqModel selbyid(String apparatus_id);
+    boolean upbyid(@Param("useable")String useable,@Param("id")String id);
+    yqModel selbyid(String id);
 }

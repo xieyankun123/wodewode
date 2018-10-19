@@ -2,10 +2,11 @@ package com.xyk.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xyk.model.roomModel;
-import com.xyk.service.roomService;
+import com.xyk.service.*;
 import com.xyk.util.HttpOutUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -17,34 +18,79 @@ import java.util.List;
 public class roomController {
     @Resource
     private roomService roomservice;
+    @Resource
+    private gyService gs;
+    @Resource
+    private userService us;
+    @Resource
+    private u_rService ur;
     //房间列表
-    @RequestMapping("/")
-    public void list(HttpServletResponse response)
+    @RequestMapping("/house_list")
+    public ModelAndView list(HttpServletResponse response)
     {
-        JSONObject result=new JSONObject();
-        result.put("result","10001");
+        ModelAndView mv=new ModelAndView();
+        //JSONObject result=new JSONObject();
+       // result.put("result","10001");
         List<roomModel> a=roomservice.list();
-        result.put("result",a);
-        result.put("msg","success");
-        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
+        System.out.println(1);
+        for(int i=0;i<a.size();i++)
+        {
+            System.out.println(2);
+            a.get(i).setOwn(gs.selbyid(a.get(i).getApartment_id()).getOwner());
+        }
+        for(int i=0;i<a.size();i++)
+        {
+            if(a.get(i).getUseable()!=0) {
+                if (ur.selbyRid(a.get(i).getRoom_id()).size() > 0)
+                    a.get(i).setXianzuke(us.selbytel(ur.selbyRid(a.get(i).getRoom_id()).get(ur.selbyRid(a.get(i).getRoom_id()).size() - 1).getUser_telephone()).getUser_name());
+            }
+        }
+        mv.addObject("house",a);
+        mv.setViewName("house_list");
+        return mv;
+       // result.put("result",a);
+       // result.put("msg","success");
+       // HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
     //更新房间信息
     @RequestMapping("/update")
     public void update(HttpServletResponse response,roomModel a)
     {
-        JSONObject result=new JSONObject();
         roomservice.update(a);
-        result.put("result","更新成功");
-        result.put("msg","success");
+        JSONObject result = new JSONObject();
+        try {
+            boolean b=roomservice.update(a);
+            if(b)
+            {
+                result.put("msg","更新成功");
+            }
+            else
+            {
+                result.put("msg","更新失败,没有此房间");
+            }
+        }
+        catch (Exception e)
+        {
+            result.put("msg2","缺失参数");
+        }
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
     @RequestMapping("/add")
     public void add(HttpServletResponse response,roomModel a)
     {
-        JSONObject result=new JSONObject();
-        roomservice.add(a);
-        result.put("result","添加成功");
-        result.put("msg","success");
+        JSONObject result = new JSONObject();
+        try {
+            boolean b= roomservice.add(a);
+            if(b)
+            {
+                result.put("msg","存储成功");
+            }
+        }
+        catch (Exception e)
+        {
+            result.put("msg1",e);
+            result.put("msg2","参数错误添加失败");
+        }
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
     @RequestMapping("/del")

@@ -14,6 +14,6 @@ public class yqService {
     public List<yqModel> selbyRid(String room_id){return yd.selbyRid(room_id);}
     public List<yqModel> list(){return yd.list();}
     public boolean update(yqModel yq){return yd.update(yq);}
-    public boolean upbyid(int useable,String apparatus_id){return yd.upbyid(useable,apparatus_id);}
-    public yqModel selbyid(String apparatus_id){return yd.selbyid(apparatus_id);}
+    public boolean upbyid(String useable,String id){return yd.upbyid(useable,id);}
+    public yqModel selbyid(String id){return yd.selbyid(id);}
 }
