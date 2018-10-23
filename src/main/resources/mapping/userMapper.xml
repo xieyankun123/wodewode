@@ -9,6 +9,10 @@
     <select id="selbytel" parameterType="java.lang.String" resultType="com.xyk.model.UserModel">
       SELECT * from user_info where user_telephone=#{user_telephone}
     </select>
+    <!--根据住户状态查找-->
+    <select id="selbystate" parameterType="java.lang.String" resultType="com.xyk.model.UserModel">
+      SELECT * from user_info where user_state=#{user_state}
+    </select>
     <!--列表-->
     <select id="list" resultType="com.xyk.model.UserModel">
         select * from user_info
@@ -18,6 +22,10 @@
         insert into user_info(user_name,user_telephone,user_IDcard,user_address,user_sex,user_hobby,user_state,user_email,user_weixin) values
         (#{user_name},#{user_telephone},#{user_IDcard},#{user_address},#{user_sex},#{user_hobby},#{user_state},#{user_email},#{user_weixin});
     </insert>
+    <!--增加用户微信-->
+    <update id="addweixin">
+        update user_info set user_weixin=#{user_weixin} where user_telephone=#{user_telephone}
+    </update>
     <!-- 更新用户-->
     <update id="update" parameterType="com.xyk.model.UserModel">
         update user_info set user_name=#{user_name},user_IDcard=#{user_IDcard},user_address=#{user_address},user_sex=#{user_sex},user_hobby=#{user_hobby},user_state=#{user_state},user_email=#{user_email},user_weixin=#{user_weixin} where user_telephone=#{user_telephone}

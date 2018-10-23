@@ -7,15 +7,32 @@
 <mapper namespace="com.xyk.dao.apdataDao">
     <!--根据仪器的devID查找-->
     <select id="selbyid" parameterType="java.lang.String" resultType="com.xyk.model.apdataModel">
-      SELECT * from apparatus_value where devID=#{devID}
+      SELECT * from apparatus_dayvalue where apparatus_id=#{apparatus_id}
     </select>
     <!--列表-->
     <select id="list" resultType="com.xyk.model.apdataModel">
-        select * from apparatus_value
+        select * from apparatus_dayvalue
     </select>
     <!--增加数据-->
     <insert id="add" parameterType="com.xyk.model.apdataModel">
-        insert into apparatus_value(devID,time,value) values
-        (#{devID},#{time},#{value});
+        insert into apparatus_dayvalue(apparatus_id,time,value) values
+        (#{apparatus_id},#{time},#{value})
     </insert>
+    <!--根据仪器的devID查找-->
+    <select id="selbyidP" parameterType="java.lang.String" resultType="com.xyk.model.apdataModel">
+      SELECT * from apparatus_power where apparatus_id=#{apparatus_id}
+    </select>
+    <!--列表-->
+    <select id="listP" resultType="com.xyk.model.apdataModel">
+        select * from apparatus_power
+    </select>
+    <!--增加数据-->
+    <insert id="addP" parameterType="com.xyk.model.apdataModel">
+        insert into apparatus_power(apparatus_id,time,value,name) values
+        (#{apparatus_id},#{time},#{value},#{name});
+    </insert>
+    <!--根据name,仪器id查找算电量-->
+    <select id="selbynameP" parameterType="java.lang.String" resultType="com.xyk.model.apdataModel">
+      SELECT * from apparatus_power where name=#{name} and apparatus_id=#{apparatus_id}
+    </select>
 </mapper>

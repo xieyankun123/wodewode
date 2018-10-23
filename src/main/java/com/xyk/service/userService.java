@@ -15,6 +15,11 @@ public class userService {
     {
         return userdao.list();
     }
+    public List<UserModel> selbystate(String user_state){return userdao.selbystate(user_state);}
+    public boolean addweixin(String user_weixin,String user_telephone)
+    {
+        return userdao.addweixin(user_weixin,user_telephone);
+    }
     public UserModel selbytel(String user_telephone)
     {
         return userdao.selbytel(user_telephone);

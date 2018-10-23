@@ -14,4 +14,8 @@ public class apdataService {
     public List<apdataModel> selbyid(String devID){return ad.selbyid(devID);}
     public List<apdataModel> list(){return ad.list();}
     public boolean add(apdataModel a){return ad.add(a);}
+    public List<apdataModel> selbyidP(String devID){return ad.selbyidP(devID);}
+    public List<apdataModel> listP(){return ad.listP();}
+    public boolean addP(apdataModel a){return ad.addP(a);}
+    public List<apdataModel> selbynameP(String name,String apparatus_id){return ad.selbynameP(name,apparatus_id);}
 }

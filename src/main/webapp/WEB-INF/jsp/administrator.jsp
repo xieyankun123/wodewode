@@ -72,6 +72,7 @@
 <c:if test="${!empty mg }">
 	<c:forEach items="${mg}" var="mg" varStatus="status">
 		<tr>
+			<td width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></td>
 			<td>${status.index+1}</td>
 			<td>${mg.manager_name}</td>
 			<td>${mg.manager_telephone}</td>

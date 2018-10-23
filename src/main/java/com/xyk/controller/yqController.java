@@ -39,6 +39,8 @@ public class yqController {
     private u_rService ur;
     @Resource
     private apService as;
+    @Resource
+    private apdataService ads;
     @RequestMapping("/tp")
     public String tp()
     {
@@ -169,7 +171,7 @@ public class yqController {
         JSONObject result=new JSONObject();
         String a="0";
         try {
-            String username=us.selbytel(user_telephone).getUser_name();
+            //String username=us.selbytel(user_telephone).getUser_name();
             yqModel yq=ys.selbyid(id);
             String apparatus_id=yq.getApparatus_id();
             String useable=yq.getUseable();
@@ -201,7 +203,7 @@ public class yqController {
                         am.setApparatus_id(id);
                         DateUtil dateUtil=new DateUtil();
                         am.setTime(dateUtil.getTime());
-                        am.setUser_name_on(username);
+                        am.setUser_name_on(user_telephone);
                         as.add(am);
                         result.put("msg","10001");
                     }
@@ -242,7 +244,7 @@ public class yqController {
                             am.setApparatus_id(id);
                             DateUtil dateUtil=new DateUtil();
                             am.setTime(dateUtil.getTime());
-                            am.setUser_name_off(username);
+                            am.setUser_name_off(user_telephone);
                             as.add(am);
                             result.put("msg","10002");
                         }
@@ -320,5 +322,21 @@ public class yqController {
         return connection;
         // TODO Auto-generated method stub
     }
-
+    @RequestMapping("PowerAndValue")
+    public void PoweAndValue(HttpServletResponse response,HttpServletRequest request)
+    {
+        JSONObject result=new JSONObject();
+        String apparatus_id=request.getParameter("apparatus_id");
+        String name=request.getParameter("user_telephone");
+            List<apdataModel> apdata = ads.selbynameP(name,apparatus_id);
+            double sum=0;
+            for(int j=0;j<apdata.size();j++)
+            {
+                double value= Double.parseDouble(apdata.get(j).getValue());
+                sum=sum+value/(30*1000);
+            }
+            result.put("apdata",apdata);
+            result.put("sum",sum);
+            HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
 }

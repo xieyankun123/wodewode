@@ -2,9 +2,18 @@ package com.xyk.model;
 
 public class apdataModel {
     private int id;
-    private String devID;
+    private String apparatus_id;
     private String time;
     private String value;
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public int getId() {
         return id;
@@ -14,12 +23,12 @@ public class apdataModel {
         this.id = id;
     }
 
-    public String getDevID() {
-        return devID;
+    public String getApparatus_id() {
+        return apparatus_id;
     }
 
-    public void setDevID(String devID) {
-        this.devID = devID;
+    public void setApparatus_id(String apparatus_id) {
+        this.apparatus_id = apparatus_id;
     }
 
     public String getTime() {

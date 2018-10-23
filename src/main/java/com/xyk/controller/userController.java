@@ -3,6 +3,8 @@ package com.xyk.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.xyk.model.ExcelBean;
 import com.xyk.model.UserModel;
+import com.xyk.model.addByUserModel;
+import com.xyk.service.addByUserService;
 import com.xyk.service.userService;
 import com.xyk.util.ExcelUtil;
 import com.xyk.util.HttpOutUtil;
@@ -27,7 +29,8 @@ import java.util.*;
 public class userController {
     @Resource
     private userService userservice;
-
+    @Resource
+    private addByUserService abs;
     @RequestMapping("/user_list")
     public ModelAndView list(HttpServletResponse response) {
 //      List<UserModel> a=userservice.list();
@@ -81,18 +84,37 @@ public class userController {
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
 
-    @RequestMapping("/selectbyname")
-    public void selbyname(HttpServletRequest request, HttpServletResponse response) {
-        //response.setContentType("text/html;charset=utf-8");
-//        JSONObject result = new JSONObject();
-//        result.put("result", "10001");
-//        String b=request.getParameter("user_name");
-//        List<UserModel> a=userservice.selbyname(b);
-//        result.put("rrr",a);
-//        result.put("result","10002");
-//        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
-
-
+    @RequestMapping("/selectbystate")
+    public void selbystate(HttpServletRequest request, HttpServletResponse response) {
+        JSONObject result = new JSONObject();
+        String user_telephone=request.getParameter("user_telephone");
+        List<UserModel> a=userservice.selbystate("1");
+        result.put("result",a);
+        result.put("msg",false);
+        boolean flag1 = false;
+        boolean flag2 = false;
+        for(int i=0;i<a.size();i++)
+        {
+            boolean b=a.get(i).getUser_telephone().equals(user_telephone);
+            if(b)
+            {flag1=b;
+                break;
+            }
+            List<addByUserModel> q=abs.selbyuser(a.get(i).getUser_telephone());
+            for(int j=0;j<q.size();j++)
+            {
+                boolean c=q.get(j).getTelephone().equals(user_telephone);
+                if(c)
+                {flag2=c;
+                    break;
+                }
+            }
+        }
+        if(flag1||flag2)
+        {
+            result.put("msg",true);
+        }
+        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
 
     @RequestMapping("/selectTel")
@@ -127,7 +149,25 @@ public class userController {
         }
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
-
+    //通过手机号添加微信号
+    @RequestMapping("/addWeixin")
+    public void addWeixin(HttpServletRequest request,HttpServletResponse response)
+    {
+        JSONObject result=new JSONObject();
+        String user_weixin=request.getParameter("user_weixin");
+        String user_telephone=request.getParameter("user_telephone");
+        System.out.println(user_telephone);
+        System.out.println(user_weixin);
+        try{
+        boolean b=userservice.addweixin(user_weixin,user_telephone);
+        result.put("msg",b);
+        }
+        catch (Exception e)
+        {
+            result.put("msg",e);
+        }
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
     /*
      * 导出用户信息到EXCEL
      * @return
