@@ -1,4 +1,5 @@
-﻿<%@ page language="java" pageEncoding="UTF-8"%><!--增加一行page指令即可-->
+﻿<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page language="java" pageEncoding="UTF-8"%><!--增加一行page指令即可-->
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%
 	String path = request.getContextPath();
@@ -228,6 +229,8 @@ function link_operating(name,title){
 </script>	
 	</head>
 	<body>
+<c:if test="${!empty mm }">
+	<div items="${mm}" var="mm">
 		<div class="navbar navbar-default" id="navbar">
         <script type="text/javascript">
 				try{ace.settings.check('navbar' , 'fixed')}catch(e){}
@@ -249,7 +252,7 @@ function link_operating(name,title){
                			 <li class="light-blue">
 							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 				 				<span  class="time"><em id="time"></em></span>
-				 				<span class="user-info"><small>欢迎光临,</small>超级管理员</span>
+				 				<span class="user-info"><small>欢迎光临,</small>${mm.role}</span>
 				 				<i class="icon-caret-down"></i>
 							</a>
 							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
@@ -368,8 +371,14 @@ function link_operating(name,title){
 
 							<li><a href="#" class="dropdown-toggle"><i class="icon-group"></i><span class="menu-text"> 系统管理 </span><b class="arrow icon-angle-down"></b></a>
 								<ul class="submenu">
-									<li class="home"><a href="javascript:void(0)" name="mg/quanxian" title="权限管理"  class="iframeurl"><i class="icon-double-angle-right"></i>权限管理</a></li>
-                                	<li class="home"><a href="javascript:void(0)" name="mg/guanliyuan" title="管理员列表" class="iframeurl"><i class="icon-double-angle-right"></i>管理员列表</a></li>
+									<c:choose>
+										<c:when test="${mm.role=='超级管理员'}">
+											<li class="home"><a href="javascript:void(0)" name="mg/quanxian" title="权限管理"  class="iframeurl"><i class="icon-double-angle-right"></i>权限管理</a></li>
+										</c:when>
+										<c:otherwise>
+										</c:otherwise>
+									</c:choose>
+                                	<li class="home"><a href="javascript:void(0)" name="mg/guanliyuan?manager_telephone=${mm.manager_telephone}" title="管理员列表" class="iframeurl"><i class="icon-double-angle-right"></i>管理员列表</a></li>
 								</ul>
 							</li>
 						</ul>
@@ -471,7 +480,7 @@ function link_operating(name,title){
          </div>
         <!-- /.main-container -->
 		<!-- basic scripts -->
-		
+		</c:if>
 </body>
 </html>
 

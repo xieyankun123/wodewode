@@ -120,7 +120,8 @@ public class meterController {
         result.put("water",c);
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
-    public static final String pic= "uploadpic/head_pic/";
+    public String dat=new DateUtil().getDay();
+    public String pic= "uploadpic/head_pic/"+dat+"";
     public String get32UUID(){
         return UuidUtil.get32UUID();
     }

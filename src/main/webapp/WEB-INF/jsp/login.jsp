@@ -117,7 +117,7 @@ function severCheck(){
             cache: false,
             success: function(data){
                 if("10005" == data.result){
-                    window.location.href="mg/index";
+                    window.location.href="mg/index?manager_telephone="+loginname+"";
                 }else if("10002" == data.result){
                     $("#loginname").tips({
                         side : 1,

@@ -31,6 +31,26 @@
         <script type="text/javascript" src="static/js/H-ui.admin.js"></script>
         <script src="static/assets/layer/layer.js" type="text/javascript" ></script>
         <script src="static/assets/laydate/laydate.js" type="text/javascript"></script>
+    <style type="text/css">
+
+        #kongxian{background-color:#abbac3!important;}
+        .zhuangtai{
+            border-radius: 0;
+            text-shadow: none;
+            font-weight: normal;
+            display: inline-block;
+            font-size: 12px;
+            line-height: 1.15;
+            height: 20px;
+            padding: .2em .6em .3em;
+            color: #fff;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+        }
+        #duankai{background-color:  #abbac3!important;}
+        #shiyongzhong{background-color: lightsalmon!important;}
+    </style>
 <title>房源列表</title>
 </head>
 
@@ -80,12 +100,17 @@
           <!-- <td>2014-6-11 11:11:42</td> -->
           <td><a href="<%=basePath%>u_r/historyR?room_id=${house.room_id}" title="点击查看" ><img style="width:25px" src="static/images/zufangjilv.png"></a></td>
              <td><a href="<%=basePath%>apparatus/yqinfoR?room_id=${house.room_id}" title="点击查看"><img style="width:25px" src="static/images/elestate.png"></a></a></td>
-          <td class="td-status"><span class="label label-success radius">已启用</span></td>
-          <td class="td-manage">
-          <!-- <a onClick="member_stop(this,'10001')"  href="javascript:;" title="停用"  class="btn btn-xs btn-success"><i class="icon-ok bigger-120"></i></a>  -->
-          <a title="编辑" onclick="member_edit(this)" href="javascript:;"  class="btn btn-xs btn-info" ><i class="icon-edit bigger-120"></i></a>
-          <!-- <a title="删除" href="javascript:;"  onclick="member_del(this,'1')" class="btn btn-xs btn-warning" ><i class="icon-trash  bigger-120"></i></a> -->
 
+        <c:choose>
+            <c:when test="${house.useable=='0'}">
+                <td><span class="zhuangtai" id="kongxian">已停用</span></td>
+            </c:when>
+            <c:when test="${house.useable=='1'}">
+                <td class="td-status"><span class="label label-success radius">已启用</span></td>
+            </c:when>
+        </c:choose>
+          <td class="td-manage">
+          <a title="编辑" onclick="member_edit(this,'${house.apartment_id}','${house.useable}')"  href="javascript:;"  class="btn btn-xs btn-info" ><i class="icon-edit bigger-120"></i></a>
           </td>
     </tr>
     </c:forEach>
@@ -104,23 +129,22 @@
   </div>
  </div>
 </div>
-<!--添加用户图层-->
+<!--添加房源图层-->
 <div class="add_menber" id="add_menber_style" style="display:none">
-  
     <ul class=" page-content">
-    <li><label class="label_name">房源编号：</label><span class="add_name"><input value="" name="房源编号" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
-    <li><label class="label_name">房东：</label><span class="add_name"><input value="" name="房东" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
-     <li class="adderss"><label class="label_name">房源地址：</label><span class="add_name"><input name="房源地址" type="text"  class="text_add" style=" width:350px"/></span><div class="prompt r_f"></div></li>
-     <li><label class="label_name">房源结构：</label><span class="add_name"><input value="" name="房源结构" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
-     <li><label class="label_name">现租客：</label><span class="add_name"><input name="现租客" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
-     
-     <!-- <li><label class="label_name">固定电话：</label><span class="add_name"><input name="固定电话" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li> -->
-     <!-- <li><label class="label_name">移动电话：</label><span class="add_name"><input name="移动电话" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
-     <li><label class="label_name">电子邮箱：</label><span class="add_name"><input name="电子邮箱" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li> -->
-    
+    <li><label class="label_name">房源编号：</label><span class="add_name">
+        <input value="" name="房源编号" type="text" data-shu='fangyuanbianhao' class="text_add"/></span><div class="prompt r_f"></div></li>
+    <li><label class="label_name">公寓编号：</label><span class="add_name">
+        <input value="" name="公寓编号" type="text" data-shu='fangdong' class="text_add"/></span><div class="prompt r_f"></div></li>
+     <li><label class="label_name">房源地址：</label><span class="add_name">
+        <input value="" name="房源地址" type="text" data-shu='fangyuandizhi' class="text_add"/></span><div class="prompt r_f"></div></li>
+     <li><label class="label_name">房源结构：</label><span class="add_name">
+         <input value="" name="房源结构" type="text" data-shu='fangyuanjiegou' class="text_add"/></span><div class="prompt r_f"></div></li>
+     <%--<li><label class="label_name">现&nbsp;租&nbsp;客：</label><span class="add_name">--%>
+         <%--<input name="现租客" type="text" data-shu='xianzuke' class="text_add"/></span><div class="prompt r_f"></div></li>--%>
      <li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name">
-     <label><input name="form-field-radio1" type="radio" checked="checked" class="ace"><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
-     <label><input name="form-field-radio1"type="radio" class="ace"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
+     <label><input name="form-field-radio1" type="radio" checked="checked" class="ace" value="1"><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
+     <label><input name="form-field-radio1"type="radio" class="ace" value="2"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
     </ul>
  </div>
 
@@ -129,13 +153,16 @@
 
     <ul class=" page-content">
         <li><label class="label_name">房源编号：</label><span class="add_name"><input value="" name="房源编号" type="text" data-shu='bianhao' class="text_add"/></span><div class="prompt r_f"></div></li>
-        <li><label class="label_name">房东：</label><span class="add_name"><input value="" name="房东" type="text" data-shu='fangdong' class="text_add"/></span><div class="prompt r_f"></div></li>
-        <li class="adderss"><label class="label_name">房源地址：</label><span class="add_name"><input name="房源地址" type="text" data-shu='dizhi' class="text_add" style=" width:350px"/></span><div class="prompt r_f"></div></li>
+        <%--<li><label class="label_name">房东：</label><span class="add_name"><input value="" name="房东" type="text" data-shu='fangdong' class="text_add"/></span><div class="prompt r_f"></div></li>--%>
+        <li><label class="label_name">公寓编号：</label><span class="add_name">
+        <input value="" name="公寓编号" type="text" data-shu='fangdong' class="text_add"/></span><div class="prompt r_f"></div></li>
+        <li><label class="label_name">房源地址：</label><span class="add_name">
+        <input value="" name="公寓编号" type="text" data-shu='dizhi' class="text_add"/></span><div class="prompt r_f"></div></li>
         <li><label class="label_name">房源结构：</label><span class="add_name"><input value="" name="房源结构" type="text" data-shu='jiegou' class="text_add"/></span><div class="prompt r_f"></div></li>
-        <li><label class="label_name">现租客：</label><span class="add_name"><input name="现租客" type="text" data-shu='xianzuke' class="text_add"/></span><div class="prompt r_f"></div></li>
+        <%--<li><label class="label_name">现租客：</label><span class="add_name"><input name="现租客" type="text" data-shu='xianzuke' class="text_add"/></span><div class="prompt r_f"></div></li>--%>
         <li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name">
-     <label><input name="form-field-radio1" type="radio" checked="checked" class="ace"><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
-     <label><input name="form-field-radio1"type="radio" class="ace"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
+     <label><input name="form-field-radio6" type="radio" checked="checked" class="ace" value="1"><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
+     <label><input name="form-field-radio6"type="radio" class="ace" value="0"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
     </ul>
 </div>
 </body>
@@ -194,7 +221,7 @@ jQuery(function($) {
     yes:function(index,layero){ 
      var num=0;
      var str="";
-     $(".add_menber input[type$='text']").each(function(n){
+     $("#add_menber_style input[type$='text']").each(function(n){
           if($(this).val()=="")
           {
                
@@ -212,15 +239,41 @@ jQuery(function($) {
                title: '提示框',        
       icon:1,   
         });
-         layer.close(index);  
+         layer.close(index);
+          addroom();
       }                     
     }
     });
 });
-/*用户-查看*/
-// function member_show(title,url,id,w,h){
-//   layer_show(title,url+'#?='+id,w,h);
-// }
+/*添加房间*/
+
+function addroom(){
+    // alert(1);
+    var fangyuanbianhao= $("#add_menber_style input[data-shu='fangyuanbianhao']").val();
+    // var gongyuhao=$("#add_menber_style input[data-shu='gongyuhao').val();
+    var gongyuhao=$("#add_menber_style input[data-shu='fangdong']").val();
+    var fangyuanjiegou=$("#add_menber_style input[data-shu='fangyuanjiegou']").val();
+    // var xianzuke= $("#add_menber_style input[data-shu='xianzuke']").val();
+    var dizhi=$("#add_menber_style input[data-shu='fangyuandizhi']").val();
+    var zhuangtai=$("#add_menber_style input[name='form-field-radio1']:checked").val();
+    alert("获取成功");
+    // alert(fangyuanbianhao)
+    // alert(gongyuhao)
+    // alert(dizhi);
+    // alert(fangyuanjiegou);
+    // alert(zhuangtai);
+    $.ajax({
+        type: "POST",
+        url: 'room/add',
+        data: {room_id:fangyuanbianhao,useable:zhuangtai,apartment_id:gongyuhao,room_loc:dizhi,room_str:fangyuanjiegou},
+        dataType:'json',
+        cache: false,
+        success: function(data){
+            console.log("success");
+        }
+    });
+
+}
 /*用户-停用*/
 function member_stop(obj,id){
   layer.confirm('确认要停用吗？',function(index){
@@ -243,21 +296,29 @@ function member_start(obj,id){
 
 
 // 编辑
-function member_edit(obj){
+function member_edit(obj,apa_id,zhuangtai){
     // alert(1);
+        var apa_id1=apa_id;
+        // alert(apa_id1)
+    var zhuangtai1=zhuangtai;
     var bianhao=$(obj).parent().parent().find("td").eq(1).html();
     var dizhi=$(obj).parent().parent().find("td").eq(2).html();
     var jiegou=$(obj).parent().parent().find("td").eq(3).html();
-    var fangdong=$(obj).parent().parent().find("td").eq(4).html();
-    var xianzuke=$(obj).parent().parent().find("td").eq(5).html();
+    // var fangdong=$(obj).parent().parent().find("td").eq(4).html();
+    // var xianzuke=$(obj).parent().parent().find("td").eq(5).html();
     $("#add_menber_style2 input[data-shu='bianhao']").val(bianhao);
     $("#add_menber_style2 input[data-shu='dizhi']").val(dizhi);
     $("#add_menber_style2 input[data-shu='jiegou']").val(jiegou);
-    $("#add_menber_style2 input[data-shu='fangdong']").val(fangdong);
-    $("#add_menber_style2 input[data-shu='xianzuke']").val(xianzuke);
+    $("#add_menber_style2 input[data-shu='fangdong']").val(apa_id1);
+    // $("#add_menber_style2 input[data-shu='xianzuke']").val(xianzuke);
+    if(zhuangtai1=="1"){
+        // alert("状态为1启用");
+        $("input[name='form-field-radio6']:eq(0)").attr("checked",'checked');
+    }else if(zhuangtai1==0)
+    {$("input[name='form-field-radio6']:eq(1)").attr("checked",'checked');}
     layer.open({
         type: 1,
-        title: '修改租户信息',
+        title: '修改房源信息',
         maxmin: true,
         shadeClose:false, //点击遮罩关闭层
         area : ['800px' , ''],
@@ -285,9 +346,42 @@ function member_edit(obj){
                     icon:1,
                 });
                 layer.close(index);
+                uproom();
             }
         }
     });
+}
+
+function uproom(){
+    var fangyuanbianhao= $("#add_menber_style2 input[data-shu='bianhao']").val();
+    var gongyuhao=$("#add_menber_style2 input[data-shu='fangdong']").val();
+    var fangyuanjiegou=$("#add_menber_style2 input[data-shu='jiegou']").val();
+    var dizhi=$("#add_menber_style2 input[data-shu='dizhi']").val();
+    var zhuangtai=$("#add_menber_style2 input[name='form-field-radio6']:checked").val();
+
+
+    // var zhuangtai2=$("#add_menber_style2 input[name='form-field-radio4']:checked").val();
+    // var youxiang2=$("#add_menber_style2 input[data-shu='youxiang']").val();
+    console.log("提取获取了更新的数据");
+    // alert("获取成功");
+    // alert(gongyuhao);
+    // alert(fangyuanbianhao);
+    // alert(fangyuanjiegou);
+    // alert(dizhi);
+    // // alert(shengfenzheng2);alert(dizhi2);
+    // alert(zhuangtai);
+    // alert(youxiang2);
+    $.ajax({
+        type: "POST",
+        url: 'room/update',
+        data: {room_id:fangyuanbianhao,useable:zhuangtai,apartment_id:gongyuhao,room_loc:dizhi,room_str:fangyuanjiegou},
+        dataType:'json',
+        cache: false,
+        success: function(data){
+            console.log("success");
+        }
+    });
+
 }
 /*用户-删除*/
 function member_del(obj,id){

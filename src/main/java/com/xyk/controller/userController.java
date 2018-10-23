@@ -88,6 +88,7 @@ public class userController {
     public void selbystate(HttpServletRequest request, HttpServletResponse response) {
         JSONObject result = new JSONObject();
         String user_telephone=request.getParameter("user_telephone");
+        String user_weixin=request.getParameter("user_weixin");
         List<UserModel> a=userservice.selbystate("1");
         result.put("result",a);
         result.put("msg",false);
@@ -109,9 +110,18 @@ public class userController {
                     break;
                 }
             }
+            if(flag2)
+                break;
         }
         if(flag1||flag2)
         {
+            if(flag1)
+            {try{
+                boolean b=userservice.addweixin(user_weixin,user_telephone);
+            }
+            catch (Exception e)
+            {result.put("msg",e);}}
+            else{}
             result.put("msg",true);
         }
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));

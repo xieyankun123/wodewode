@@ -50,9 +50,14 @@ public class managerController {
         return "login";
     }
     @RequestMapping("/index")
-    public String index()
+    public  ModelAndView index(HttpServletRequest request)
     {
-        return "index";
+        ModelAndView mv=new ModelAndView();
+        String manager_telephone=request.getParameter("manager_telephone");
+        managerModel mm=ms.selbytel(manager_telephone);
+        mv.addObject("mm",mm);
+        mv.setViewName("index");
+        return mv;
     }
     @RequestMapping("/home")
     public String home()
@@ -60,14 +65,29 @@ public class managerController {
         return "home";
     }
     @RequestMapping("/guanliyuan")
-    public ModelAndView home1(HttpServletResponse response)
+    public ModelAndView home1(HttpServletRequest request)
     {
         ModelAndView mv=new ModelAndView();
+        String manager_telephone=request.getParameter("manager_telephone");
+        managerModel mm=ms.selbytel(manager_telephone);
        // JSONObject result=new JSONObject();
         List<managerModel> a=ms.list();
+        if(mm.getRole().equals("超级管理员"))
+        {
        // result.put("mg",a);
-        mv.addObject("mg",a);
+        mv.addObject("mg",a);}
         //HttpOutUtil.outData(response, JSONObject.toJSONString(result));
+        else
+        {
+            for(int i=0;i<a.size();i++)
+            {
+                if( a.get(i).getRole().equals("超级管理员")) {
+                    a.remove(a.get(i));
+                    break;
+                }
+            }
+            mv.addObject("mg",a);
+        }
         mv.setViewName("administrator");
         return mv;
     }

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 
         public static final String RANDOMCODEKEY = "randomcode_key";//放到session中的key
         private Random random = new Random();
-        private String randString = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";//随机产生的字符串
+        private String randString = "0123456789abcdefghigklmnopqrstuvwxyz";//随机产生的字符串
 
         private int width = 80;//图片宽
         private int height = 26;//图片高

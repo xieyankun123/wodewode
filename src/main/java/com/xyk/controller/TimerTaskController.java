@@ -96,7 +96,7 @@ public class TimerTaskController {
             //每个一段时间你想要做的事
             //连接服务器
             if (yqmodels.get(i).getUseable().equals("0") || yqmodels.get(i).getUseable().equals("1")) {
-                System.out.println("meibiyaoceshi");
+               // System.out.println("meibiyaoceshi");
             }
             else {
                 try {
@@ -132,7 +132,7 @@ public class TimerTaskController {
                             am.setTime(dat);
                             String val = js.getString("socketOut_P");
                             if (val.equals("0")) {
-                                System.out.println("无效数据，丢了丢了");
+                                //System.out.println("无效数据，丢了丢了");
                             } else {
                                 am.setValue(val);
                                 String name = apservice.selbyid(yqmodels.get(i).getId()).get(apservice.selbyid(yqmodels.get(i).getId()).size() - 1).getUser_name_on();
