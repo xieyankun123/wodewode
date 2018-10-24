@@ -70,6 +70,7 @@ public class managerController {
         ModelAndView mv=new ModelAndView();
         String manager_telephone=request.getParameter("manager_telephone");
         managerModel mm=ms.selbytel(manager_telephone);
+        mv.addObject("mm",mm);
        // JSONObject result=new JSONObject();
         List<managerModel> a=ms.list();
         if(mm.getRole().equals("超级管理员"))
@@ -77,13 +78,22 @@ public class managerController {
        // result.put("mg",a);
         mv.addObject("mg",a);}
         //HttpOutUtil.outData(response, JSONObject.toJSONString(result));
-        else
+        else if(mm.getRole().equals("系统管理员"))
         {
             for(int i=0;i<a.size();i++)
             {
                 if( a.get(i).getRole().equals("超级管理员")) {
                     a.remove(a.get(i));
-                    break;
+                }
+            }
+            mv.addObject("mg",a);
+        }
+        else if(mm.getRole().equals("普通管理员"))
+        {
+            for(int i=0;i<a.size();i++)
+            {
+                if( a.get(i).getRole().equals("超级管理员")||a.get(i).getRole().equals("系统管理员")) {
+                    a.remove(a.get(i));
                 }
             }
             mv.addObject("mg",a);
@@ -189,6 +199,7 @@ public class managerController {
             JSONObject obj = JSON.parseObject(s1);
             System.out.println(obj.toString());
             String getjsay = obj.getString("ids");
+            System.out.println(getjsay);
             JSONArray obj1 = JSON.parseArray(getjsay);
             System.out.println(obj1);
             String[] a=obj1.toString().replace("[","").replace("]","").replace("\"","").split(",");
@@ -263,7 +274,6 @@ public class managerController {
         String manager_telephone = (String)request.getParameter("manager_telephone");
         String password = (String)request.getParameter("password");
         String code=request.getParameter("code");
-        System.out.println(code);
         RandomValidateCode rc = new RandomValidateCode();
         HttpSession session = request.getSession();
         String b= (String) session.getAttribute(RANDOMCODEKEY);

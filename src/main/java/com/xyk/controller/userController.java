@@ -83,14 +83,30 @@ public class userController {
         }
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
-
+    @RequestMapping("/weixinLogin")
+    public void weixinLogin(HttpServletRequest request,HttpServletResponse response)
+    {
+        JSONObject result=new JSONObject();
+        String user_weixin=request.getParameter("user_weixin");
+        List<UserModel> a=userservice.selbystate("1");
+        result.put("msg",false);
+        for(int i=0;i<a.size();i++) {
+            if(a.get(i).getUser_weixin().isEmpty()==false) {
+                if (a.get(i).getUser_weixin().equals(user_weixin)) {
+                    String user_telephone = a.get(i).getUser_telephone();
+                    result.put("msg", user_telephone);
+                    break;
+                }
+            }
+        }
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
     @RequestMapping("/selectbystate")
     public void selbystate(HttpServletRequest request, HttpServletResponse response) {
         JSONObject result = new JSONObject();
         String user_telephone=request.getParameter("user_telephone");
         String user_weixin=request.getParameter("user_weixin");
         List<UserModel> a=userservice.selbystate("1");
-        result.put("result",a);
         result.put("msg",false);
         boolean flag1 = false;
         boolean flag2 = false;
@@ -122,7 +138,7 @@ public class userController {
             catch (Exception e)
             {result.put("msg",e);}}
             else{}
-            result.put("msg",true);
+            result.put("msg",user_telephone);
         }
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }

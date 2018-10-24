@@ -27,10 +27,32 @@
 		<script src="static/js/lrtk.js" type="text/javascript" ></script>
          <script src="static/assets/layer/layer.js" type="text/javascript"></script>	
         <script src="static/assets/laydate/laydate.js" type="text/javascript"></script>
+	<style type="text/css">
+
+		#kongxian{background-color:#abbac3!important;}
+		.zhuangtai{
+			border-radius: 0;
+			text-shadow: none;
+			font-weight: normal;
+			display: inline-block;
+			font-size: 12px;
+			line-height: 1.15;
+			height: 20px;
+			padding: .2em .6em .3em;
+			color: #fff;
+			text-align: center;
+			white-space: nowrap;
+			vertical-align: baseline;
+		}
+		#duankai{background-color:  #abbac3!important;}
+		#shiyongzhong{background-color: lightsalmon!important;}
+	</style>
 <title>管理员</title>
 </head>
 
 <body>
+<c:if test="${!empty mm }">
+	<div items="${mm}" var="mm">
 <div class="page-content clearfix">
   <div class="administrator">
        <div class="d_Confirm_Order_style">
@@ -77,9 +99,36 @@
 			<td>${mg.manager_name}</td>
 			<td>${mg.manager_telephone}</td>
 			<td>${mg.role}</td>
-      <td class="td-status"><span class="label label-success radius">已启用</span></td>
+			<c:choose>
+				<c:when test="${mg.headpic=='0'}">
+					<td><span class="zhuangtai" id="kongxian">已停用</span></td>
+				</c:when>
+				<c:when test="${mg.headpic=='1'}">
+					<td class="td-status"><span class="label label-success radius">已启用</span></td>
+				</c:when>
+			</c:choose>
       <td class="td-manage">
-        <a title="编辑"  onclick="admin_edit('550')" href="javascript:;"  class="btn btn-xs btn-info" ><i class="fa fa-edit bigger-120"></i></a>       
+		  <c:choose>
+		  <c:when test="${mm.role=='超级管理员'}">
+			  <a title="编辑"  onclick="admin_edit(this,'${mg.password}','${mg.headpic}','${mg.role}','${mm.role}','${mm.manager_telephone}')"
+				 href="javascript:;"  class="btn btn-xs btn-info" ><i class="fa fa-edit bigger-120"></i></a>
+			</c:when>
+			<c:when test="${mm.role=='系统管理员'}">
+				<a title="编辑"  onclick="admin_edit(this,'${mg.password}','${mg.headpic}','${mg.role}','${mm.role}','${mm.manager_telephone}')"
+				   href="javascript:;"  class="btn btn-xs btn-info" ><i class="fa fa-edit bigger-120"></i></a>
+			</c:when>
+			<c:when test="${mm.role=='普通管理员'}">
+				  <c:choose>
+					  <c:when test="${mm.manager_telephone==mg.manager_telephone}">
+						  <a title="编辑"  onclick="admin_edit(this,'${mg.password}','${mg.headpic}','${mg.role}','${mm.role}','${mm.manager_telephone}')"
+							 href="javascript:;"  class="btn btn-xs btn-info" ><i class="fa fa-edit bigger-120"></i></a>
+					  </c:when>
+					  <c:otherwise>
+						  <a title="编辑" href="javascript:;" onclick="tishi()" class="btn btn-xs btn-info" ><i class="fa fa-edit bigger-120"></i></a>
+					  </c:otherwise>
+				  </c:choose>
+		  	</c:when>
+		  </c:choose>
        </td>
      </tr>
 	</c:forEach>
@@ -175,9 +224,124 @@
      <!--操作-->
      <div class="clearfix" style="margin-left:10px">
        <span class="l_f">
+		   <c:choose>
+			<c:when test="${mm.role=='超级管理员'}">
         <a href="javascript:ovid()" id="administrator_add" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
-       </span>
+			</c:when>
+			<c:when test="${mm.role=='系统管理员'}">
+		   <a href="javascript:ovid()" id="administrator_add" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
+			</c:when>
+			   <c:otherwise>
+				   <a href="javascript:ovid()" id="administrator_ad" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
+			   </c:otherwise>
+		   </c:choose>
+	   </span>
      </div>
+
+
+<!--添加管理员图层-->
+<div class="add_menber" id="add_menber_style" style="display:none">
+	<ul class=" page-content">
+		<li><label class="label_name">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</label><span class="add_name">
+        <input value="" name="姓名" type="text" data-shu='xingming' class="text_add"/></span><div class="prompt r_f"></div></li>
+		<li><label class="label_name">手机号码：</label><span class="add_name">
+        <input value="" name="手机号码" type="text" data-shu='shoujihao' class="text_add"/></span><div class="prompt r_f"></div></li>
+
+		<li><label class="label_name">密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</label><span class="add_name">
+        <input value="" name="密码" type="text" data-shu='mima' class="text_add"/></span><div class="prompt r_f"></div></li>
+		<li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name">
+     <label><input name="form-field-radio1" type="radio" checked="checked" class="ace" value="1"><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
+     <label><input name="form-field-radio1"type="radio" class="ace" value="0"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
+		<c:choose>
+			<c:when test="${mm.role=='超级管理员'}">
+				<div class="form-group">
+					<label class="form-label">角&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色：</label>
+					<div class="formControls "> <span class="select-box" style="width:150px;">
+				<select class="select" name="admin-roleadd" size="1" style="width:165px;margin-left:9px;">
+					<option value="1" disabled="">超级管理员</option>
+					<option value="2">系统管理员</option>
+					<option value="3">普通管理员</option>
+				</select>
+				</span> </div>
+				</div>
+			</c:when>
+			<c:when test="${mm.role=='系统管理员'}">
+				<div class="form-group">
+					<label class="form-label">角&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色：</label>
+					<div class="formControls "> <span class="select-box" style="width:150px;">
+				<select class="select" name="admin-roleadd" size="1" style="width:165px;margin-left:9px;">
+					<option value="1" disabled="">超级管理员</option>
+					<option value="2" disabled="">系统管理员</option>
+					<option value="3">普通管理员</option>
+				</select>
+				</span> </div>
+				</div>
+			</c:when>
+			<c:otherwise>
+			</c:otherwise>
+		</c:choose>
+
+	</ul>
+</div>
+
+<!--编辑管理员图层-->
+<div class="add_menber" id="add_menber_style2" style="display:none" >
+
+	<ul class=" page-content">
+		<li><label class="label_name">姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：</label><span class="add_name">
+        <input value="" name="姓名" type="text" data-shu='xingming' class="text_add"/></span><div class="prompt r_f"></div></li>
+		<li><label class="label_name">手机号码：</label><span class="add_name">
+        <input value="" name="手机号码" type="text" data-shu='shoujihao' class="text_add"/></span><div class="prompt r_f"></div></li>
+
+		<li><label class="label_name">密&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码：</label><span class="add_name">
+        <input value="" name="密码" type="text" data-shu='mima' class="text_add"/></span><div class="prompt r_f"></div></li>
+		<li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name">
+     <label><input name="form-field-radio8" type="radio" checked="checked" class="ace" value="1"><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
+     <label><input name="form-field-radio8"type="radio" class="ace" value="0"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
+		<c:choose>
+			<c:when test="${mm.role=='超级管理员'}">
+				<div class="form-group">
+					<label class="form-label">角&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色：</label>
+					<div class="formControls "> <span class="select-box" style="width:150px;">
+				<select class="select2" name="admin-role0" size="1" style="width:165px;margin-left:9px;">
+					<option value="1" disabled="">超级管理员</option>
+				<option value="2">系统管理员</option>
+					<option value="3">普通管理员</option>
+
+				</select>
+				</span> </div>
+				</div>
+			</c:when>
+			<c:when test="${mm.role=='系统管理员'}">
+				<div class="form-group">
+					<label class="form-label">角&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色：</label>
+					<div class="formControls "> <span class="select-box" style="width:150px;">
+				<select class="select2" name="admin-role0" size="1" style="width:165px;margin-left:9px;">
+					<option value="1" disabled="">超级管理员</option>
+					<option value="2" disabled="">系统管理员</option>
+					<option value="3">普通管理员</option>
+				</select>
+				</span> </div>
+				</div>
+			</c:when>
+			<c:when test="${mm.role=='普通管理员'}">
+				<div class="form-group">
+					<label class="form-label">角&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色：</label>
+					<div class="formControls "> <span class="select-box" style="width:150px;">
+				<select class="select2" name="admin-role0" size="1" style="width:165px;margin-left:9px;">
+					<option value="1" disabled="">超级管理员</option>
+					<option value="2" disabled="">系统管理员</option>
+					<option value="3" disabled="">普通管理员</option>
+				</select>
+				</span> </div>
+				</div>
+			</c:when>
+			<c:otherwise>
+			</c:otherwise>
+		</c:choose>
+	</ul>
+</div>
+		</c:if>
 </body>
 </html>
 <script type="text/javascript">
@@ -282,9 +446,7 @@ function member_start(obj,id){
 	});
 }
 /*产品-编辑*/
-function member_edit(title,url,id,w,h){
-	layer_show(title,url,w,h);
-}
+
 
 /*产品-删除*/
 function member_del(obj,id){
@@ -293,53 +455,203 @@ function member_del(obj,id){
 		layer.msg('已删除!',{icon:1,time:1000});
 	});
 }
+$('#administrator_ad').on('click', function(){
+    alert("您没有权利添加");
+})
 /*添加管理员*/
 $('#administrator_add').on('click', function(){
-	layer.open({
-    type: 1,
-	title:'添加管理员',
-	area: ['700px',''],
-	shadeClose: false,
-	content: $('#add_administrator_style'),
-	
-	});
+    layer.open({
+        type: 1,
+        title: '添加管理员',
+        maxmin: true,
+        shadeClose: true, //点击遮罩关闭层
+        area : ['800px' , ''],
+        content:$('#add_menber_style'),
+        btn:['提交','取消'],
+        yes:function(index,layero){
+            var num=0;
+            var str="";
+            $("#add_menber_style input[type$='text']").each(function(n){
+                if($(this).val()=="")
+                {
+
+                    layer.alert(str+=""+$(this).attr("name")+"不能为空！\r\n",{
+                        title: '提示框',
+                        icon:0,
+                    });
+                    num++;
+                    return false;
+                }
+            });
+            if(num>0){  return false;}
+            else{
+                layer.alert('添加成功！',{
+                    title: '提示框',
+                    icon:1,
+                });
+                layer.close(index);
+                addman();
+            }
+        }
+    });
 })
-	//表单验证提交
-$("#form-admin-add").Validform({
-		
-		 tiptype:2,
-	
-		callback:function(data){
-		//form[0].submit();
-		if(data.status==1){ 
-                layer.msg(data.info, {icon: data.status,time: 1000}, function(){ 
-                    location.reload();//刷新页面 
-                    });   
-            } 
-            else{ 
-                layer.msg(data.info, {icon: data.status,time: 3000}); 
-            } 		  
-			var index =parent.$("#iframe").attr("src");
-			parent.layer.close(index);
-			//
-		}
-		
-		
-	});	
+function addman(){
+    // alert(1);
+	var juese1;
+    var xingming= $("#add_menber_style input[data-shu='xingming']").val();
+    var shoujihao=$("#add_menber_style input[data-shu='shoujihao']").val();
+    var juese=$("select[name='admin-roleadd']").val();
+    var mima=$("#add_menber_style input[data-shu='mima']").val();
+    var zhuangtai=$("#add_menber_style input[name='form-field-radio1']:checked").val();
+    var shengfenzhenghao="1";
+    var nicheng="1";
+    if(juese=="1"){
+		juese1="超级管理员";
+    }else if(juese=="2")
+    {
+        juese1="系统管理员";
+	}else if(juese=="3"){
+        juese1="普通管理员";
+	}
+    alert("获取成功");
 
-
-
-/*系统管理员-编辑*/
-function admin_edit(id){
-	layer.open({
-    type: 1,
-	title:'修改管理员',
-	area: ['700px',''],
-	shadeClose: false,
-	content: $('#add_administrator_style'),
-	
-	});
+    $.ajax({
+        type: "POST",
+        url: 'mg/add',
+        data: {manager_name:xingming,manager_telephone:shoujihao,role:juese1,password:mima,headpic:zhuangtai,
+            manager_IDcard:shengfenzhenghao,manager_nicheng:nicheng},
+        dataType:'json',
+        cache: false,
+        success: function(data){
+            console.log("提交过去了");
+        }
+    });
 
 }
+
+function tishi()
+{alert("您没有权利修改")}
+
+/*系统管理员-编辑*/
+function admin_edit(obj,pwd,zhuangtai,role,mr,mt){
+    var xingming=$(obj).parent().parent().find("td").eq(2).html();
+    var shoujihao=$(obj).parent().parent().find("td").eq(3).html();
+    var juese=role;
+    // alert(juese);
+    if(juese=="系统管理员"){
+        $("select[name='admin-role0']").val("2");
+    }else if(juese=="超级管理员"){
+        $("select[name='admin-role0']").val("1");
+    }else if(juese=="普通管理员"){
+        $("select[name='admin-role0']").val("3");
+    }
+    // if(juese="超级管理员"){
+    //     alert(1);
+    //     // alert("是超级管理员")
+    //     // $("select[name='admin-role0']").val("1");
+    // }else if(juese="系统管理员"){
+    //     alert(2);
+    //     // alert("是系统管理员");
+    //     // $("select[name='admin-role0']").val("2");
+    // }else if(juese="普通管理员"){
+    //     alert(3);
+    //     // $("select[name='admin-role0']").val("3");
+    // }
+    var mima=pwd;
+    var state=zhuangtai;
+    // var zhuangtai1=zhuangtai;
+	// alert(xingming);
+	// alert(shoujihao);
+	// alert(juese);
+	// alert(zhuangtai1);
+    $("#add_menber_style2 input[data-shu='xingming']").val(xingming);
+    $("#add_menber_style2 input[data-shu='shoujihao']").val(shoujihao);
+    $("#add_menber_style2 input[data-shu='mima']").val(mima);
+    if(state=="1"){
+        $("input[name='form-field-radio8']:eq(0)").attr("checked",'checked');
+    }else if(state=="0")
+    {$("input[name='form-field-radio8']:eq(1)").attr("checked",'checked');}
+
+    layer.open({
+        type: 1,
+        title: '修改管理员信息',
+        maxmin: true,
+        shadeClose:false, //点击遮罩关闭层
+        area : ['800px' , ''],
+        content:$('#add_menber_style2'),
+        btn:['提交','取消'],
+        yes:function(index,layero){
+            var num=0;
+            var str="";
+            $("#add_menber_style2 input[type$='text']").each(function(n){
+                if($(this).val()=="")
+                {
+
+                    layer.alert(str+=""+$(this).attr("name")+"不能为空！\r\n",{
+                        title: '提示框',
+                        icon:0,
+                    });
+                    num++;
+                    return false;
+                }
+            });
+            if(num>0){  return false;}
+            else{
+                layer.alert('修改成功！',{
+                    title: '提示框',
+                    icon:1,
+                    yes: function(index){
+                        window.location="<%=basePath%>/mg/guanliyuan?manager_telephone="+mt+"";
+                        console.log(1);
+                        layer.close(index);
+                    }
+                });
+                layer.close(index);
+                upadmin(mr);
+
+            }
+        }
+    });
+}
+
+function upadmin(mmr){
+    var juese1;
+    var xingming= $("#add_menber_style2 input[data-shu='xingming']").val();
+    var shoujihao=$("#add_menber_style2 input[data-shu='shoujihao']").val();
+    var juese=$("select[name='admin-role0']").val();
+    var mima=$("#add_menber_style2 input[data-shu='mima']").val();
+    var zhuangtai=$("#add_menber_style2 input[name='form-field-radio8']:checked").val();
+    var shengfenzhenghao="1";
+    var nicheng="1";
+    if(juese=="1"){
+        juese1="超级管理员";
+    }else if(juese=="2")
+    {
+        juese1="系统管理员";
+    }else if(juese=="3"){
+        juese1="普通管理员";
+    }else{juese1=mmr;}
+    // alert("获取成功");
+    // alert(xingming);
+    // alert(shoujihao);
+    // alert(mima);
+    // alert(zhuangtai);
+
+
+    $.ajax({
+        type: "POST",
+        url: 'mg/update',
+        data: {manager_name:xingming,manager_telephone:shoujihao,role:juese1,password:mima,headpic:zhuangtai,
+            manager_IDcard:shengfenzhenghao,manager_nicheng:nicheng},
+        dataType:'json',
+        cache: false,
+        success: function(data){
+            console.log("提交修改过去的参数");
+        }
+    });
+
+}
+
+
 </script>
 

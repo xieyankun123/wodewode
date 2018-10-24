@@ -60,9 +60,12 @@ public class managerService {
     public managerModel login(String manager_telephone,String password)
     {
             managerModel b=managerdao.selbytel(manager_telephone);
-              if(b!=null&&b.getPassword().equals(password)) {
+            if(b.getHeadpic().equals("0"))
+            { return null;}
+            else if(b!=null&&b.getPassword().equals(password)) {
                       return b;
                 }
-              return null;
+                else {
+                return null;}
     }
 }
