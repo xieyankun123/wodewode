@@ -144,7 +144,7 @@
          <%--<input name="现租客" type="text" data-shu='xianzuke' class="text_add"/></span><div class="prompt r_f"></div></li>--%>
      <li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name">
      <label><input name="form-field-radio1" type="radio" checked="checked" class="ace" value="1"><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
-     <label><input name="form-field-radio1"type="radio" class="ace" value="2"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
+     <label><input name="form-field-radio1"type="radio" class="ace" value="0"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
     </ul>
  </div>
 
@@ -237,7 +237,12 @@ jQuery(function($) {
           else{
         layer.alert('添加成功！',{
                title: '提示框',        
-      icon:1,   
+                icon:1,
+            yes: function(index){
+                window.location="<%=basePath%>/room/house_list";
+                console.log(1);
+                layer.close(index);
+            }
         });
          layer.close(index);
           addroom();
@@ -344,6 +349,11 @@ function member_edit(obj,apa_id,zhuangtai){
                 layer.alert('修改成功！',{
                     title: '提示框',
                     icon:1,
+                    yes: function(index){
+                        window.location="<%=basePath%>/room/house_list";
+                        console.log(1);
+                        layer.close(index);
+                    }
                 });
                 layer.close(index);
                 uproom();
@@ -397,6 +407,7 @@ function sousuo(){
 };
 $('#ss').click(function(){
   sousuo();
+  // alert(1);
 });
 $('#sousuo').keydown(function(event){ 
             if(event.keyCode==13){ 

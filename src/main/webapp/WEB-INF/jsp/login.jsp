@@ -29,6 +29,10 @@
 			.bigtitle{height: 75px;line-height: 75px;display: block;float: left;color: white;}
 			.bigtubiao{width: 40px;display: block;float: left;margin-top:19px;text-align: center;}
 			.zufang{width: 130px;}
+			.yanzheng{position: absolute;
+				display: block;}
+			.passcode{display: block;position:relative;top:-26px;right:-136px;
+				}
 		</style>
 <title>登录</title>
 </head>
@@ -62,10 +66,12 @@
 								<div class="login_icon"><img  class="zufang" src="static/images/zufang.png" /></div>
 								<form class="">
 									<fieldset>
-										<ul>
+										<ul class="da">
    											<li class="frame_style form_error"><label class="user_icon"></label><input name="loginname" type="text"  id="loginname"/><i>用户名</i></li>
    											<li class="frame_style form_error"><label class="password_icon"></label><input name="password" type="password"   id="password"/><i>密码</i></li>
-   											<li class="frame_style form_error"><label class="Codes_icon"></label><input name="code" type="text"   id="code"/><i>验证码</i><img src="mg/checkCode" alt="" width="100" height="32" class="passcode" style="height:43px;cursor:pointer;" onclick="this.src=this.src+'?'">
+   											<li class="frame_style form_error yanzheng"><label class="Codes_icon"></label><input name="code" type="text"   id="code"/>
+												<%--<i>验证码</i>--%>
+												<img src="mg/checkCode" alt="" width="100px"  class="passcode" style="height:30px;cursor:pointer;z-index: 999" onclick="this.src=this.src+'?'">
 											</li>
   										</ul>
 										<div class="space"></div>
@@ -103,6 +109,17 @@
 </html>
 <script>
 // 登录时候是否输入账号密码的前台判断
+$('#password').keydown(function(event){
+    if(event.keyCode==13){
+        severCheck();
+    }
+});
+
+$('#code').keydown(function(event){
+    if(event.keyCode==13){
+        severCheck();
+    }
+});
 function severCheck(){
     if(check()){
 

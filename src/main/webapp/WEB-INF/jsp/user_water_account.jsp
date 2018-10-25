@@ -33,6 +33,7 @@
 
     </script>
         <style type="text/css">
+            th{color: #547ea8;}
             .baozhe{height: 30px;border-bottom: 1px solid #ddd;}
             .xinxi{
                 display: block;
@@ -164,7 +165,7 @@
                                 <%--<td><a href="javascript:;" onclick="tianshuju('5')"><img class="paizhao" src="static/images/xie.png"></a></td>--%>
                                 <c:choose>
                                     <c:when test="${water.value==Null}">
-                                        <td><a href="javascript:;" onclick="tianshuju(this,${water.id},'updateW')" data-tupian="${water.picture}"><img class="paizhao" src="static/images/xie.png" ></a></td>
+                                        <td><a href="javascript:;" onclick="tianshuju(this,${water.id},'updateW','${user.user_telephone}','${room.room_id}')" data-tupian="${water.picture}"><img class="paizhao" src="static/images/xie.png" ></a></td>
                                     </c:when>
                                     <c:otherwise>
                                         <td>${water.value}</td>
@@ -199,7 +200,7 @@
                                             <%--<td><a href="javascript:;" onclick="tianshuju('5')"><img class="paizhao" src="static/images/xie.png"></a></td>--%>
                                         <c:choose>
                                             <c:when test="${dian.value==Null}">
-                                                <td><a href="javascript:;" onclick="tianshuju(this,${dian.id},'updateA')"  data-tupian="${dian.picture}"><img class="paizhao" src="static/images/xie.png" ></a></td>
+                                                <td><a href="javascript:;" onclick="tianshuju(this,${dian.id},'updateA','${user.user_telephone}','${room.room_id}')"  data-tupian="${dian.picture}"><img class="paizhao" src="static/images/xie.png" ></a></td>
 
                                             </c:when>
                                             <c:otherwise>
@@ -235,7 +236,7 @@
                                             <%--<td><a href="javascript:;" onclick="tianshuju('5')"><img class="paizhao" src="static/images/xie.png"></a></td>--%>
                                         <c:choose>
                                             <c:when test="${gas.value==Null}">
-                                                <td><a href="javascript:;" onclick="tianshuju(this,${gas.id},'updateG')"  data-tupian="${gas.picture}"><img class="paizhao" src="static/images/xie.png" ></a></td>
+                                                <td><a href="javascript:;" onclick="tianshuju(this,${gas.id},'updateG','${user.user_telephone}','${room.room_id}')"  data-tupian="${gas.picture}"><img class="paizhao" src="static/images/xie.png" ></a></td>
 
                                             </c:when>
                                             <c:otherwise>
@@ -341,7 +342,7 @@ window.onload = function () {
 
 
 // 编写函数让管理员填写水电气表的数据
-function tianshuju(obj,id,path){
+function tianshuju(obj,id,path,userte,roomid){
     // alert($(obj))
     $("#biaoshu").val("");
     var lv=$(obj).attr("data-tupian");
@@ -375,6 +376,11 @@ function tianshuju(obj,id,path){
                 layer.alert('保存成功！',{
                     title: '提示框',
                     icon:1,
+                    yes: function(index){
+                        window.location="<%=basePath%>/meter/sdq?user_telephone="+userte+"&room_id="+roomid+"";
+                        console.log(1);
+                        layer.close(index);
+                    }
                 });
                 gochuanshu(id,path);
                 layer.close(index);
@@ -385,7 +391,7 @@ function tianshuju(obj,id,path){
 function gochuanshu(biaoid,lvjing){
 
     var zhi= $("#biaoshu").val();
-    alert(zhi);
+    // alert(zhi);
     $.ajax({
         type: "POST",
         url: 'meter/'+lvjing,

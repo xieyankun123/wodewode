@@ -66,12 +66,16 @@ public class yqController {
     {
         JSONObject result=new JSONObject();
         String user_telephone=request.getParameter("user_telephone");;
-        System.out.println(user_telephone);
-        //UserModel user=us.selbytel(user_telephone);
-        String room_id=ur.selbyUtel(user_telephone).get(ur.selbyUtel(user_telephone).size()-1).getRoom_id();
-        //roomModel room=rs.selbyRid(room_id);
-        //room.setOwn(gs.selbyid(room.getApartment_id()).getOwner());
-        // result.put("msg1",user);
+        if(user_telephone.equals("false"))
+        {
+            result.put("msg","fail");
+        }
+        else {
+            //UserModel user=us.selbytel(user_telephone);
+            String room_id = ur.selbyUtel(user_telephone).get(ur.selbyUtel(user_telephone).size() - 1).getRoom_id();
+            //roomModel room=rs.selbyRid(room_id);
+            //room.setOwn(gs.selbyid(room.getApartment_id()).getOwner());
+            // result.put("msg1",user);
 //        if(room_id.endsWith("0")) {
 //            List<yqModel> apparatus0 = ys.selbyRid(room_id);
 //            mv.addObject("room")
@@ -80,15 +84,15 @@ public class yqController {
 //        }
 //        else
 //        {
-        List<yqModel> apparatus1 = ys.selbyRid(room_id);
-        System.out.println(apparatus1.get(0).getBeizhu2());
-        System.out.println(apparatus1.get(1).getBeizhu2());
-        StringBuilder a=new StringBuilder(room_id);
-        a.setCharAt(4, '0');
-        List<yqModel> apparatus0 = ys.selbyRid(a.toString());
-        System.out.println(a.toString());
-        result.put("apparatus1",apparatus1);
-        result.put("apparatus0",apparatus0);
+            List<yqModel> apparatus1 = ys.selbyRid(room_id);
+            System.out.println(apparatus1.get(0).getBeizhu2());
+            System.out.println(apparatus1.get(1).getBeizhu2());
+            StringBuilder a = new StringBuilder(room_id);
+            a.setCharAt(4, '0');
+            List<yqModel> apparatus0 = ys.selbyRid(a.toString());
+            result.put("apparatus1", apparatus1);
+            result.put("apparatus0", apparatus0);
+        }
          HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
     @RequestMapping("/yqinfoU")

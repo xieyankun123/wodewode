@@ -59,9 +59,9 @@
     <div class="search_style">
      
       <ul class="search_content clearfix">
-       <li><label class="l_f">管理员名称</label><input name="" type="text"  class="text_add"  placeholder="输入管理员名称、手机"  style=" width:250px"/></li>
+       <li><label class="l_f">管理员名称</label><input name="" type="text"  class="text_add" id="sousuo" placeholder="输入管理员名称、手机"  style=" width:250px"/></li>
        <li style="display:none;"><label class="l_f">添加时间</label><input class="inline laydate-icon" id="start" style=" margin-left:10px;"></li>
-       <li style="width:90px;"><button type="button" class="btn_search"><i class="fa fa-search"></i>查询</button></li>
+       <li style="width:90px;"><button type="button" class="btn_search" id="ss"><i class="fa fa-search"></i>查询</button></li>
       </ul>
     </div>
 
@@ -80,7 +80,7 @@
 		<thead>
 		 <tr>
 				<th width="25"><label><input type="checkbox" class="ace"><span class="lbl"></span></label></th>
-				<th width="80">编号</th>
+				<th width="80">序号</th>
 				<th width="250">姓名</th>
 				<th width="150">手机</th>
 				<!-- <th width="100px">邮箱</th> -->
@@ -226,13 +226,13 @@
        <span class="l_f">
 		   <c:choose>
 			<c:when test="${mm.role=='超级管理员'}">
-        <a href="javascript:ovid()" id="administrator_add" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
+        <a href="javascript:ovid()" id="administrator_add"  onclick="admin_add('${mm.manager_telephone}')" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
 			</c:when>
 			<c:when test="${mm.role=='系统管理员'}">
-		   <a href="javascript:ovid()" id="administrator_add" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
+		   <a href="javascript:ovid()" id="administrator_add"  onclick="admin_add('${mm.manager_telephone}')" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
 			</c:when>
 			   <c:otherwise>
-				   <a href="javascript:ovid()" id="administrator_ad" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
+				   <a href="javascript:ovid()" id="administrator_ad" onclick="admin_add('${mm.manager_telephone}')" class="btn btn-warning"><i class="fa fa-plus"></i> 添加管理员</a>
 			   </c:otherwise>
 		   </c:choose>
 	   </span>
@@ -459,7 +459,7 @@ $('#administrator_ad').on('click', function(){
     alert("您没有权利添加");
 })
 /*添加管理员*/
-$('#administrator_add').on('click', function(){
+function admin_add(mt){
     layer.open({
         type: 1,
         title: '添加管理员',
@@ -488,13 +488,19 @@ $('#administrator_add').on('click', function(){
                 layer.alert('添加成功！',{
                     title: '提示框',
                     icon:1,
+                    yes: function(index){
+                        window.location="<%=basePath%>/mg/guanliyuan?manager_telephone="+mt+"";
+                        console.log(1);
+                        layer.close(index);
+                    }
                 });
                 layer.close(index);
                 addman();
             }
         }
     });
-})
+}
+
 function addman(){
     // alert(1);
 	var juese1;
@@ -513,7 +519,7 @@ function addman(){
 	}else if(juese=="3"){
         juese1="普通管理员";
 	}
-    alert("获取成功");
+    // alert("获取成功");
 
     $.ajax({
         type: "POST",
@@ -651,6 +657,20 @@ function upadmin(mmr){
     });
 
 }
+
+function sousuo(){
+    $('#sample_table tbody tr').hide();
+    $('#sample_table tbody tr').filter(":contains('" + ($('#sousuo').val()) + "')")
+        .show();
+};
+$('#ss').click(function(){
+    sousuo();
+});
+$('#sousuo').keydown(function(event){
+    if(event.keyCode==13){
+        sousuo();
+    }
+});
 
 
 </script>

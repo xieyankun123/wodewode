@@ -107,7 +107,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 		<thead>
 		 <tr>
 
-				<th width="80">租户ID</th>
+				<th width="80">序号</th>
 				<th width="100">姓名</th>
 				<th width="80">性别</th>
 				<th width="120">手机</th>
@@ -300,7 +300,12 @@ jQuery(function($) {
 
 			  layer.alert('添加成功！',{
                title: '提示框',				
-			icon:1,		
+			icon:1,
+                  yes: function(index){
+                      window.location="<%=basePath%>/user/user_list";
+                      layer.close(index);
+                  }
+
 			  });
 
 			   layer.close(index);
@@ -321,7 +326,7 @@ function adduser(){
     var zhuangtai1=$("#add_menber_style input[name='form-field-radio2']:checked").val();
     var youxiang1=$("#add_menber_style input[data-shu='youxiang']").val();
 
-    alert("获取成功");
+    // alert("获取成功");
     // alert(xingming1);
     // alert(xingbie1);
     // alert(phone1);alert(aihao1);
@@ -375,6 +380,7 @@ function member_edit(obj,aihao,youxiang,zhuangtai){
 
 
     //然后需要返回的一个用户，我能获取到它信息
+
     var xingming=$(obj).parent().parent().find("td").eq(1).html();
     var xingbie=$(obj).parent().parent().find("td").eq(2).html();
     var phone=$(obj).parent().parent().find("td").eq(3).html();
@@ -383,7 +389,7 @@ function member_edit(obj,aihao,youxiang,zhuangtai){
     var aihao3=aihao;
     var youxiang3=youxiang;
     var zhuangtai3=zhuangtai;
-    // $("#add_menber_style2 input[data-shu='xingming']").val(xingming);
+    $("#add_menber_style2 input[data-shu='xingming']").val(xingming);
     $("#add_menber_style2 input[data-shu='phone']").val(phone);
     $("#add_menber_style2 input[data-shu='shengfenzheng']").val(shengfenzheng);
     $("#add_menber_style2 input[data-shu='dizhi']").val(dizhi);
@@ -418,6 +424,7 @@ function member_edit(obj,aihao,youxiang,zhuangtai){
                     layer.alert(str+=""+$(this).attr("name")+"不能为空！\r\n",{
                         title: '提示框',
                         icon:0,
+
                     });
                     num++;
                     return false;
@@ -428,7 +435,13 @@ function member_edit(obj,aihao,youxiang,zhuangtai){
                 layer.alert('修改成功！',{
                     title: '提示框',
                     icon:1,
+                    yes: function(index){
+                        window.location="<%=basePath%>/user/user_list";
+                        console.log(1);
+                        layer.close(index);
+                    }
                 });
+
                 layer.close(index);
                 upuser();
             }
