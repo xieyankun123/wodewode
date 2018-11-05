@@ -8,6 +8,7 @@ import java.util.List;
 
 @MapperScan
 public interface yqDao {
+    boolean updateBeizhu(@Param("beizhu")String beizhu,@Param("id")String id);
     List<yqModel> selbyRid(String room_id);
     List<yqModel> list();
     boolean update(yqModel yq);

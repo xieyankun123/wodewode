@@ -143,7 +143,7 @@
                                                 <td><span class="zhuangtai" id="shiyongzhong">使用中</span></td>
                                             </c:otherwise>
                                         </c:choose>
-                                        <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan()"><img style="width:30px" src="static/images/zhexian.png"></a></td>
+                                        <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan('${apparatus1.id}')"><img style="width:30px" src="static/images/zhexian.png"></a></td>
                                     </tr>
                                 </c:forEach>
                             </c:if>
@@ -192,7 +192,7 @@
                                                 <td><span class="zhuangtai" id="shiyongzhong">使用中</span></td>
                                             </c:otherwise>
                                         </c:choose>
-                                        <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan()"><img style="width:30px" src="static/images/zhexian.png"></a></td>
+                                        <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan('${apparatus0.id}')"><img style="width:30px" src="static/images/zhexian.png"></a></td>
                                     </tr>
                                 </c:forEach>
                             </c:if>
@@ -262,13 +262,14 @@
 
         });
     });
-    function kan(){
+    function kan(a){
+        var aa=a
         layer.open({
             type: 2,
             title: '查看实时电量',
             skin: 'layui-layer-rim', //加上边框
             area: ['600px', '480px'], //宽高
-            content: 'apparatus/tp'
+            content:"apparatus/tp?apparatus_id="+aa+""
         });
     }
     function shishi(){

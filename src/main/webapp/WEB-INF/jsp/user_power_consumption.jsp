@@ -144,7 +144,7 @@
 
                           <td>${apparatus1.id}</td>
                           <td>${apparatus1.beizhu}</td>
-                          <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan()"><img style="width:30px" src="static/images/zhexian.png"></a></td>
+                          <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan('${apparatus1.id}')"><img style="width:30px" src="static/images/zhexian.png"></a></td>
                         </tr>
     </c:forEach>
 </c:if>
@@ -182,7 +182,7 @@
 
                           <td>${apparatus0.id}</td>
                           <td>${apparatus0.beizhu}</td>
-                         <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan()"><img style="width:30px" src="static/images/zhexian.png"></a></td>
+                         <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan('${apparatus0.id}')"><img style="width:30px" src="static/images/zhexian.png"></a></td>
                         </tr>
     </c:forEach>
 </c:if>
@@ -237,13 +237,14 @@ jQuery(function($) {
 						
 				});	
 });
-function kan(){
+function kan(a){
+    var aa=a;
   layer.open({
   type: 2,
-  title: '查看实时电量',  
+  title: '查看实时电量',
   skin: 'layui-layer-rim', //加上边框
   area: ['600px', '480px'], //宽高
-  content: 'apparatus/tp'
+  content:"apparatus/tp?apparatus_id="+aa+""
 });
 }
 </script>

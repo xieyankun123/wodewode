@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.json.Json;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
@@ -19,10 +20,8 @@ import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.text.DecimalFormat;
+import java.util.*;
 
 @Controller
 @RequestMapping("/apparatus")
@@ -42,9 +41,14 @@ public class yqController {
     @Resource
     private apdataService ads;
     @RequestMapping("/tp")
-    public String tp()
+    public ModelAndView tp(HttpServletRequest request)
     {
-        return "zhexian";
+        ModelAndView mv=new ModelAndView();
+        String apparatus_id=request.getParameter("apparatus_id");
+        mv.addObject("apparatus_id",apparatus_id);
+        mv.setViewName("zhexian");
+        System.out.println("test1"+apparatus_id);
+        return mv;
     }
     @RequestMapping("/")
     public void list(HttpServletResponse response)
@@ -65,7 +69,7 @@ public class yqController {
     public void yqinfo(HttpServletRequest request, HttpServletResponse response)
     {
         JSONObject result=new JSONObject();
-        String user_telephone=request.getParameter("user_telephone");;
+        String user_telephone=request.getParameter("user_telephone");
         if(user_telephone.equals("false"))
         {
             result.put("msg","fail");
@@ -273,44 +277,6 @@ public class yqController {
         }
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
-    private final static String URL = "http://ss1.chakonger.net.cn/web/deviceqry";
-    @RequestMapping("/getele")
-    public void getele(HttpServletResponse response) throws Exception{
-        // TODO Auto-generated method stub
-        //连接服务器
-        try{
-            //JSONObject result=new JSONObject();
-            HttpURLConnection connection = connection(URL);
-            DataOutputStream out = new DataOutputStream(
-                    connection.getOutputStream());
-            JSONObject obj = new JSONObject();
-            //obj.put("Identifier", "hehe");
-            obj.put("sessionID",
-                    "ce4904e06ee1cb2b63d66dd695be94d0feebceb7201b0e4d94a8172b90cd9ca1c492ab2c6ae9324c2ce45e");
-            obj.put("devID", "31151223520625525638");
-            System.out.println(obj.toString());
-            // 向腾讯请求传入编码为UTF-8格式的json数据
-            out.write(obj.toString().getBytes("UTF-8"));
-            out.flush();
-            out.close();
-            //获得服务器返回的结果
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream()));
-            String lines;
-            StringBuffer sb = new StringBuffer("");
-            while ((lines = reader.readLine()) != null) {
-                lines = new String(lines.getBytes(), "utf-8");
-                sb.append(lines);
-            }
-            reader.close();
-            connection.disconnect(); // 销毁连接
-            JSONObject JS=JSON.parseObject(sb.toString());
-            HttpOutUtil.outData(response,JSONObject.toJSONString(JS));
-            System.out.println(sb.toString());
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     public static HttpURLConnection connection(String URL
     ) throws Exception {
         URL url = new URL(URL);
@@ -330,17 +296,90 @@ public class yqController {
     public void PoweAndValue(HttpServletResponse response,HttpServletRequest request)
     {
         JSONObject result=new JSONObject();
+        String user_telephone=request.getParameter("user_telephone");;
+        if(user_telephone.equals("false"))
+        {
+            result.put("msg","fail");
+        }
+        else {
+            String room_id = ur.selbyUtel(user_telephone).get(ur.selbyUtel(user_telephone).size() - 1).getRoom_id();
+            List<yqModel> apparatus1 = ys.selbyRid(room_id);
+            StringBuilder a = new StringBuilder(room_id);
+            a.setCharAt(4, '0');
+            List<yqModel> apparatus0 = ys.selbyRid(a.toString());
+            List<EleModel> eleModels1=new ArrayList<EleModel>();
+            List<EleModel> eleModels0=new ArrayList<EleModel>();
+            DecimalFormat df = new DecimalFormat("0.00");
+            for(int i=0;i<apparatus1.size();i++)
+            {
+                EleModel e=new EleModel();
+                e.setYq(apparatus1.get(i));
+                List<apdataModel> apdata1 = ads.selbynameP(user_telephone,apparatus1.get(i).getId());
+                double sum = 0;
+                for (int j = 0; j < apdata1.size(); j++) {
+                    double value = Double.parseDouble(apdata1.get(j).getValue());
+                    sum = sum + value / (30 * 1000);
+                }
+                String ssum=df.format(sum);
+                e.setSum(ssum);
+                List<apdataModel> apdata2=ads.selbyid(apparatus1.get(i).getId());
+                e.setApdata(apdata2);
+                eleModels1.add(e);
+            }
+            for(int i=0;i<apparatus0.size();i++)
+            {
+                EleModel e=new EleModel();
+                e.setYq(apparatus0.get(i));
+                List<apdataModel> apdata1 = ads.selbynameP(user_telephone,apparatus0.get(i).getId());
+                double sum = 0;
+                for (int j = 0; j < apdata1.size(); j++) {
+                    double value = Double.parseDouble(apdata1.get(j).getValue());
+                    sum = sum + value / (30 * 1000);
+                }
+                String ssum=df.format(sum);
+                e.setSum(ssum);
+                List<apdataModel> apdata2=ads.selbyid(apparatus0.get(i).getId());
+                e.setApdata(apdata2);
+                eleModels0.add(e);
+            }
+            result.put("siyou",eleModels1);
+            result.put("gongyou",eleModels0);
+        }
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
+    @RequestMapping("PowerValue")
+    public void PoweValue(HttpServletResponse response,HttpServletRequest request)
+    {
+        JSONObject result=new JSONObject();
         String apparatus_id=request.getParameter("apparatus_id");
         String name=request.getParameter("user_telephone");
-            List<apdataModel> apdata = ads.selbynameP(name,apparatus_id);
-            double sum=0;
-            for(int j=0;j<apdata.size();j++)
-            {
-                double value= Double.parseDouble(apdata.get(j).getValue());
-                sum=sum+value/(30*1000);
-            }
-            result.put("apdata",apdata);
-            result.put("sum",sum);
-            HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+        List<apdataModel> apdata = ads.selbynameP(name,apparatus_id);
+        double sum=0;
+        for(int j=0;j<apdata.size();j++)
+        {
+            double value= Double.parseDouble(apdata.get(j).getValue());
+            sum=sum+value/(30*1000);
+        }
+        result.put("apdata",apdata);
+        result.put("sum",sum);
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
+    @RequestMapping("updateBeizhu")
+
+    public void updateBeizhu(HttpServletRequest request,HttpServletResponse response)
+    {
+        JSONObject result=new JSONObject();
+        String beizhu=request.getParameter("beizhu");
+        String id=request.getParameter("id");
+        try {
+            boolean b=ys.updateBeizhu(beizhu,id);
+            if(b)
+            result.put("msg","更新成功");
+            else {
+            result.put("msg","更新失败");}
+        }
+        catch (Exception r)
+        {result.put("msg","更新失败");}
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
 }

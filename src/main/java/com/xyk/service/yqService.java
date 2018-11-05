@@ -11,6 +11,7 @@ import java.util.List;
 public class yqService {
     @Resource
     private yqDao yd;
+    public boolean updateBeizhu(String beizhu,String id){return yd.updateBeizhu(beizhu,id);}
     public List<yqModel> selbyRid(String room_id){return yd.selbyRid(room_id);}
     public List<yqModel> list(){return yd.list();}
     public boolean update(yqModel yq){return yd.update(yq);}

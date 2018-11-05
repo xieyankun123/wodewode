@@ -28,7 +28,7 @@
     </insert>
     <!-- 更新信息-->
     <update id="update" parameterType="com.xyk.model.u_rModel">
-        update user_room set user_telephone=#{user_telephone},uin_time=#{in_time},out_time=#{out_time},room_id=#{room_id},user_number=#{user_number} where id=#{id}
+        update user_room set user_telephone=#{user_telephone},in_time=#{in_time},out_time=#{out_time},room_id=#{room_id},user_number=#{user_number} where id=#{id}
     </update>
     <!--删除用户-->
     <delete id="del" parameterType="int">

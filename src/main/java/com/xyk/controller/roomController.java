@@ -42,8 +42,9 @@ public class roomController {
         {
             if(a.get(i).getUseable()!=0) {
                 if (ur.selbyRid(a.get(i).getRoom_id()).size() > 0)
+                {if(us.selbytel(ur.selbyRid(a.get(i).getRoom_id()).get(ur.selbyRid(a.get(i).getRoom_id()).size() - 1).getUser_telephone()).getUser_state().equals("1"))
                     a.get(i).setXianzuke(us.selbytel(ur.selbyRid(a.get(i).getRoom_id()).get(ur.selbyRid(a.get(i).getRoom_id()).size() - 1).getUser_telephone()).getUser_name());
-            }
+                } }
         }
         mv.addObject("house",a);
         mv.setViewName("house_list");

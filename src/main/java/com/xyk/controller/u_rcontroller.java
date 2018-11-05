@@ -44,21 +44,34 @@ public class u_rController {
         result.put("result","10003");
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
+    @RequestMapping("/update")
+    public void update(u_rModel ur1, HttpServletRequest request, HttpServletResponse response) {
+        JSONObject result = new JSONObject();
+        try {
+            boolean a = ur.update(ur1);
+            if (a) {
+                result.put("msg", "更新成功");
+            } else {
+                result.put("msg", "更新失败");
+            }
+        } catch (Exception e) {
+            result.put("msg2", "缺失参数");
+        }
+        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
+    }
     @RequestMapping("/add")
-    public void add(HttpServletRequest request,HttpServletResponse response)
+    public void add(HttpServletRequest request,HttpServletResponse response,u_rModel ur1)
     {
         JSONObject result=new JSONObject();
-        String user_telephone=request.getParameter("user_telephone");
-        String room_id=request.getParameter("room_id");
-        String in_time=request.getParameter("in_time");
-        String out_time=request.getParameter("out_time");
-        u_rModel a=new u_rModel();
-        a.setUser_telephone(user_telephone);
-        a.setRoom_id(room_id);
-        a.setIn_time(in_time);
-        a.setOut_time(out_time);
-        ur.add(a);
-        result.put("msg","插入成功");
+        try {
+            boolean a = ur.add(ur1) ;
+            if (a) {
+                result.put("msg", "存储成功");
+            }
+        } catch (Exception e) {
+            result.put("msg1", e);
+            result.put("msg2", "参数错误添加失败");
+        }
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
     @RequestMapping("/intoout")

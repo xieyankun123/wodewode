@@ -5,6 +5,10 @@
 
 
 <mapper namespace="com.xyk.dao.yqDao">
+    <!--更新备注-->
+    <update id="updateBeizhu">
+        update apparatus_info set beizhu=#{beizhu} where id=#{id}
+    </update>
     <!--根据房间id查找-->
     <select id="selbyRid" parameterType="java.lang.String" resultType="com.xyk.model.yqModel">
       SELECT * from apparatus_info where room_id=#{room_id}

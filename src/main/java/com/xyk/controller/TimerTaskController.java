@@ -72,7 +72,7 @@ public class TimerTaskController {
                     else {
                         DateUtil date = new DateUtil();
                         am.setApparatus_id(yqmodels.get(i).getId());
-                        String dat = date.getTime();
+                        String dat = date.getDay();
                         am.setTime(dat);
                         String val = js.getString("socketOut_W");
                         am.setValue(val);
@@ -96,7 +96,7 @@ public class TimerTaskController {
             //每个一段时间你想要做的事
             //连接服务器
             if (yqmodels.get(i).getUseable().equals("0") || yqmodels.get(i).getUseable().equals("1")) {
-               // System.out.println("meibiyaoceshi");
+                System.out.println("meibiyaoceshi");
             }
             else {
                 try {
@@ -120,6 +120,7 @@ public class TimerTaskController {
                         while ((lines = reader.readLine()) != null) {
                             sb.append(lines);
                         }
+                        System.out.println(sb);
                         reader.close();
                         connection.disconnect(); // 销毁连接
                         JSONObject js = JSON.parseObject(sb.toString());

@@ -18,6 +18,11 @@
         insert into apparatus_dayvalue(apparatus_id,time,value) values
         (#{apparatus_id},#{time},#{value})
     </insert>
+    <!--获取data value根据仪器-->
+    <select id="getdv" parameterType="java.lang.String"  resultType="com.xyk.model.echartsModel">
+        select DATE_FORMAT(t.time,'%m-%d') day ,value from apparatus_dayvalue t
+        where  apparatus_id=#{apparatus_id}
+    </select>
     <!--根据仪器的devID查找-->
     <select id="selbyidP" parameterType="java.lang.String" resultType="com.xyk.model.apdataModel">
       SELECT * from apparatus_power where apparatus_id=#{apparatus_id}
