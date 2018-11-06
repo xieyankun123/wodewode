@@ -14,4 +14,5 @@ public interface yqDao {
     boolean update(yqModel yq);
     boolean upbyid(@Param("useable")String useable,@Param("id")String id);
     yqModel selbyid(String id);
+    boolean add(yqModel yq);
 }

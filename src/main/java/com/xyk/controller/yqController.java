@@ -365,7 +365,6 @@ public class yqController {
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
     @RequestMapping("updateBeizhu")
-
     public void updateBeizhu(HttpServletRequest request,HttpServletResponse response)
     {
         JSONObject result=new JSONObject();
@@ -380,6 +379,21 @@ public class yqController {
         }
         catch (Exception r)
         {result.put("msg","更新失败");}
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
+    @RequestMapping("/add")
+    public void add(HttpServletResponse response,yqModel a)
+    {
+        JSONObject result=new JSONObject();
+        try {
+            boolean b= ys.add(a);
+            if (b) {
+                result.put("msg", "存储成功");
+            }
+        } catch (Exception e) {
+            result.put("msg1", e);
+            result.put("msg2", "参数错误添加失败");
+        }
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
 }

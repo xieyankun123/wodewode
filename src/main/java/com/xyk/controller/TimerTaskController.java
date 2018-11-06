@@ -95,10 +95,10 @@ public class TimerTaskController {
         for(int i=0;i<yqmodels.size();i++) {
             //每个一段时间你想要做的事
             //连接服务器
-            if (yqmodels.get(i).getUseable().equals("0") || yqmodels.get(i).getUseable().equals("1")) {
-                System.out.println("meibiyaoceshi");
-            }
-            else {
+//            if (yqmodels.get(i).getUseable().equals("0") || yqmodels.get(i).getUseable().equals("1")) {
+//                System.out.println("meibiyaoceshi");
+//            }
+//            else {
                 try {
                     apdataModel am = new apdataModel();
                     HttpURLConnection connection = connection("http://ss1.chakonger.net.cn/web/deviceqry");
@@ -120,7 +120,6 @@ public class TimerTaskController {
                         while ((lines = reader.readLine()) != null) {
                             sb.append(lines);
                         }
-                        System.out.println(sb);
                         reader.close();
                         connection.disconnect(); // 销毁连接
                         JSONObject js = JSON.parseObject(sb.toString());
@@ -132,14 +131,14 @@ public class TimerTaskController {
                             String dat = date.getTime();
                             am.setTime(dat);
                             String val = js.getString("socketOut_P");
-                            if (val.equals("0")) {
-                                //System.out.println("无效数据，丢了丢了");
-                            } else {
+//                            if (val.equals("0")) {
+//                                //System.out.println("无效数据，丢了丢了");
+//                            } else {
                                 am.setValue(val);
                                 String name = apservice.selbyid(yqmodels.get(i).getId()).get(apservice.selbyid(yqmodels.get(i).getId()).size() - 1).getUser_name_on();
                                 am.setName(name);
                                 as.addP(am);
-                            }
+                           // }
                         }
                     } else {
                         // System.out.println("无效的仪器");
@@ -147,7 +146,7 @@ public class TimerTaskController {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
+            //}
         }
     }
 }

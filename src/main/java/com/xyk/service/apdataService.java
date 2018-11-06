@@ -14,6 +14,7 @@ public class apdataService {
     private apdataDao ad;
     public List<apdataModel> selbyid(String devID){return ad.selbyid(devID);}
     public List<echartsModel> getdv(String apparatus_id){return ad.getdv(apparatus_id);}
+    public List<echartsModel> getpv(String apparatus_id){return ad.getpv(apparatus_id);}
     public List<apdataModel> list(){return ad.list();}
     public boolean add(apdataModel a){return ad.add(a);}
     public List<apdataModel> selbyidP(String devID){return ad.selbyidP(devID);}

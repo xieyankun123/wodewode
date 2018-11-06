@@ -51,7 +51,7 @@
 				<td>操作管理员、管理租户、查看租户和管理员信息</td>
 				<td>
                  <a title="编辑" onclick="Competence_modify('560')" href="javascript:;"  class="btn btn-xs btn-info" ><i class="fa fa-edit bigger-120"></i></a>        
-                 <a title="删除" href="javascript:;"  onclick="Competence_del(this,'1')" class="btn btn-xs btn-warning" ><i class="fa fa-trash  bigger-120"></i></a>
+
 				</td>
 			   </tr>
                <tr>
@@ -62,7 +62,7 @@
 				<td>管理租户、查看租户和管理员信息</td>
 				<td>
                  <a title="编辑" onclick="Competence_modify('561')" href="javascript:;"  class="btn btn-xs btn-info" ><i class="fa fa-edit bigger-120"></i></a>        
-                 <a title="删除" href="javascript:;"  onclick="Competence_del(this,'2')" class="btn btn-xs btn-warning" ><i class="fa fa-trash  bigger-120"></i></a>
+
 				</td>
 			   </tr>	
                <tr>
@@ -72,17 +72,17 @@
 				<td>查看租户和管理员信息</td>
 				<td>
                  <a title="编辑" onclick="Competence_modify('562')" href="javascript:;"  class="btn btn-xs btn-info" ><i class="fa fa-edit bigger-120"></i></a>        
-                 <a title="删除" href="javascript:;"  onclick="Competence_del(this,'3')" class="btn btn-xs btn-warning" ><i class="fa fa-trash  bigger-120"></i></a>
+
 				</td>
 			   </tr>												
 		      </tbody>
 	        </table>
      </div>
-    <div class="clearfix">
-       <span class="l_f">
-        <a href="Competence.html" id="Competence_add" class="btn btn-warning" title="添加权限"><i class="fa fa-plus"></i> 添加权限</a>
-       </span>
-    </div>
+    <%--<div class="clearfix">--%>
+       <%--<span class="l_f">--%>
+        <%--<a href="Competence.html" id="Competence_add" class="btn btn-warning" title="添加权限"><i class="fa fa-plus"></i> 添加权限</a>--%>
+       <%--</span>--%>
+    <%--</div>--%>
  </div>
  <!--添加权限样式-->
  <!-- <div id="Competence_add_style" style="display:none">

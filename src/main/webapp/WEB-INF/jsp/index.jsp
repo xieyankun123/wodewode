@@ -262,40 +262,40 @@ function link_operating(name,title){
 						 		<li><a href="javascript:ovid(0)" id="Exit_system"><i class="icon-off"></i>退出</a></li>
 							</ul>
 			   			</li>
-	          			 <li class="purple">
-							<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-bell-alt">
-								</i><span class="badge badge-important">8</span>
-							</a>
-							<!-- 通知 -->
-							<ul class="pull-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
-                            	<li class="dropdown-header"><i class="icon-warning-sign"></i>8条通知
-                            	</li>
-                            	<li>
-                              		<a href="#">
-										<div class="clearfix">
-											<span class="pull-left">
-												<i class="btn btn-xs no-hover btn-pink icon-comments-alt"></i>
-												最新消息
-											</span>
-											<span class="pull-right badge badge-info">+8</span>
-										</div>
-									</a>
-								</li>
-								<!-- <li>
-									<a href="#">
-										<i class="btn btn-xs btn-primary icon-user"></i>
-										切换为编辑登录..
-									</a>
-								</li> -->
-								
-								<li>
-									<a href="#">
-										查看所有通知
-										<i class="icon-arrow-right"></i>
-									</a>
-								</li>
-							</ul>
-						</li>
+	          			 <%--<li class="purple">--%>
+							<%--<a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-bell-alt">--%>
+								<%--</i><span class="badge badge-important">8</span>--%>
+							<%--</a>--%>
+							<%--<!-- 通知 -->--%>
+							<%--<ul class="pull-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">--%>
+                            	<%--<li class="dropdown-header"><i class="icon-warning-sign"></i>8条通知--%>
+                            	<%--</li>--%>
+                            	<%--<li>--%>
+                              		<%--<a href="#">--%>
+										<%--<div class="clearfix">--%>
+											<%--<span class="pull-left">--%>
+												<%--<i class="btn btn-xs no-hover btn-pink icon-comments-alt"></i>--%>
+												<%--最新消息--%>
+											<%--</span>--%>
+											<%--<span class="pull-right badge badge-info">+8</span>--%>
+										<%--</div>--%>
+									<%--</a>--%>
+								<%--</li>--%>
+								<%--<!-- <li>--%>
+									<%--<a href="#">--%>
+										<%--<i class="btn btn-xs btn-primary icon-user"></i>--%>
+										<%--切换为编辑登录..--%>
+									<%--</a>--%>
+								<%--</li> -->--%>
+								<%----%>
+								<%--<li>--%>
+									<%--<a href="#">--%>
+										<%--查看所有通知--%>
+										<%--<i class="icon-arrow-right"></i>--%>
+									<%--</a>--%>
+								<%--</li>--%>
+							<%--</ul>--%>
+						<%--</li>--%>
 					</ul>
                 <!-- <div class="right_info">
                  
@@ -324,17 +324,17 @@ function link_operating(name,title){
 				</script>
 					<div class="sidebar-shortcuts" id="sidebar-shortcuts"> <!-- 左边目录栏四个小图标 -->
 						<div class="sidebar-shortcuts-large" id="sidebar-shortcuts-large">
-							<a class="btn btn-success">
-								<i class="icon-signal"></i>
+							<a class="btn btn-success" style="cursor: auto">
+								<i class="icon-signal" style="cursor: auto"></i>
 							</a>
-							<a class="btn btn-info">
-								<i class="icon-pencil"></i>
+							<a class="btn btn-info" style="cursor: auto">
+								<i class="icon-pencil" style="cursor: auto"></i>
 							</a>
-							<a class="btn btn-warning">
-								<i class="icon-group"></i>
+							<a class="btn btn-warning" style="cursor: auto">
+								<i class="icon-group" style="cursor: auto"></i>
 							</a>
-							<a class="btn btn-danger">
-								<i class="icon-cogs"></i>
+							<a class="btn btn-danger" style="cursor: auto">
+								<i class="icon-cogs" style="cursor: auto"></i>
 							</a>
 						</div>
 						<!-- 当菜单往左缩时候 -->

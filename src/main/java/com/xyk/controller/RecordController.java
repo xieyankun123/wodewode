@@ -56,7 +56,26 @@ public class RecordController {
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
     @RequestMapping("/power")
-    public void power(HttpServletRequest request,HttpServletResponse response)
+    public void power(HttpServletResponse response, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String apparatus_id = request.getParameter("apparatus_id");
+        List<echartsModel> a = ads.getpv(apparatus_id);
+        if (a.size() <= 500) {
+            result.put("result", a);
+        } else {
+            while (true) {
+                if (a.size() > 500) {
+                    a.remove(0);
+                } else {
+                    break;
+                }
+            }
+            result.put("result", a);
+        }
+        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
+    }
+    @RequestMapping("/power1")
+    public void power1(HttpServletRequest request,HttpServletResponse response)
     {
         JSONObject result=new JSONObject();
         result.put("msg","10001");

@@ -7,7 +7,7 @@
 <mapper namespace="com.xyk.dao.yqDao">
     <!--更新备注-->
     <update id="updateBeizhu">
-        update apparatus_info set beizhu=#{beizhu} where id=#{id}
+        update apparatus_info set beizhu2=#{beizhu} where id=#{id}
     </update>
     <!--根据房间id查找-->
     <select id="selbyRid" parameterType="java.lang.String" resultType="com.xyk.model.yqModel">
@@ -25,6 +25,11 @@
     <update id="upbyid">
     update apparatus_info set useable=#{useable} where id=#{id}
     </update>
+    <!--增加信息-->
+    <insert id="add" parameterType="com.xyk.model.yqModel">
+        insert into apparatus_info(id,sessionID,devID,apparatus_id,beizhu,beizhu2,OEM,useable,room_id,yonghuming,mima) values
+        (#{id},#{sessionID},#{devID},#{apparatus_id},#{beizhu},#{beizhu2},#{OEM},#{useable},#{room_id},#{yonghuming},#{mima})
+    </insert>
     <!--根据仪器id查找u-->
     <select id="selbyid" parameterType="java.lang.String" resultType="com.xyk.model.yqModel">
         select * from apparatus_info where id=#{id}

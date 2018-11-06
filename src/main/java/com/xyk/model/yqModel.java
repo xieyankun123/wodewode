@@ -10,6 +10,24 @@ public class yqModel {
     private String OEM;
     private String useable;
     private String room_id;
+    private String yonghuming;
+    private String mima;
+
+    public String getYonghuming() {
+        return yonghuming;
+    }
+
+    public void setYonghuming(String yonghuming) {
+        this.yonghuming = yonghuming;
+    }
+
+    public String getMima() {
+        return mima;
+    }
+
+    public void setMima(String mima) {
+        this.mima = mima;
+    }
 
     public String getSessionID() {
         return sessionID;

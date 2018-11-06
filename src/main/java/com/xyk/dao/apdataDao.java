@@ -12,6 +12,7 @@ import java.util.List;
 public interface apdataDao {
     List<apdataModel> selbyid(String devID);
     List<echartsModel> getdv(String apparatus_id);
+    List<echartsModel> getpv(String apparatus_id);
     List<apdataModel> list();
     boolean add(apdataModel a);
     List<apdataModel> selbyidP(String devID);

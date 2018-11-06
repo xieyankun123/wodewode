@@ -17,4 +17,6 @@ public class yqService {
     public boolean update(yqModel yq){return yd.update(yq);}
     public boolean upbyid(String useable,String id){return yd.upbyid(useable,id);}
     public yqModel selbyid(String id){return yd.selbyid(id);}
+    public boolean add(yqModel yq){return yd.add(yq);}
+
 }
