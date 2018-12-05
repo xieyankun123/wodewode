@@ -91,14 +91,26 @@ public class userController {
         List<UserModel> a=userservice.selbystate("1");
         result.put("msg",false);
         for(int i=0;i<a.size();i++) {
-            if(a.get(i).getUser_weixin().isEmpty()==false) {
+
                 if (a.get(i).getUser_weixin().equals(user_weixin)) {
                     String user_telephone = a.get(i).getUser_telephone();
                     result.put("msg", user_telephone);
                     break;
                 }
+                else
+                {
+                    List<addByUserModel> q=abs.selbyuser(a.get(i).getUser_telephone());
+                    for(int j=0;j<q.size();j++)
+                    {
+                        boolean c=q.get(j).getWeixin().equals(user_weixin);
+                        if(c)
+                        {
+                            result.put("msg",a.get(i).getUser_telephone());
+                            break;
+                        }
+                    }
+                }
             }
-        }
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
     @RequestMapping("/selectbystate")
@@ -110,6 +122,7 @@ public class userController {
         result.put("msg",false);
         boolean flag1 = false;
         boolean flag2 = false;
+        String tele=null;
         for(int i=0;i<a.size();i++)
         {
             boolean b=a.get(i).getUser_telephone().equals(user_telephone);
@@ -123,6 +136,8 @@ public class userController {
                 boolean c=q.get(j).getTelephone().equals(user_telephone);
                 if(c)
                 {flag2=c;
+                System.out.println(a.get(i).getUser_telephone());
+                tele=a.get(i).getUser_telephone();
                     break;
                 }
             }
@@ -132,13 +147,19 @@ public class userController {
         if(flag1||flag2)
         {
             if(flag1)
-            {try{
+            {
+                try{
                 boolean b=userservice.addweixin(user_weixin,user_telephone);
-            }
+                    result.put("msg",user_telephone);
+                    }
             catch (Exception e)
-            {result.put("msg",e);}}
-            else{}
-            result.put("msg",user_telephone);
+            {result.put("msg",e);}
+            }
+            else{
+                boolean b=abs.addweixin(user_weixin,user_telephone);
+                result.put("msg",tele);
+            }
+
         }
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }

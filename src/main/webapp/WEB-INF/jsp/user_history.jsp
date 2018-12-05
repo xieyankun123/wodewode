@@ -24,6 +24,7 @@
     <link rel="stylesheet" href="static/assets/css/ace-ie.min.css" />
     <![endif]-->
       <link rel="stylesheet" href="static/assets/css/ace-ie.min.css" />
+    <link rel="stylesheet" href="static/css/bootstrap-datetimepicker.min.css" />
     <script src="static/js/jquery-1.9.1.min.js"></script>
     <script src="static/js/jquery.SuperSlide.2.1.1.js"></script>
     <script src="static/assets/js/bootstrap.min.js"></script>
@@ -33,6 +34,7 @@
     <script src="static/assets/layer/layer.js" type="text/javascript" ></script>
     <script src="static/assets/laydate/laydate.js" type="text/javascript"></script>
     <script src="static/js/lrtk.js" type="text/javascript" ></script>
+    <script src="static/js/bootstrap-datetimepicker.min.js" type="text/javascript" ></script>
     <script src="static/myjs/user_history.js" type="text/javascript" ></script>
     <style type="text/css">
         .baozhe{height: 30px;border-bottom: 1px solid #ddd;}
@@ -168,12 +170,12 @@
         </li>
         <li><label class="label_name">入住时间：</label>
             <span class="add_name">
-                <input value="" name="入住时间"  type="text" data-shu="ruzhutime" class="text_add"/>
+                <input value="" name="入住时间"  type="text" data-shu="ruzhutime" class="text_add" readonly id="add_ru"/>
             </span><div class="prompt r_f"></div>
         </li>
         <li><label class="label_name">退租时间：</label>
             <span class="add_name">
-                <input value="" name="退租时间" type="text" data-shu="tuizutime" class="text_add"/>
+                <input value="" name="退租时间" type="text" data-shu="tuizutime" class="text_add" readonly id="add_tui"/ >
             </span><div class="prompt r_f"></div>
         </li>
         <li><label class="label_name">住户人数：</label>
@@ -206,12 +208,12 @@
         </li>
         <li><label class="label_name">入住时间：</label>
             <span class="add_name">
-                <input value="" name="入住时间"  type="text" data-shu="ruzhutime" class="text_add"/>
+                <input value="" name="入住时间"  type="text" data-shu="ruzhutime" class="text_add" readonly id="edit_ru" />
             </span><div class="prompt r_f"></div>
         </li>
         <li><label class="label_name">退租时间：</label>
             <span class="add_name">
-                <input value="" name="退租时间" type="text" data-shu="tuizutime" class="text_add"/>
+                <input value="" name="退租时间" type="text" data-shu="tuizutime" class="text_add" readonly id="edit_tui"/>
             </span><div class="prompt r_f"></div>
         </li>
         <li><label class="label_name">住户人数：</label>
@@ -274,6 +276,20 @@ window.onload=function () {
             shadeClose: true, //点击遮罩关闭层
             area : ['800px' , ''],
             content:$('#add_menber_style'),
+            success:function(layero,index){
+                $('#add_ru').datetimepicker({
+                    language:'zh',
+                    format: 'yyyy-mm-dd',
+                    minView: "month",//设置只显示到月份
+                    todayBtn:"true"
+                });
+                $('#add_tui').datetimepicker({
+                    language:'zh',
+                    format: 'yyyy-mm-dd',
+                    minView: "month",//设置只显示到月份
+                    todayBtn:"true"
+                });
+            },
             btn:['提交','取消'],
             yes:function(index,layero){
                 var num=0;
@@ -331,7 +347,15 @@ window.onload=function () {
         });
 
     }
-
+    $.fn.datetimepicker.dates['zh'] = {
+        days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],
+        daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],
+        daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],
+        months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],
+        monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+        meridiem:    ["上午", "下午"],
+        today:       "今天"
+    };
 
 
 
@@ -367,6 +391,20 @@ function jilv_edit(obj,id,renshu) {
         shadeClose:false, //点击遮罩关闭层
         area : ['800px' , ''],
         content:$('#add_menber_style2'),
+        success:function(layero,index){
+            $('#edit_ru').datetimepicker({
+                language:'zh',
+                format: 'yyyy-mm-dd',
+                minView: "month",//设置只显示到月份
+                todayBtn:"true"
+            });
+            $('#edit_tui').datetimepicker({
+                language:'zh',
+                format: 'yyyy-mm-dd',
+                minView: "month",//设置只显示到月份
+                todayBtn:"true"
+            });
+        },
         btn:['提交','取消'],
         yes:function(index,layero){
             var num=0;
@@ -426,5 +464,13 @@ function upjilv(id,tele){
 
 }
 
-
+$.fn.datetimepicker.dates['zh'] = {
+    days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],
+    daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],
+    daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],
+    months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],
+    monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+    meridiem:    ["上午", "下午"],
+    today:       "今天"
+};
 </script>

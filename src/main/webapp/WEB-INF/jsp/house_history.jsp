@@ -114,15 +114,14 @@
 	               <tbody>
 <c:if test="${!empty user_room }">
     <c:forEach items="${user_room}" var="user_room">
-                <div items="${room}" var="room">
 		               <tr>
                           <td>1</td>
                           <td><a href="#" title="点击查看租户租用历史" onclick=" tiao_zuhu('1')">1</a></td>
                           <td>${user_room.username}</td>
                           <td>${user_room.in_time}</td>
                           <td>${user_room.out_time}</td>
-                          <td><a href="<%=basePath%>apparatus/yqinfoU?user_telephone=${room.num}&&room_id=${user_room.room_id}" title="点击查看"><img style="width:30px" src="static/images/tongji.png"></a></td>
-                           <td><a href="<%=basePath%>meter/sdq?user_telephone=${room.num}&&room_id=${user_room.room_id}" title="点击查看"><img style="width:25px" src="static/images/water.png"></a></td>
+                          <td><a href="<%=basePath%>apparatus/yqinfoU?user_telephone=${user_room.user_telephone}&&room_id=${user_room.room_id}" title="点击查看"><img style="width:30px" src="static/images/tongji.png"></a></td>
+                           <td><a href="<%=basePath%>meter/sdq?user_telephone=${user_room.user_telephone}&&room_id=${user_room.room_id}" title="点击查看"><img style="width:25px" src="static/images/water.png"></a></td>
                         </tr>
     </c:forEach>
 </c:if>

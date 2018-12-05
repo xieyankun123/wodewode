@@ -3,11 +3,13 @@ package com.xyk.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import com.xyk.model.*;
 import com.xyk.service.*;
 import com.xyk.util.DateUtil;
 import com.xyk.util.HttpOutUtil;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -25,7 +27,7 @@ import java.util.*;
 
 @Controller
 @RequestMapping("/apparatus")
-public class yqController {
+public class yqController{
     @Resource
     private yqService ys;
     @Resource
@@ -45,9 +47,12 @@ public class yqController {
     {
         ModelAndView mv=new ModelAndView();
         String apparatus_id=request.getParameter("apparatus_id");
+        String user_telephone=request.getParameter("user_telephone");
         mv.addObject("apparatus_id",apparatus_id);
+        mv.addObject("user_telephone",user_telephone);
         mv.setViewName("zhexian");
         System.out.println("test1"+apparatus_id);
+        System.out.println("test2"+user_telephone);
         return mv;
     }
     @RequestMapping("/")
@@ -89,13 +94,20 @@ public class yqController {
 //        else
 //        {
             List<yqModel> apparatus1 = ys.selbyRid(room_id);
-            System.out.println(apparatus1.get(0).getBeizhu2());
-            System.out.println(apparatus1.get(1).getBeizhu2());
+            if(apparatus1.size()==0)
+            {result.put("msg1","10");}
+            else
+            {
+                result.put("apparatus1", apparatus1);
+            }
             StringBuilder a = new StringBuilder(room_id);
             a.setCharAt(4, '0');
             List<yqModel> apparatus0 = ys.selbyRid(a.toString());
-            result.put("apparatus1", apparatus1);
+            if(apparatus0.size()==0)
+            {result.put("msg0","00");}
+            else{
             result.put("apparatus0", apparatus0);
+            }
         }
          HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
@@ -106,8 +118,6 @@ public class yqController {
         ModelAndView mv=new ModelAndView();
         String room_id=request.getParameter("room_id");
         String user_telephone=request.getParameter("user_telephone");
-        System.out.println(room_id);
-        System.out.println(user_telephone);
         UserModel user=us.selbytel(user_telephone);
         roomModel room=rs.selbyRid(room_id);
         room.setOwn(gs.selbyid(room.getApartment_id()).getOwner());
@@ -122,14 +132,41 @@ public class yqController {
 //        }
 //        else
 //        {
+            double sum1=0;
+            double sum2=0;
             List<yqModel> apparatus1 = ys.selbyRid(room_id);
-            StringBuilder a=new StringBuilder(room_id);
+            StringBuilder a = new StringBuilder(room_id);
             a.setCharAt(4, '0');
             List<yqModel> apparatus0 = ys.selbyRid(a.toString());
+            DecimalFormat df = new DecimalFormat("0.00");
+            for(int i=0;i<apparatus1.size();i++)
+            {
+                List<apdataModel> apdata1 = ads.getdv0(user_telephone,apparatus1.get(i).getId());
+                if(apdata1.size()==0)
+                {apparatus1.get(i).setTotel("0.00");}
+                else {
+                    apparatus1.get(i).setTotel(apdata1.get(apdata1.size()-1).getValue());
+                    sum1=sum1+Double.parseDouble(apdata1.get(apdata1.size()-1).getValue());
+                }
+            }
+            for(int i=0;i<apparatus0.size();i++)
+            {
+                List<apdataModel> apdata1 = ads.getdv0(user_telephone, apparatus0.get(i).getId());
+                if(apdata1.size()==0){
+                    apparatus0.get(i).setTotel("0");
+                }
+                else {
+                    apparatus0.get(i).setTotel(apdata1.get(apdata1.size()-1).getValue());
+                    sum2=sum2+Double.parseDouble(apdata1.get(apdata1.size()-1).getValue());
+                }
+            }
+            double sum3=sum1+sum2;
+            mv.addObject("sum1",df.format(sum1));
+            mv.addObject("sum2",df.format(sum2));
+            mv.addObject("sum3",df.format(sum3));
             mv.addObject("apparatus1",apparatus1);
             mv.addObject("apparatus0",apparatus0);
             mv.setViewName("user_power_consumption");
-            System.out.println(a.toString());
             return mv;
            // result.put("msg2",apparatus1);
            // result.put("msg3",apparatus0);
@@ -140,9 +177,9 @@ public class yqController {
     public ModelAndView yqinfoR(HttpServletRequest request, HttpServletResponse response)
     {
         // JSONObject result=new JSONObject();
+        DecimalFormat df = new DecimalFormat("0.00");
         ModelAndView mv=new ModelAndView();
         String room_id=request.getParameter("room_id");
-        System.out.println(room_id);
         roomModel room=rs.selbyRid(room_id);
         room.setOwn(gs.selbyid(room.getApartment_id()).getOwner());
         mv.addObject("room",room);
@@ -155,14 +192,40 @@ public class yqController {
 //        }
 //        else
 //        {
-        List<yqModel> apparatus1 = ys.selbyRid(room_id);
+        if(room_id.endsWith("0")==false) {
+            List<yqModel> apparatus1 = ys.selbyRid(room_id);
+//            for (int i = 0; i < apparatus1.size(); i++) {
+//                List<apdataModel> apdataModels = ads.selbyid(apparatus1.get(i).getId());
+//                if (apdataModels.size() == 0) {
+//                    apparatus1.get(i).setTotel("0");
+//                } else {
+//                    double sum1 = 0;
+//                    for (int j = 0; j < apdataModels.size(); j++) {
+//                        sum1 = sum1 + Double.parseDouble(apdataModels.get(j).getValue());
+//                    }
+//                    apparatus1.get(i).setTotel(df.format(sum1));
+//                }
+//            }
+            mv.addObject("apparatus1",apparatus1);
+        }
         StringBuilder a=new StringBuilder(room_id);
         a.setCharAt(4, '0');
         List<yqModel> apparatus0 = ys.selbyRid(a.toString());
-        mv.addObject("apparatus1",apparatus1);
+//        for(int k=0;k<apparatus0.size();k++)
+//        {
+//            List<apdataModel> apdataModels=ads.selbyid(apparatus0.get(k).getId());
+//            if(apdataModels.size()==0)
+//            {apparatus0.get(k).setTotel("0");}
+//            else {
+//                double sum0=0;
+//                for (int l = 0; l < apdataModels.size(); l++) {
+//                    sum0 = Double.parseDouble(apdataModels.get(l).getValue()) + sum0;
+//                }
+//                apparatus0.get(k).setTotel(df.format(sum0));
+//            }
+//        }
         mv.addObject("apparatus0",apparatus0);
         mv.setViewName("applicance_state");
-        System.out.println(a.toString());
         return mv;
         // result.put("msg2",apparatus1);
         // result.put("msg3",apparatus0);
@@ -322,7 +385,7 @@ public class yqController {
                 }
                 String ssum=df.format(sum);
                 e.setSum(ssum);
-                List<apdataModel> apdata2=ads.selbyid(apparatus1.get(i).getId());
+                List<apdataModel> apdata2=ads.selbyname(user_telephone,apparatus1.get(i).getId());
                 e.setApdata(apdata2);
                 eleModels1.add(e);
             }
@@ -330,17 +393,33 @@ public class yqController {
             {
                 EleModel e=new EleModel();
                 e.setYq(apparatus0.get(i));
-                List<apdataModel> apdata1 = ads.selbynameP(user_telephone,apparatus0.get(i).getId());
-                double sum = 0;
-                for (int j = 0; j < apdata1.size(); j++) {
-                    double value = Double.parseDouble(apdata1.get(j).getValue());
-                    sum = sum + value / (30 * 1000);
+                List<apdataModel> apdata1 = ads.getdv0(user_telephone, apparatus0.get(i).getId());
+                System.out.println(apdata1.size());
+                List<apdataModel> apdata2=new ArrayList<apdataModel>();
+                if(apdata1.size()==0){}
+                else if(apdata1.size()==1)
+                {apdata2=ads.getdv0(user_telephone, apparatus0.get(i).getId());
+                    e.setSum(apdata1.get(apdata1.size()-1).getValue());
+                    e.setApdata(apdata2);
+                    eleModels0.add(e);
                 }
-                String ssum=df.format(sum);
-                e.setSum(ssum);
-                List<apdataModel> apdata2=ads.selbyid(apparatus0.get(i).getId());
-                e.setApdata(apdata2);
-                eleModels0.add(e);
+                else {
+                    apdata2.add(apdata1.get(0));
+                    for (int j = 1; j < apdata1.size(); j++) {
+                        apdataModel ap = new apdataModel();
+                        ap.setTime(apdata1.get(j).getTime());
+                        Double value = Double.parseDouble(apdata1.get(j).getValue()) - Double.parseDouble(apdata1.get(j - 1).getValue());
+                        String valu = df.format(value);
+                        ap.setValue(valu);
+                        ap.setApparatus_id(apdata1.get(j).getApparatus_id());
+                        ap.setName(apdata1.get(j).getName());
+                        ap.setId(apdata1.get(j).getId());
+                        apdata2.add(ap);
+                    }
+                    e.setSum(apdata1.get(apdata1.size() - 1).getValue());
+                    e.setApdata(apdata2);
+                    eleModels0.add(e);
+                }
             }
             result.put("siyou",eleModels1);
             result.put("gongyou",eleModels0);

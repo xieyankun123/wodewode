@@ -13,16 +13,32 @@
     <select id="list" resultType="com.xyk.model.apdataModel">
         select * from apparatus_dayvalue
     </select>
+    <!--根据name,仪器id查找-->
+    <select id="selbyname" parameterType="java.lang.String" resultType="com.xyk.model.apdataModel">
+      SELECT * from apparatus_dayvalue where name=#{name} and apparatus_id=#{apparatus_id}
+    </select>
     <!--增加数据-->
     <insert id="add" parameterType="com.xyk.model.apdataModel">
-        insert into apparatus_dayvalue(apparatus_id,time,value) values
-        (#{apparatus_id},#{time},#{value})
+        insert into apparatus_dayvalue(apparatus_id,time,value,name) values
+        (#{apparatus_id},#{time},#{value},#{name})
     </insert>
     <!--获取data value根据仪器-->
     <select id="getdv" parameterType="java.lang.String"  resultType="com.xyk.model.echartsModel">
         select DATE_FORMAT(t.time,'%m-%d') day ,value from apparatus_dayvalue t
         where  apparatus_id=#{apparatus_id}
     </select>
+
+    <!--增加数据-->
+    <insert id="add0" parameterType="com.xyk.model.apdataModel">
+        insert into apparatus0_dayvalue(apparatus_id,time,value,name) values
+        (#{apparatus_id},#{time},#{value},#{name})
+    </insert>
+    <!--获取data value根据仪器-->
+    <select id="getdv0" parameterType="java.lang.String"  resultType="com.xyk.model.apdataModel">
+        select * from apparatus0_dayvalue where  apparatus_id=#{apparatus_id} and name=#{name}
+    </select>
+
+
     <!--获取data value根据仪器-->
     <select id="getpv" parameterType="java.lang.String"  resultType="com.xyk.model.echartsModel">
         select DATE_FORMAT(t.time,'%m-%d %T') day ,value from apparatus_power t

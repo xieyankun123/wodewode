@@ -3,6 +3,11 @@ public class echartsModel {
     private String day;
     private String value;
 
+    public echartsModel(String day, String value) {
+        this.day = day;
+        this.value = value;
+    }
+
     public String getDay() {
         return day;
     }

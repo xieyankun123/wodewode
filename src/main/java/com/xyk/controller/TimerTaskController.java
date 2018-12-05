@@ -2,11 +2,11 @@ package com.xyk.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xyk.model.UserModel;
 import com.xyk.model.apdataModel;
+import com.xyk.model.u_rModel;
 import com.xyk.model.yqModel;
-import com.xyk.service.apService;
-import com.xyk.service.apdataService;
-import com.xyk.service.yqService;
+import com.xyk.service.*;
 import com.xyk.util.DateUtil;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.text.DecimalFormat;
 import java.util.List;
 
 import static com.xyk.controller.yqController.connection;
@@ -31,6 +32,12 @@ public class TimerTaskController {
     private apService apservice;
     @Resource
     private yqService ys;
+    @Resource
+    private u_rService ur;
+    @Resource
+    private userService userservice;
+    @Resource
+    private apdataService ads;
     @Scheduled(cron = "0 59 23 * * ?")
     public void getValue()
     {
@@ -76,6 +83,10 @@ public class TimerTaskController {
                         am.setTime(dat);
                         String val = js.getString("socketOut_W");
                         am.setValue(val);
+                        if(ur.selbyRid(yqmodels.get(i).getRoom_id()).size()==0){}
+                        else {
+                            am.setName(ur.selbyRid(yqmodels.get(i).getRoom_id()).get(ur.selbyRid(yqmodels.get(i).getRoom_id()).size() - 1).getUser_telephone());
+                        }
                         as.add(am);
                     }
                 }
@@ -86,6 +97,67 @@ public class TimerTaskController {
             } catch (Exception e) {
                 e.printStackTrace();
             }}
+        }
+    }
+    @Scheduled(cron = "0 59 23 * * ?")
+  // @Scheduled(cron = "0 0/4 * * * ?")
+    public void getValue0()
+    {
+        DateUtil date = new DateUtil();
+        String dt=date.getDay();
+        List<UserModel> userlist=userservice.selbystate("1");
+        for(int i=0;i<userlist.size();i++)
+        {
+            List<u_rModel> u_rModels = ur.selbyUtel(userlist.get(i).getUser_telephone());
+            String a1=u_rModels.get(u_rModels.size()-1).getRoom_id();
+            StringBuffer a2=new StringBuffer(a1);
+            a2.setCharAt(4,'0');
+            String a3=a2.toString();
+            List<yqModel> yqModels = ys.selbyRid(a3);
+            List<yqModel> yqModels1=ys.selbyRid(a1);
+            DecimalFormat df = new DecimalFormat("0.00");
+            if(yqModels.size()==0){}
+            else
+            {
+            for(int j=0;j<yqModels.size();j++)
+            {
+               apdataModel ap=new apdataModel();
+                String apparatus_id=yqModels.get(j).getId();
+                String name=userlist.get(i).getUser_telephone();
+                List<apdataModel> apdata1 = ads.selbynameP(name,apparatus_id);
+                double sum = 0;
+                for (int k= 0; k< apdata1.size(); k++) {
+                    double value = Double.parseDouble(apdata1.get(k).getValue());
+                    sum = sum + value / (30 * 1000);
+                }
+                String ssum=df.format(sum);
+                ap.setName(name);
+                ap.setApparatus_id(apparatus_id);
+                ap.setValue(ssum);
+                ap.setTime(dt);
+                ads.add0(ap);
+            }}
+            if(yqModels1.size()==0){}
+            else
+            {
+                for(int j=0;j<yqModels1.size();j++)
+                {
+                    apdataModel ap=new apdataModel();
+                    String apparatus_id=yqModels1.get(j).getId();
+                    String name=userlist.get(i).getUser_telephone();
+                    List<apdataModel> apdata1 = ads.selbynameP(name,apparatus_id);
+                    double sum = 0;
+                    for (int k= 0; k< apdata1.size(); k++) {
+                        double value = Double.parseDouble(apdata1.get(k).getValue());
+                        sum = sum + value / (30 * 1000);
+                    }
+                    String ssum=df.format(sum);
+                    ap.setName(name);
+                    ap.setApparatus_id(apparatus_id);
+                    ap.setValue(ssum);
+                    ap.setTime(dt);
+                    ads.add0(ap);
+                }}
         }
     }
     @Scheduled(cron = "0 0/2 * * * ?")
@@ -135,8 +207,12 @@ public class TimerTaskController {
 //                                //System.out.println("无效数据，丢了丢了");
 //                            } else {
                                 am.setValue(val);
-                                String name = apservice.selbyid(yqmodels.get(i).getId()).get(apservice.selbyid(yqmodels.get(i).getId()).size() - 1).getUser_name_on();
-                                am.setName(name);
+                                if(apservice.selbyid(yqmodels.get(i).getId()).size()==0)
+                                {}
+                                else {
+                                    String name = apservice.selbyid(yqmodels.get(i).getId()).get(apservice.selbyid(yqmodels.get(i).getId()).size() - 1).getUser_name_on();
+                                    am.setName(name);
+                                }
                                 as.addP(am);
                            // }
                         }

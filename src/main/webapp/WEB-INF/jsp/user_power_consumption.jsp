@@ -134,6 +134,7 @@
 
                                 <th width="">电器编号</th>
                                <th width="">电器描述</th>
+                                 <th width="">总用电量(度)</th>
                                <th width="">实时电量</th>                 
                          </tr>
                     </thead>
@@ -144,7 +145,8 @@
 
                           <td>${apparatus1.id}</td>
                           <td>${apparatus1.beizhu}</td>
-                          <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan('${apparatus1.id}')"><img style="width:30px" src="static/images/zhexian.png"></a></td>
+                           <td>${apparatus1.totel}</td>
+                          <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan('${apparatus1.id}','${user.user_telephone}')"><img style="width:30px" src="static/images/zhexian.png"></a></td>
                         </tr>
     </c:forEach>
 </c:if>
@@ -172,6 +174,7 @@
 
                                 <th width="">电器编号</th>
                                <th width="">电器描述</th>
+                          <th width="">总用电量(度)</th>
                                <th width="">实时电量</th>                 
                          </tr>
                     </thead>
@@ -182,7 +185,8 @@
 
                           <td>${apparatus0.id}</td>
                           <td>${apparatus0.beizhu}</td>
-                         <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan('${apparatus0.id}')"><img style="width:30px" src="static/images/zhexian.png"></a></td>
+                       <td>${apparatus0.totel}</td>
+                         <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan('${apparatus0.id}','${user.user_telephone}')"><img style="width:30px" src="static/images/zhexian.png"></a></td>
                         </tr>
     </c:forEach>
 </c:if>
@@ -191,6 +195,37 @@
             </ul>
         </div>
     </div>
+
+     <div id="recording">
+         <div class="hd" style="border-bottom:solid 0px;">
+             <ul>
+                 <li style="border:solid 1px #ddd;">用电量统计</li>
+             </ul>
+         </div>
+         <table class="table table-striped table-bordered table-hover" id="sconsumption-table" style="margin-top:30px">
+             <thead>
+             <tr>
+
+                 <th width="">区域</th>
+                 <th width="">用电量(度)</th>
+             </tr>
+             </thead>
+             <tr>
+                 <td>私有区域</td>
+                 <td>${sum1}</td>
+             </tr>
+             <tr>
+                 <td>公有区域</td>
+                 <td>${sum2}</td>
+             </tr>
+             <tr>
+                 <td>总计</td>
+                 <td>${sum3}</td>
+             </tr>
+             <tbody>
+             </tbody>
+         </table>
+     </div>
  </div>
 </div>
 </div>
@@ -237,14 +272,15 @@ jQuery(function($) {
 						
 				});	
 });
-function kan(a){
+function kan(a,b){
     var aa=a;
+    var bb=b
   layer.open({
   type: 2,
   title: '查看实时电量',
   skin: 'layui-layer-rim', //加上边框
-  area: ['600px', '480px'], //宽高
-  content:"apparatus/tp?apparatus_id="+aa+""
+  area: ['620px', '500px'], //宽高
+  content:"apparatus/tp?apparatus_id="+aa+"&user_telephone="+bb+""
 });
 }
 </script>

@@ -12,6 +12,15 @@ public class yqModel {
     private String room_id;
     private String yonghuming;
     private String mima;
+    private String totel;
+
+    public String getTotel() {
+        return totel;
+    }
+
+    public void setTotel(String totel) {
+        this.totel = totel;
+    }
 
     public String getYonghuming() {
         return yonghuming;

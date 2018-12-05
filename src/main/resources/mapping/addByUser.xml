@@ -13,6 +13,10 @@
     <select id="list" resultType="com.xyk.model.addByUserModel">
         select * from addByUser
     </select>
+    <!--增加用户微信-->
+    <update id="addweixin">
+        update addByUser set weixin=#{weixin} where telephone=#{telephone}
+    </update>
     <!--增加数据-->
     <insert id="add" parameterType="com.xyk.model.addByUserModel">
         insert into addByUser(telephone,weixin,name,byuser) values

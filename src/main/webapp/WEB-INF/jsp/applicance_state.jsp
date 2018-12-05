@@ -63,6 +63,14 @@
         #duankai{background-color:  #abbac3!important;}
         #shiyongzhong{background-color: lightsalmon!important;}
         #qiguai{border:0!important;}
+        .xiala{
+            border: 1px solid #d5d5d5;
+            padding: 5px 4px;
+            margin-left: 10px;
+            line-height: 1.2;
+            font-size: 14px;
+            overflow: hidden;
+        }
     </style>
     <title></title>
 </head>
@@ -93,7 +101,6 @@
                         <td>${room.own}</td>
                         <!-- <td>13000000000</td> -->
                         <!-- <td>35081102346786</td> -->
-
                     </tr>
                     </c:if>
                 </tbody>
@@ -109,7 +116,7 @@
                 <div class="hd" style="border-bottom:solid 0px;">
                     <ul>
                         <li style="border:solid 1px #ddd;">私有电器</li>
-                        <li  id="qiguai" style="padding-left:5px"><a onclick="shishi()" href="javascript:ovid()" class="btn btn-warning" style="font-size:15px">+</a></li>
+                        <li  id="qiguai" style="padding-left:5px"><a onclick="shishi('${room.room_id}')" href="javascript:ovid()" class="btn btn-warning" style="font-size:15px">+</a></li>
                     </ul>
                 </div>
                 <div class="bd">
@@ -120,7 +127,6 @@
                                 <th width="">电器编号</th>
                                 <th width="">电器描述</th>
                                 <th width="">电器状态</th>
-                                <th width="">实时用电量</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -143,7 +149,6 @@
                                                 <td><span class="zhuangtai" id="shiyongzhong">使用中</span></td>
                                             </c:otherwise>
                                         </c:choose>
-                                        <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan('${apparatus1.id}')"><img style="width:30px" src="static/images/zhexian.png"></a></td>
                                     </tr>
                                 </c:forEach>
                             </c:if>
@@ -161,7 +166,7 @@
                 <div class="hd" style="border-bottom:solid 0px;">
                     <ul>
                         <li style="border:solid 1px #ddd;">公共区域电器</li>
-                        <li style="padding-left:5px"><a  onclick="shishi()"  class="btn btn-warning" style="font-size:15px">+</a></li>
+                        <li style="padding-left:5px"><a  onclick="shishi('${room.apartment_id}_0')"  class="btn btn-warning" style="font-size:15px">+</a></li>
                     </ul>
                 </div>
                 <div class="bd">
@@ -172,7 +177,6 @@
                                 <th width="">电器编号</th>
                                 <th width="">电器描述</th>
                                 <th width="">电器状态</th>
-                                <th width="">实时用电量</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -192,7 +196,6 @@
                                                 <td><span class="zhuangtai" id="shiyongzhong">使用中</span></td>
                                             </c:otherwise>
                                         </c:choose>
-                                        <td><a href="javascript:;"   title="点击查看实时电量" onclick="kan('${apparatus0.id}')"><img style="width:30px" src="static/images/zhexian.png"></a></td>
                                     </tr>
                                 </c:forEach>
                             </c:if>
@@ -209,12 +212,22 @@
 <div class="add_menber" id="add_menber_style" style="display:none">
 
     <ul class=" page-content">
-        <li><label class="label_name">插空&nbsp;&nbsp;&nbsp;&nbsp;ID：</label><span class="add_name"><input value="" name="插空ID" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
-        <!-- <li><label class="label_name">真实姓名：</label><span class="add_name"><input name="真实姓名" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li> -->
-        <li><label class="label_name">插&nbsp;&nbsp;空&nbsp;&nbsp;号：</label><span class="add_name"><input name="插空号" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
-        <li><label class="label_name">电器编号：</label><span class="add_name"><input name="电器编号" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
-        <li><label class="label_name">电器描述：</label><span class="add_name"><input name="电器描述" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
+        <li>
+            <label class="label_name">dev&nbsp;&nbsp;&nbsp;ID&nbsp;&nbsp;：</label>
+            <%--<span class="add_name"><input value="" name="插空ID" data-shu='chakongid' type="text"  class="text_add"/></span>--%>
+            <%--<div class="prompt r_f"></div>--%>
 
+            <select name="myselect" id="myselect" class="xiala">
+                <option style='display: none'></option>
+            </select>
+        </li>
+        <!-- <li><label class="label_name">真实姓名：</label><span class="add_name"><input name="真实姓名" type="text"  class="text_add"/></span><div class="prompt r_f"></div></li> -->
+        <li><label class="label_name">插空&nbsp;&nbsp;&nbsp;&nbsp;ID：</label><span class="add_name"><input name="devid" data-shu='chakongid' type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
+        <li><label class="label_name">apparatus_id：</label><span class="add_name"><input name="apparatus_id" data-shu='apparatus_id' type="text"  class="text_add"/></span><div class="prompt r_f"></div></li>
+        <li><label class="label_name">电器描述：</label><span class="add_name">
+            <input name="电器描述" type="text" data-shu='miaosu' class="text_add"/></span><div class="prompt r_f"></div></li>
+        <li><label class="label_name">房&nbsp;&nbsp;间&nbsp;&nbsp;号：</label><span class="add_name">
+            <input name="房间号" type="text" readonly data-shu='fangjianhao' class="text_add"/></span><div class="prompt r_f"></div></li>
         <!-- 改改改 -->
 
 
@@ -272,40 +285,115 @@
             content:"apparatus/tp?apparatus_id="+aa+""
         });
     }
-    function shishi(){
-        // alert(1);
-        layer.open({
-            type: 1,
-            title: '添加电器',
-            maxmin: true,
-            shadeClose: true, //点击遮罩关闭层
-            area : ['800px' , ''],
-            content:$('#add_menber_style'),
-            btn:['提交','取消'],
-            yes:function(index,layero){
-                var num=0;
-                var str="";
-                $(".add_menber input[type$='text']").each(function(n){
-                    if($(this).val()=="")
-                    {
+    function shishi(fhao){
+        $("#myselect").html("<option style='display: none'></option>");
+        $("#add_menber_style input[data-shu='fangjianhao']").val(fhao);
+        $.ajax({	//使用JQuery内置的Ajax方法
+            type : "POST",		//post请求方式
+            async : true,		//异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+            url :'<%=basePath%>anu/dev',
+            dataType : 'json',		//返回数据形式为json
+            success : function(data) {
+                //请求成功时执行该函数内容，获取服务器返回的json对象
+                if (data.newAdd != null && data.newAdd.length > 0) {
+                    console.info(data.newAdd);         //控制台输出
 
-                        layer.alert(str+=""+$(this).attr("name")+"不能为空！\r\n",{
-                            title: '提示框',
-                            icon:0,
-                        });
-                        num++;
-                        return false;
+                    for(var i=0;i<data.newAdd.length;i++){
+
+                        $("#myselect").append("<option>"+data.newAdd[i].devID+"</option>")
                     }
-                });
-                if(num>0){  return false;}
-                else{
-                    layer.alert('添加成功！',{
-                        title: '提示框',
-                        icon:1,
+
+                    $("#myselect").change(function(){
+                        // 	var opt=$("#myselect").html();
+                        // alert(opt);
+                        var options=$("#myselect option:selected"); //获取选中的项
+                        var dangqiandevid=options.text() //拿到选中项的文本
+                        for(var i=0;i<data.newAdd.length;i++){
+                            if(data.newAdd[i].devID == dangqiandevid)
+                            {
+                                $("#add_menber_style input[data-shu='apparatus_id']").val(data.newAdd[i].apparatus_id);
+                            }
+                        }
                     });
-                    layer.close(index);
+                    layer.open({
+                        type: 1,
+                        title: '添加电器',
+                        maxmin: true,
+                        shadeClose: true, //点击遮罩关闭层
+                        area : ['800px' , ''],
+                        content:$('#add_menber_style'),
+                        btn:['提交','取消'],
+                        yes:function(index,layero){
+                            var num=0;
+                            var str="";
+                            $(".add_menber input[type$='text']").each(function(n){
+                                if($(this).val()=="")
+                                {
+
+                                    layer.alert(str+=""+$(this).attr("name")+"不能为空！\r\n",{
+                                        title: '提示框',
+                                        icon:0,
+                                    });
+                                    num++;
+                                    return false;
+                                }
+                            });
+                            if(num>0){  return false;}
+                            else{
+                                layer.alert('添加成功！',{
+                                    title: '提示框',
+                                    icon:1,
+
+                                    // 设置添加后刷新
+                                    <%--yes: function(index){--%>
+                                    <%--window.location="<%=basePath%>apparatus/yqinfoR?room_id=${room.room_id}";--%>
+                                    <%--layer.close(index);--%>
+                                    <%--}--%>
+                                });
+                                layer.close(index);
+                                addchakong();
+                            }
+                        }
+                    });
+
                 }
+                else {
+                    alert("没有查询到有新插空！");
+                }
+            },
+            error : function(errorMsg) {
+                alert("请求服务器数据失败，请联系管理员");
             }
-        });
+        })
+
+
+    }
+
+    function addchakong() {
+            var devid=$("#myselect option:selected").text() //拿到选中项的文本
+            var chakongid=$("#add_menber_style input[data-shu='chakongid']").val();
+            var apparatus_id=$("#add_menber_style input[data-shu='apparatus_id']").val();
+            var beizu=$("#add_menber_style input[data-shu='miaosu']").val();
+            var fangjianhao= $("#add_menber_style input[data-shu='fangjianhao']").val();
+            var sessionID2="ce4904e06ee1cb2b63d66dd695be94d0feebcfb02018084e93a8172b90cd9ca1c492ab2c6ae9324c2ce45e";
+            var zhuangtai="0";
+            // alert("获取成功");
+            //  alert(devid);
+            // alert(chakongid);
+            // alert(apparatus_id);
+            // alert(beizu);
+            // alert(fangjianhao);
+            $.ajax({
+                type: "POST",
+                url: 'anu/adm',
+                data: {id:chakongid,sessionID:sessionID2,devID:devid,
+                    apparatus_id:apparatus_id,beizhu:beizu,useable:zhuangtai,room_id:fangjianhao},
+                dataType:'json',
+                cache: false,
+                success: function(data){
+                    console.log("success");
+                }
+            });
+
     }
 </script>

@@ -289,6 +289,7 @@ public class managerController {
                        // result.put("errMsg", "用户名或密码错误");
                         result.put("result", "10002");
                     } else {
+                        session.setAttribute("manager_telephone",manager_telephone);
                         //result.put("ehahah", "登陆成功");
                         result.put("result", "10005");
                     }

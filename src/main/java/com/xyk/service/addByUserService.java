@@ -14,4 +14,8 @@ public class addByUserService {
     public List<addByUserModel> list(){return ab.list();}
     public List<addByUserModel> selbyuser(String byuser){return ab.selbyuser(byuser);}
     public boolean add(addByUserModel a){return ab.add(a);}
+    public boolean addweixin(String weixin,String telephone)
+    {
+        return ab.addweixin(weixin,telephone);
+    }
 }

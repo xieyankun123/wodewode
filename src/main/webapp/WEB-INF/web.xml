@@ -21,15 +21,15 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
-  <!-- spring监听器 -->
-<!--  <listener>
-    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
-  </listener>-->
+  <!--&lt;!&ndash; spring监听器 &ndash;&gt;-->
+     <!--<listener>-->
+        <!--<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>-->
+      <!--</listener>-->
 
-  <!-- 防止spring内存溢出监听器，比如quartz -->
-<!--  <listener>
-    <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
-  </listener>-->
+    <!--&lt;!&ndash; 防止spring内存溢出监听器，比如quartz &ndash;&gt;-->
+     <!--<listener>-->
+        <!--<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>-->
+      <!--</listener>-->
  <servlet-mapping>
     <servlet-name>default</servlet-name>
      <url-pattern>*.css</url-pattern>

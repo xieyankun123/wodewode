@@ -15,8 +15,11 @@ public interface apdataDao {
     List<echartsModel> getpv(String apparatus_id);
     List<apdataModel> list();
     boolean add(apdataModel a);
+    boolean add0(apdataModel a);
     List<apdataModel> selbyidP(String devID);
     List<apdataModel> listP();
     boolean addP(apdataModel a);
     List<apdataModel> selbynameP(@Param("name")String name,@Param("apparatus_id")String apparatus_id);
+    List<apdataModel> selbyname(@Param("name")String name,@Param("apparatus_id")String apparatus_id);
+    List<apdataModel> getdv0(@Param("name")String name,@Param("apparatus_id")String apparatus_id);
 }

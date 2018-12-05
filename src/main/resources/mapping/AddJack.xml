@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+
+<mapper namespace="com.xyk.dao.AddJackDao">
+    <!--根据用户手机号查找-->
+    <select id="selSessionId" parameterType="java.lang.String" resultType="com.xyk.model.AddJackModel">
+      SELECT * from addses where sessionID=#{sessionID}
+    </select>
+    <!--插入sessionID-->
+    <insert id="add_1" parameterType="com.xyk.model.AddJackModel">
+        insert into addses (sessionID) values (#{sessionID})
+    </insert>
+    <!--查询devID-->
+    <select id="selDevId" parameterType="java.lang.String" resultType="com.xyk.model.AddJackModel">
+      SELECT * from adddevid where devID=#{devID}
+    </select>
+    <!--添加devID和token码-->
+    <insert id="add_2" parameterType="com.xyk.model.AddJackModel">
+        insert into adddevid (apparatus_id,devID) values (#{apparatus_id},#{devID})
+    </insert>
+    <!--插入新添加的插孔信息-->
+    <insert id="add" parameterType="com.xyk.model.yqModel">
+        insert into apparatus_info (id,apparatus_id,sessionID,devID,beizhu,beizhu2,OEM,useable,room_id,yonghuming,mima) values
+        (#{id},#{apparatus_id},#{sessionID},#{devID},#{beizhu},#{beizhu2},#{OEM},#{useable},#{room_id},#{yonghuming},#{mima});
+    </insert>
+</mapper>
