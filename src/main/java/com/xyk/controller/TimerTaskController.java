@@ -38,8 +38,68 @@ public class TimerTaskController {
     private userService userservice;
     @Resource
     private apdataService ads;
+   @Scheduled(cron = "0 0 * * * ?")
+   public void gethourValue()
+   {
+       DateUtil date = new DateUtil();
+       String dt=date.getTime();
+       List<UserModel> userlist=userservice.selbystate("1");
+       for(int i=0;i<userlist.size();i++)
+       {
+           List<u_rModel> u_rModels = ur.selbyUtel(userlist.get(i).getUser_telephone());
+           String a1=u_rModels.get(u_rModels.size()-1).getRoom_id();
+           StringBuffer a2=new StringBuffer(a1);
+           a2.setCharAt(4,'0');
+           String a3=a2.toString();
+           List<yqModel> yqModels = ys.selbyRid(a3);
+           List<yqModel> yqModels1=ys.selbyRid(a1);
+           DecimalFormat df = new DecimalFormat("0.00");
+           if(yqModels.size()==0){}
+           else
+           {
+               for(int j=0;j<yqModels.size();j++)
+               {
+                   apdataModel ap=new apdataModel();
+                   String apparatus_id=yqModels.get(j).getId();
+                   String name=userlist.get(i).getUser_telephone();
+                   List<apdataModel> apdata1 = ads.selbynameP(name,apparatus_id);
+                   double sum = 0;
+                   for (int k= 0; k< apdata1.size(); k++) {
+                       double value = Double.parseDouble(apdata1.get(k).getValue());
+                       sum = sum + value / (30 * 1000);
+                   }
+                   String ssum=df.format(sum);
+                   ap.setName(name);
+                   ap.setApparatus_id(apparatus_id);
+                   ap.setValue(ssum);
+                   ap.setTime(dt);
+                   ads.addhour(ap);
+               }}
+           if(yqModels1.size()==0){}
+           else
+           {
+               for(int j=0;j<yqModels1.size();j++)
+               {
+                   apdataModel ap=new apdataModel();
+                   String apparatus_id=yqModels1.get(j).getId();
+                   String name=userlist.get(i).getUser_telephone();
+                   List<apdataModel> apdata1 = ads.selbynameP(name,apparatus_id);
+                   double sum = 0;
+                   for (int k= 0; k< apdata1.size(); k++) {
+                       double value = Double.parseDouble(apdata1.get(k).getValue());
+                       sum = sum + value / (30 * 1000);
+                   }
+                   String ssum=df.format(sum);
+                   ap.setName(name);
+                   ap.setApparatus_id(apparatus_id);
+                   ap.setValue(ssum);
+                   ap.setTime(dt);
+                   ads.addhour(ap);
+               }}
+       }
+   }
     @Scheduled(cron = "0 59 23 * * ?")
-    public void getValue()
+    public void getdayValue()
     {
             List<yqModel> yqmodels=ys.list();
             for(int i=0;i<yqmodels.size();i++)
@@ -79,7 +139,7 @@ public class TimerTaskController {
                     else {
                         DateUtil date = new DateUtil();
                         am.setApparatus_id(yqmodels.get(i).getId());
-                        String dat = date.getDay();
+                        String dat = date.getTime();
                         am.setTime(dat);
                         String val = js.getString("socketOut_W");
                         am.setValue(val);
@@ -99,12 +159,12 @@ public class TimerTaskController {
             }}
         }
     }
-    @Scheduled(cron = "0 59 23 * * ?")
-  // @Scheduled(cron = "0 0/4 * * * ?")
+  @Scheduled(cron = "0 59 23 * * ?")
     public void getValue0()
     {
         DateUtil date = new DateUtil();
-        String dt=date.getDay();
+        //String dt=date.getDay();
+        String dt=date.getTime();
         List<UserModel> userlist=userservice.selbystate("1");
         for(int i=0;i<userlist.size();i++)
         {
@@ -114,7 +174,7 @@ public class TimerTaskController {
             a2.setCharAt(4,'0');
             String a3=a2.toString();
             List<yqModel> yqModels = ys.selbyRid(a3);
-            List<yqModel> yqModels1=ys.selbyRid(a1);
+           List<yqModel> yqModels1=ys.selbyRid(a1);
             DecimalFormat df = new DecimalFormat("0.00");
             if(yqModels.size()==0){}
             else
@@ -224,5 +284,15 @@ public class TimerTaskController {
                 }
             //}
         }
+    }
+    @Scheduled(cron = "0 1 0 * * ?")
+    public void cleardata(){
+       try {
+           ads.del();
+       }
+       catch (Exception e)
+       {
+           System.out.println("删除不成功");
+       }
     }
 }

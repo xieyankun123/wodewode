@@ -29,6 +29,9 @@
         <script src="static/assets/layer/layer.js" type="text/javascript" ></script>
         <script src="static/assets/laydate/laydate.js" type="text/javascript"></script>
         <script src="static/js/lrtk.js" type="text/javascript" ></script>
+        <%--日期插件--%>
+        <script src="static/js/bootstrap-datetimepicker.min.js" type="text/javascript" ></script>
+         <link rel="stylesheet" href="static/css/bootstrap-datetimepicker.min.css" />
         <style type="text/css">
             .baozhe{height: 30px;border-bottom: 1px solid #ddd;}
             .xinxi{
@@ -75,7 +78,7 @@
                     <td>1</td>
                     <td>${user.user_name}</td>
                     <td>${user.user_sex}</td>
-                    <td>${user.user_telephone}</td>
+                    <td id="tele_v">${user.user_telephone}</td>
                     <td>${user.user_IDcard}</td>
                     <td class="text-l">${user.user_address}</td>
                 </tr>
@@ -102,7 +105,7 @@
     <c:if test="${!empty room }">
             <div items="${room}" var="room">
                 <tr>
-                    <td>${room.room_id}</td>
+                    <td id="room_id_v">${room.room_id}</td>
                     <td class="text-l">${room.room_loc}</td>
                     <td>${room.room_str}</td>
                     <td>${room.own}</td>
@@ -134,7 +137,7 @@
 
                                 <th width="">电器编号</th>
                                <th width="">电器描述</th>
-                                 <th width="">总用电量(度)</th>
+                                 <th width="">总用电量(度)(${intime}-${outtime})</th>
                                <th width="">实时电量</th>                 
                          </tr>
                     </thead>
@@ -174,7 +177,7 @@
 
                                 <th width="">电器编号</th>
                                <th width="">电器描述</th>
-                          <th width="">总用电量(度)</th>
+                          <th width="">总用电量(度)(${intime}-${outtime})</th>
                                <th width="">实时电量</th>                 
                          </tr>
                     </thead>
@@ -202,6 +205,24 @@
                  <li style="border:solid 1px #ddd;">用电量统计</li>
              </ul>
          </div>
+
+         <%--时间框--%>
+         <div class="search_style">
+         <ul class="search_content clearfix">
+             <li>
+                 <label class="label_name">起始时间：</label>
+                 <span class="add_name">
+                   <input size="16" type="text" value="" readonly id="date_s">
+                  </span>
+             </li>
+             <li><label class="label_name">结束时间：</label>
+                 <span class="add_name">
+                   <input size="16" type="text" value="" readonly id="date_e">
+                </span>
+             </li>
+             <li style="width:90px;"><button type="button" class="btn_search" id="ss"><i class="icon-search"></i>查询</button></li>
+         </ul>
+         <div class="search_style">
          <table class="table table-striped table-bordered table-hover" id="sconsumption-table" style="margin-top:30px">
              <thead>
              <tr>
@@ -212,15 +233,23 @@
              </thead>
              <tr>
                  <td>私有区域</td>
-                 <td>${sum1}</td>
+                 <td id="siyou">--</td>
              </tr>
              <tr>
-                 <td>公有区域</td>
-                 <td>${sum2}</td>
+                 <td>公有区域(个人用电)</td>
+                 <td id="gong_ge">--</td>
              </tr>
              <tr>
-                 <td>总计</td>
-                 <td>${sum3}</td>
+                 <td>用户用电总计</td>
+                 <td id="zong_ge">--</td>
+             </tr>
+             <tr>
+                 <td>公有区域(房间总计)</td>
+                 <td id="gong_fang">--</td>
+             </tr>
+             <tr>
+                 <td>公寓总计</td>
+                 <td id="zong">--</td>
              </tr>
              <tbody>
              </tbody>
@@ -238,8 +267,17 @@
 
 // 编写筛选函数
 jQuery(function($) {
+    $.fn.datetimepicker.dates['zh'] = {
+        days:       ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六","星期日"],
+        daysShort:  ["日", "一", "二", "三", "四", "五", "六","日"],
+        daysMin:    ["日", "一", "二", "三", "四", "五", "六","日"],
+        months:     ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月","十二月"],
+        monthsShort:  ["一", "二", "三", "四", "五", "六", "七", "八", "九", "十", "十一", "十二"],
+        meridiem:    ["上午", "下午"],
+        today:       "今天"
+    };
 		var oTable1 = $('#sample-table').dataTable( {
-            "ordering":false,
+         "ordering":false,
 		"bStateSave": true,//状态保存
 		"bAutoWidth":true,
 		"bFilter":false,
@@ -252,25 +290,89 @@ jQuery(function($) {
   } );
 
 		var recording = $('#sconsumption-table').dataTable( {
-            "ordering":false,
+         "ordering":false,
 		"bStateSave": true,//状态保存
 		"bAutoWidth":true,
 		"bFilter":false,
-            "paging":   false,  //分页功能
-            "info":false,
+        "paging":   false,  //分页功能
+         "info":false,
 		"aoColumnDefs": [
 		  {"orderable":false,"aTargets":[0,2,3]}// 制定列不参与排序
 		] } );
 		
-				$('table th input:checkbox').on('click' , function(){
-					var that = this;
-					$(this).closest('table').find('tr > td:first-child input:checkbox')
-					.each(function(){
-						this.checked = that.checked;
-						$(this).closest('tr').toggleClass('selected');
-					});
-						
-				});	
+             $('table th input:checkbox').on('click' , function(){
+                 var that = this;
+                 $(this).closest('table').find('tr > td:first-child input:checkbox')
+                 .each(function(){
+                 this.checked = that.checked;
+                  $(this).closest('tr').toggleClass('selected');
+                 });
+
+             });
+      function GetDateStr(AddDayCount) { 
+          var dd = new Date(); 
+          dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期
+          var y = dd.getFullYear(); 
+          var m = dd.getMonth()+1;//获取当前月份的日期 
+          var d = dd.getDate(); 
+          return y+"-"+m+"-"+d; 
+             } 
+    // 设置弹出时间
+    $('#date_s').datetimepicker({
+        language:'zh',
+        format: 'yyyy-mm-dd',
+        minView: "month",//设置只显示到月份
+        todayBtn:"true"
+    });
+    $('#date_e').datetimepicker({
+        language:'zh',
+        format: 'yyyy-mm-dd',
+        minView: "month",//设置只显示到月份
+        todayBtn:"true"
+    });
+    $('#date_s').datetimepicker('setStartDate',new Date("2018-12-10"));
+    $('#date_s').datetimepicker('setEndDate', GetDateStr(-1));
+    $('#date_e').datetimepicker('setStartDate',new Date("2018-12-10"));
+    $('#date_e').datetimepicker('setEndDate', GetDateStr(-1));
+//查询电量函数
+    function search_ele(){
+        var date_start=$('#date_s').val(); //拿到选中项的文本
+        var date_end=$('#date_e').val();
+        var room_id=$('#room_id_v').html()
+        var user_telephone=$('#tele_v').html()
+        //  alert(date_start);
+        // alert(date_end);
+        // alert(room_id);
+        // alert(user_telephone);
+        $.ajax({
+            type: "POST",
+            url: '<%=basePath%>/apparatus/Statistic',
+            data: {date_start:date_start,date_end:date_end,room_id:room_id,
+                user_telephone:user_telephone},
+            dataType:'json',
+            cache: false,
+            success: function(data){
+                console.log("success");
+                $('#siyou').html(data.sum1);
+                $('#gong_ge').html(data.sum2);
+                $('#zong_ge').html(data.sum3);
+                $('#gong_fang').html(data.sum4);
+                $('#zong').html(data.sum5);
+            }
+        });
+
+        // $('#date_s').val("0000-00-00");
+        // $('#date_e').val("0000-00-00");
+        // $('#siyou').html("1");
+        // $('#gong_ge').html("2");
+        // $('#zong_ge').html("3");
+        // $('#gong_fang').html("4");
+        // $('#zong').html("5");
+
+    };
+    $('#ss').click(function(){
+        search_ele();
+    });
 });
 function kan(a,b){
     var aa=a;

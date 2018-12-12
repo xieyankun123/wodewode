@@ -120,7 +120,19 @@ public class yqController{
         String user_telephone=request.getParameter("user_telephone");
         UserModel user=us.selbytel(user_telephone);
         roomModel room=rs.selbyRid(room_id);
+        List<u_rModel> u_rModels = ur.selbyUtel(user_telephone);
+        String intime=u_rModels.get(u_rModels.size()-1).getIn_time();
+        String outtime=u_rModels.get(u_rModels.size()-1).getOut_time();
         room.setOwn(gs.selbyid(room.getApartment_id()).getOwner());
+        if(user.getUser_state().equals("1"))
+        {
+            mv.addObject("outtime","至今");
+        }
+        else
+        {
+            mv.addObject("outtime",outtime);
+        }
+        mv.addObject("intime",intime);
         mv.addObject("user",user);
         mv.addObject("room",room);
        // result.put("msg1",user);
@@ -132,8 +144,8 @@ public class yqController{
 //        }
 //        else
 //        {
-            double sum1=0;
-            double sum2=0;
+            double sum1=0.00;
+            double sum2=0.00;
             List<yqModel> apparatus1 = ys.selbyRid(room_id);
             StringBuilder a = new StringBuilder(room_id);
             a.setCharAt(4, '0');
@@ -145,19 +157,27 @@ public class yqController{
                 if(apdata1.size()==0)
                 {apparatus1.get(i).setTotel("0.00");}
                 else {
-                    apparatus1.get(i).setTotel(apdata1.get(apdata1.size()-1).getValue());
-                    sum1=sum1+Double.parseDouble(apdata1.get(apdata1.size()-1).getValue());
+                    double aa=0;
+                    for(int j=0;j<apdata1.size();j++) {
+                        aa=Double.parseDouble(apdata1.get(j).getValue())+aa;
+                    }
+                    apparatus1.get(i).setTotel(df.format(aa));
+                    sum1 = sum1 + aa;
                 }
             }
             for(int i=0;i<apparatus0.size();i++)
             {
                 List<apdataModel> apdata1 = ads.getdv0(user_telephone, apparatus0.get(i).getId());
                 if(apdata1.size()==0){
-                    apparatus0.get(i).setTotel("0");
+                    apparatus0.get(i).setTotel("0.00");
                 }
                 else {
-                    apparatus0.get(i).setTotel(apdata1.get(apdata1.size()-1).getValue());
-                    sum2=sum2+Double.parseDouble(apdata1.get(apdata1.size()-1).getValue());
+                    double bb=0;
+                    for(int j=0;j<apdata1.size();j++) {
+                        bb=Double.parseDouble(apdata1.get(j).getValue())+bb;
+                    }
+                    apparatus0.get(i).setTotel(df.format(bb));
+                    sum2=sum2+bb;
                 }
             }
             double sum3=sum1+sum2;
@@ -359,7 +379,7 @@ public class yqController{
     public void PoweAndValue(HttpServletResponse response,HttpServletRequest request)
     {
         JSONObject result=new JSONObject();
-        String user_telephone=request.getParameter("user_telephone");;
+        String user_telephone=request.getParameter("user_telephone");
         if(user_telephone.equals("false"))
         {
             result.put("msg","fail");
@@ -377,17 +397,17 @@ public class yqController{
             {
                 EleModel e=new EleModel();
                 e.setYq(apparatus1.get(i));
-                List<apdataModel> apdata1 = ads.selbynameP(user_telephone,apparatus1.get(i).getId());
-                double sum = 0;
-                for (int j = 0; j < apdata1.size(); j++) {
-                    double value = Double.parseDouble(apdata1.get(j).getValue());
-                    sum = sum + value / (30 * 1000);
+                double sum = 0.00;
+                List<apdataModel> apdata1 = ads.getdv0(user_telephone,apparatus1.get(i).getId());
+                if(apdata1.size()==0){}
+                else {
+                    for (int j = 0; j < apdata1.size(); j++) {
+                        sum = sum + Double.parseDouble(apdata1.get(j).getValue());
+                    }
                 }
-                String ssum=df.format(sum);
-                e.setSum(ssum);
-                List<apdataModel> apdata2=ads.selbyname(user_telephone,apparatus1.get(i).getId());
-                e.setApdata(apdata2);
-                eleModels1.add(e);
+                    e.setSum(df.format(sum));
+                    e.setApdata(apdata1);
+                    eleModels1.add(e);
             }
             for(int i=0;i<apparatus0.size();i++)
             {
@@ -395,52 +415,210 @@ public class yqController{
                 e.setYq(apparatus0.get(i));
                 List<apdataModel> apdata1 = ads.getdv0(user_telephone, apparatus0.get(i).getId());
                 System.out.println(apdata1.size());
-                List<apdataModel> apdata2=new ArrayList<apdataModel>();
+                double sum = 0.00;
                 if(apdata1.size()==0){}
-                else if(apdata1.size()==1)
-                {apdata2=ads.getdv0(user_telephone, apparatus0.get(i).getId());
-                    e.setSum(apdata1.get(apdata1.size()-1).getValue());
-                    e.setApdata(apdata2);
-                    eleModels0.add(e);
-                }
                 else {
-                    apdata2.add(apdata1.get(0));
-                    for (int j = 1; j < apdata1.size(); j++) {
-                        apdataModel ap = new apdataModel();
-                        ap.setTime(apdata1.get(j).getTime());
-                        Double value = Double.parseDouble(apdata1.get(j).getValue()) - Double.parseDouble(apdata1.get(j - 1).getValue());
-                        String valu = df.format(value);
-                        ap.setValue(valu);
-                        ap.setApparatus_id(apdata1.get(j).getApparatus_id());
-                        ap.setName(apdata1.get(j).getName());
-                        ap.setId(apdata1.get(j).getId());
-                        apdata2.add(ap);
+                    for (int j = 0; j < apdata1.size(); j++) {
+                        sum = sum + Double.parseDouble(apdata1.get(j).getValue());
                     }
-                    e.setSum(apdata1.get(apdata1.size() - 1).getValue());
-                    e.setApdata(apdata2);
-                    eleModels0.add(e);
                 }
+                    e.setSum(df.format(sum));
+                    e.setApdata(apdata1);
+                    eleModels0.add(e);
+
             }
             result.put("siyou",eleModels1);
             result.put("gongyou",eleModels0);
         }
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
-    @RequestMapping("PowerValue")
-    public void PoweValue(HttpServletResponse response,HttpServletRequest request)
+    @RequestMapping("/Statistic")
+    public void Statistic(HttpServletResponse response,HttpServletRequest request)
     {
+        double sum1=0.00;
+        double sum2=0.00;
+        double sum3=0.00;
+        double sum4=0.00;
+        double sum5=0.00;
+        DecimalFormat df = new DecimalFormat("0.00");
         JSONObject result=new JSONObject();
-        String apparatus_id=request.getParameter("apparatus_id");
-        String name=request.getParameter("user_telephone");
-        List<apdataModel> apdata = ads.selbynameP(name,apparatus_id);
-        double sum=0;
-        for(int j=0;j<apdata.size();j++)
-        {
-            double value= Double.parseDouble(apdata.get(j).getValue());
-            sum=sum+value/(30*1000);
+        String date_start=request.getParameter("date_start");
+        String date_end=request.getParameter("date_end");
+        String room_id=request.getParameter("room_id");
+        String user_telephone = request.getParameter("user_telephone");
+       System.out.println(date_start);
+       System.out.println(date_end+"dataend");
+        //私有区域总用电量
+        List<yqModel> yqModels = ys.selbyRid(room_id);
+        for(int j=0;j<yqModels.size();j++) {
+            String apparatus_id = yqModels.get(j).getId();
+            List<apdataModel> apdataModels = ads.getbyid(apparatus_id);
+            if(apdataModels.size()==0)
+            {}
+            else {
+                while (true) {
+                    if (apdataModels.get(0).getTime().equals(date_start) == false) {
+                        apdataModels.remove(apdataModels.get(0));
+                        if(apdataModels.size()==0)
+                        {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                if(apdataModels.size()!=0) {
+                    while (true) {
+                        if (apdataModels.get(apdataModels.size() - 1).getTime().equals(date_end) == false) {
+                            apdataModels.remove(apdataModels.get(apdataModels.size() - 1));
+                            if (apdataModels.size() == 0) {
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                if(apdataModels.size()==0){}
+                else {
+                    for (int i = 0; i < apdataModels.size(); i++) {
+                        sum1 = sum1 + Double.parseDouble(apdataModels.get(i).getValue());
+                    }
+                }
+            }
         }
-        result.put("apdata",apdata);
-        result.put("sum",sum);
+        StringBuilder a = new StringBuilder(room_id);
+        a.setCharAt(4, '0');
+        List<yqModel> apparatus0 = ys.selbyRid(a.toString());
+
+        //公有区域总用电量（个人）
+        for(int j=0;j<apparatus0.size();j++) {
+            String apparatus_id = apparatus0.get(j).getId();
+            List<apdataModel> apdataModels = ads.getdv0(user_telephone,apparatus_id);
+            if(apdataModels.size()==0)
+            {}
+            else {
+                while (true) {
+                    if (apdataModels.get(0).getTime().equals(date_start) == false) {
+                        apdataModels.remove(apdataModels.get(0));
+                        if(apdataModels.size()==0)
+                        {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                if(apdataModels.size()!=0) {
+                    while (true) {
+                        if (apdataModels.get(apdataModels.size() - 1).getTime().equals(date_end) == false) {
+                            apdataModels.remove(apdataModels.get(apdataModels.size() - 1));
+                            if (apdataModels.size() == 0) {
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                if(apdataModels.size()==0){}
+                else {
+                    for (int i = 0; i < apdataModels.size(); i++) {
+                        sum2 = sum2 + Double.parseDouble(apdataModels.get(i).getValue());
+                    }
+                }
+            }
+        }
+
+        //个人总结用电量
+        sum3=sum1+sum2;
+
+        //公有区域总用电量（总的）
+        for(int j=0;j<apparatus0.size();j++) {
+            String apparatus_id = apparatus0.get(j).getId();
+            List<apdataModel> apdataModels = ads.getbyid(apparatus_id);
+            if(apdataModels.size()==0)
+            {}
+            else {
+                while (true) {
+                    if (apdataModels.get(0).getTime().equals(date_start) == false) {
+                        apdataModels.remove(apdataModels.get(0));
+                        if(apdataModels.size()==0)
+                        {
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                if(apdataModels.size()!=0) {
+                    while (true) {
+                        if (apdataModels.get(apdataModels.size() - 1).getTime().equals(date_end) == false) {
+                            apdataModels.remove(apdataModels.get(apdataModels.size() - 1));
+                            if (apdataModels.size() == 0) {
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                if(apdataModels.size()==0){}
+                else {
+                    for (int i = 0; i < apdataModels.size(); i++) {
+                        sum4 = sum4 + Double.parseDouble(apdataModels.get(i).getValue());
+                    }
+                }
+            }
+        }
+        //公寓总用电量
+        List<roomModel> roomModels = rs.selbyAid(rs.selbyRid(room_id).getApartment_id());
+        for(int i=0;i<roomModels.size();i++) {
+            List<yqModel> yqModels1 = ys.selbyRid(roomModels.get(i).getRoom_id());
+            if (yqModels1.size() == 0) {
+            } else {
+                for (int j = 0; j < yqModels1.size(); j++) {
+                    String apparatus_id = yqModels1.get(j).getId();
+                    List<apdataModel> apdataModels = ads.getbyid(apparatus_id);
+                    if (apdataModels.size() == 0) {
+                    } else {
+                        while (true) {
+                            if (apdataModels.get(0).getTime().equals(date_start) == false) {
+                                apdataModels.remove(apdataModels.get(0));
+                                if (apdataModels.size() == 0) {
+                                    break;
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                        if(apdataModels.size()!=0) {
+                        while (true) {
+                            if (apdataModels.get(apdataModels.size() - 1).getTime().equals(date_end) == false) {
+                                apdataModels.remove(apdataModels.get(apdataModels.size() - 1));
+                                if (apdataModels.size() == 0) {
+                                    break;
+                                }
+                            } else {
+                                break;
+                            }
+                        }
+                        }
+                        if (apdataModels.size() == 0) {
+                        } else {
+                            for (int k = 0; k < apdataModels.size(); k++) {
+                                sum5 = sum5 + Double.parseDouble(apdataModels.get(k).getValue());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        result.put("sum1",df.format(sum1));
+        result.put("sum2",df.format(sum2));
+        result.put("sum3",df.format(sum3));
+        result.put("sum4",df.format(sum4));
+        result.put("sum5",df.format(sum5));
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
     @RequestMapping("updateBeizhu")

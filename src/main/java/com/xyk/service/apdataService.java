@@ -24,4 +24,9 @@ public class apdataService {
     public List<apdataModel> selbyname(String name,String apparatus_id){return ad.selbyname(name,apparatus_id);}
     public boolean add0(apdataModel a){return ad.add0(a);}
     public List<apdataModel> getdv0(String name,String apparatus_id){return ad.getdv0(name,apparatus_id);}
+    public boolean del(){return ad.del();}
+    public boolean addhour(apdataModel a){return ad.addhour(a);}
+    public List<apdataModel> gethourBy2(String name,String apparatus_id){return ad.gethourBy2(name,apparatus_id);}
+    public List<apdataModel> gethourBy1(String apparatus_id){return ad.gethourBy1(apparatus_id);}
+   public List<apdataModel> getbyid(String apparatus_id){return ad.getbyid(apparatus_id);}
 }

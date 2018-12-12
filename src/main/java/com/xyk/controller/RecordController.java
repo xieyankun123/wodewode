@@ -39,6 +39,7 @@ public class RecordController {
     private apdataService ads;
     @RequestMapping("/ele")
     public void ele(HttpServletResponse response, HttpServletRequest request) {
+        DecimalFormat df = new DecimalFormat("0.00");
         JSONObject result = new JSONObject();
         String apparatus_id = request.getParameter("apparatus_id");
         String user_telephone = request.getParameter("user_telephone");
@@ -67,19 +68,9 @@ public class RecordController {
             System.out.println(apdata1.size());
             List<echartsModel> a=new ArrayList<echartsModel>();
             if(apdata1.size()==0){}
-            else if(apdata1.size()==1)
-            {
-                echartsModel aa=new echartsModel(apdata1.get(0).getTime(),apdata1.get(0).getValue());
-                a.add(aa);
-                result.put("result", a);
-            }
             else {
-                a.add(new echartsModel(apdata1.get(0).getTime(),apdata1.get(0).getValue()));
-                for (int j = 1; j < apdata1.size(); j++) {
-                    Double value = Double.parseDouble(apdata1.get(j).getValue()) - Double.parseDouble(apdata1.get(j - 1).getValue());
-                    DecimalFormat df = new DecimalFormat("0.00");
-                    String valu = df.format(value);
-                    echartsModel b=new echartsModel(apdata1.get(j).getTime(),valu);
+                for (int j = 0; j < apdata1.size(); j++) {
+                    echartsModel b=new echartsModel(apdata1.get(j).getTime(),apdata1.get(j).getValue());
                     a.add(b);
                 }
                 result.put("result", a);
@@ -87,25 +78,30 @@ public class RecordController {
 //        }
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
-//    @RequestMapping("/power")
-//    public void power(HttpServletResponse response, HttpServletRequest request) {
-//        JSONObject result = new JSONObject();
-//        String apparatus_id = request.getParameter("apparatus_id");
-//        List<echartsModel> a = ads.getpv(apparatus_id);
-//        if (a.size() <= 500) {
-//            result.put("result", a);
-//        } else {
-//            while (true) {
-//                if (a.size() > 500) {
-//                    a.remove(0);
-//                } else {
-//                    break;
-//                }
-//            }
-//            result.put("result", a);
-//        }
-//        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
-//    }
+    @RequestMapping("/power")
+    public void power(HttpServletResponse response, HttpServletRequest request) {
+        JSONObject result = new JSONObject();
+        String apparatus_id = request.getParameter("apparatus_id");
+        List<apdataModel> apdataModels = ads.selbyidP(apparatus_id);
+        List<echartsModel> a=new ArrayList<echartsModel>();
+        for(int j = 0; j < apdataModels.size(); j++)
+        {
+            a.add(new echartsModel(apdataModels.get(j).getTime(),apdataModels.get(j).getValue()));
+        }
+        if (a.size() <= 500) {
+            result.put("result", a);
+        } else {
+            while (true) {
+                if (a.size() > 500) {
+                    a.remove(0);
+                } else {
+                    break;
+                }
+            }
+            result.put("result", a);
+        }
+        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
+    }
 //    @RequestMapping("/power1")
 //    public void power1(HttpServletRequest request,HttpServletResponse response)
 //    {
