@@ -24,7 +24,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/u_r")
-public class u_rController {
+public class u_rcontroller {
     @Resource
     private u_rService ur;
     @Resource
@@ -37,7 +37,7 @@ public class u_rController {
     @RequestMapping("/")
     public void list(HttpServletResponse response)
     {
-       List<u_rModel> a=ur.list();
+        List<u_rModel> a=ur.list();
         JSONObject result = new JSONObject();
         result.put("result", "10001");
         result.put("aaa",a);
@@ -80,8 +80,8 @@ public class u_rController {
         JSONObject result = new JSONObject();
         result.put("result", "10001");
         u_rModel b=ur.selbyid(1);
-         String bb=b.getIn_time();
-         String cc=b.getOut_time();
+        String bb=b.getIn_time();
+        String cc=b.getOut_time();
         String ccc=bb.substring(0,9);
         String ddd=cc.substring(0,9);
         result.put("result",ccc.replaceAll("-","/")+"-"+ddd.replaceAll("-","/"));
@@ -105,9 +105,9 @@ public class u_rController {
         mv.setViewName("user_history");
         return mv;
 
-       // result.put("msg2",user_room);
-       // result.put("result","10011");
-       // HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+        // result.put("msg2",user_room);
+        // result.put("result","10011");
+        // HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
     @RequestMapping("/historyR")
     public ModelAndView historyR(HttpServletResponse response,HttpServletRequest request)
@@ -119,7 +119,7 @@ public class u_rController {
         roomModel room=rs.selbyRid(room_id);
         room.setOwn(gs.selbyid(room.getApartment_id()).getOwner());
         if(ur.selbyRid(room.getRoom_id()).size()>0)
-        room.setNum(ur.selbyRid(room.getRoom_id()).get(ur.selbyRid(room.getRoom_id()).size()-1).getUser_telephone());
+            room.setNum(ur.selbyRid(room.getRoom_id()).get(ur.selbyRid(room.getRoom_id()).size()-1).getUser_telephone());
         System.out.println("123"+room.getNum()+"123");
         mv.addObject("room",room);
         //result.put("msg1",room);
@@ -131,8 +131,8 @@ public class u_rController {
         mv.addObject("user_room",user_room);
         mv.setViewName("house_history");
         return mv;
-       // result.put("msg2",user_room);
-       // result.put("result","10012");
-       // HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+        // result.put("msg2",user_room);
+        // result.put("result","10012");
+        // HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
 }
