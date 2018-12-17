@@ -139,7 +139,7 @@ public class TimerTaskController {
                     else {
                         DateUtil date = new DateUtil();
                         am.setApparatus_id(yqmodels.get(i).getId());
-                        String dat = date.getTime();
+                        String dat = date.getDay();
                         am.setTime(dat);
                         String val = js.getString("socketOut_W");
                         am.setValue(val);
@@ -163,8 +163,7 @@ public class TimerTaskController {
     public void getValue0()
     {
         DateUtil date = new DateUtil();
-        //String dt=date.getDay();
-        String dt=date.getTime();
+        String dt=date.getDay();
         List<UserModel> userlist=userservice.selbystate("1");
         for(int i=0;i<userlist.size();i++)
         {

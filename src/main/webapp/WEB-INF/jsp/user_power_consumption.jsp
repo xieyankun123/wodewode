@@ -309,31 +309,38 @@ jQuery(function($) {
                  });
 
              });
-      function GetDateStr(AddDayCount) { 
-          var dd = new Date(); 
-          dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期
-          var y = dd.getFullYear(); 
-          var m = dd.getMonth()+1;//获取当前月份的日期 
-          var d = dd.getDate(); 
-          return y+"-"+m+"-"+d; 
-             } 
+        function GetDateStr(AddDayCount) { 
+        var dd = new Date(); 
+        dd.setDate(dd.getDate()+AddDayCount);//获取AddDayCount天后的日期 
+        var y = dd.getFullYear(); 
+        var m = dd.getMonth()+1;//获取当前月份的日期 
+        var d = dd.getDate(); 
+        return y+"-"+m+"-"+d; 
+        } 
     // 设置弹出时间
     $('#date_s').datetimepicker({
-        language:'zh',
-        format: 'yyyy-mm-dd',
-        minView: "month",//设置只显示到月份
-        todayBtn:"true"
+            language:'zh',
+            format: 'yyyy-mm-dd',
+            minView: "month",//设置只显示到月份
+            // todayHighlight:"false",    //今天日期高亮
+            // todayBtn:"true",     //显示今天的按钮
+            autoclose:true, //选择一个日期后自动关闭
+            startDate:new Date("2018-12-10"),
+            endDate:new Date(GetDateStr(-1)),
+            initialDate:new Date("2018-12-10")   
     });
     $('#date_e').datetimepicker({
-        language:'zh',
-        format: 'yyyy-mm-dd',
-        minView: "month",//设置只显示到月份
-        todayBtn:"true"
+            language:'zh',
+            format: 'yyyy-mm-dd',
+            minView: "month",//设置只显示到月份
+            // todayHighlight:"false",    //今天日期高亮
+            // todayBtn:"true",     //显示今天的按钮
+            autoclose:true, //选择一个日期后自动关闭
+            startDate:new Date("2018-12-10"),
+            endDate:new Date(GetDateStr(-1)),
+            initialDate:new Date(GetDateStr(-1))  
     });
-    $('#date_s').datetimepicker('setStartDate',new Date("2018-12-10"));
-    $('#date_s').datetimepicker('setEndDate', GetDateStr(-1));
-    $('#date_e').datetimepicker('setStartDate',new Date("2018-12-10"));
-    $('#date_e').datetimepicker('setEndDate', GetDateStr(-1));
+
 //查询电量函数
     function search_ele(){
         var date_start=$('#date_s').val(); //拿到选中项的文本
@@ -344,22 +351,31 @@ jQuery(function($) {
         // alert(date_end);
         // alert(room_id);
         // alert(user_telephone);
-        $.ajax({
-            type: "POST",
-            url: '<%=basePath%>/apparatus/Statistic',
-            data: {date_start:date_start,date_end:date_end,room_id:room_id,
-                user_telephone:user_telephone},
-            dataType:'json',
-            cache: false,
-            success: function(data){
-                console.log("success");
-                $('#siyou').html(data.sum1);
-                $('#gong_ge').html(data.sum2);
-                $('#zong_ge').html(data.sum3);
-                $('#gong_fang').html(data.sum4);
-                $('#zong').html(data.sum5);
-            }
-        });
+        var s =$('#date_s').val();
+        var e =$('#date_e').val();
+        if(s==""){alert("请选择起始时间！")}
+        else if (e=="") {alert("请选择结束时间！")}
+        else if(s>e){alert("结束时间不能小于起始时间，请重新选择！")}
+        else{
+                // alert(s+" "+e+"可以开始查询了")
+            $.ajax({
+                type: "POST",
+                url: '<%=basePath%>/apparatus/Statistic',
+                data: {date_start:date_start,date_end:date_end,room_id:room_id,
+                    user_telephone:user_telephone},
+                dataType:'json',
+                cache: false,
+                success: function(data){
+                    console.log("success");
+                    $('#siyou').html(data.sum1);
+                    $('#gong_ge').html(data.sum2);
+                    $('#zong_ge').html(data.sum3);
+                    $('#gong_fang').html(data.sum4);
+                    $('#zong').html(data.sum5);
+                }
+            });
+        }
+
 
         // $('#date_s').val("0000-00-00");
         // $('#date_e').val("0000-00-00");

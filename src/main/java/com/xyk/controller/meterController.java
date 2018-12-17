@@ -206,4 +206,18 @@ public class meterController {
         result.put("msg","气表的更新成功");
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
+    @RequestMapping("/echarts")
+    public void echarts(HttpServletRequest request,HttpServletResponse response)
+    {
+        JSONObject result=new JSONObject();
+        String room_id=request.getParameter("room_id");
+        String apartment=rs.selbyRid(room_id).getApartment_id();
+        List<gasModel> gasModels = ms.selbyGGID(apartment);
+        List<dianModel> dianModels = ms.selbyAAID(apartment);
+        List<waterModel> waterModels = ms.selbyWWID(apartment);
+        result.put("gas",gasModels);
+        result.put("dian",dianModels);
+        result.put("water",waterModels);
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+    }
 }

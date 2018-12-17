@@ -19,6 +19,9 @@ public class meterService {
     public List<dianModel> selbyAID(String AID_out){return md.selbyAID(AID_out);}
     public List<gasModel> selbyGID(String GID_out){return md.selbyGID(GID_out);}
     public List<waterModel> selbyWID(String WID_out){return md.selbyWID(WID_out);}
+    public List<dianModel> selbyAAID(String AID_out){return md.selbyAAID(AID_out);}
+    public List<gasModel> selbyGGID(String GID_out){return md.selbyGGID(GID_out);}
+    public List<waterModel> selbyWWID(String WID_out){return md.selbyWWID(WID_out);}
     public boolean addA(dianModel a){return md.addA(a);}
     public boolean addG(gasModel a){return md.addG(a);}
     public boolean addW(waterModel a){return md.addW(a);}

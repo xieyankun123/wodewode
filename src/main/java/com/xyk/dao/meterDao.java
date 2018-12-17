@@ -16,6 +16,9 @@ public interface meterDao {
     List<dianModel> selbyAID(String AID_out);
     List<gasModel> selbyGID(String GID_out);
     List<waterModel> selbyWID(String WID_out);
+    List<dianModel> selbyAAID(String AID_out);
+    List<gasModel> selbyGGID(String GID_out);
+    List<waterModel> selbyWWID(String WID_out);
     boolean addA(dianModel a);
     boolean addG(gasModel a);
     boolean addW(waterModel a);

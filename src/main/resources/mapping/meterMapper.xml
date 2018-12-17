@@ -25,6 +25,16 @@
     <select id="selbyWID" parameterType="java.lang.String" resultType="com.xyk.model.waterModel">
       SELECT * from water_meter_data where WID_out=#{WID_out}
     </select>
+    <!--根据ID_out查找-->
+    <select id="selbyAAID" parameterType="java.lang.String" resultType="com.xyk.model.dianModel">
+      SELECT * from dian_meter_data where AID_out=#{AID_out} and value is not NULL
+    </select>
+    <select id="selbyGGID" parameterType="java.lang.String" resultType="com.xyk.model.gasModel">
+      SELECT * from gas_meter_data where GID_out=#{GID_out} and value is not NULL
+    </select>
+    <select id="selbyWWID" parameterType="java.lang.String" resultType="com.xyk.model.waterModel">
+      SELECT * from water_meter_data where WID_out=#{WID_out} and value is not NULL
+    </select>
     <!--插入信息-->
     <insert id="addA" parameterType="com.xyk.model.dianModel">
         insert into dian_meter_data(AID_out,user_id,time,value,picture) values
