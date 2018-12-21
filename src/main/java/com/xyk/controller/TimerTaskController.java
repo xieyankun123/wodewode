@@ -20,6 +20,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import static com.xyk.controller.yqController.connection;
 
@@ -101,63 +104,81 @@ public class TimerTaskController {
     @Scheduled(cron = "0 59 23 * * ?")
     public void getdayValue()
     {
-            List<yqModel> yqmodels=ys.list();
-            for(int i=0;i<yqmodels.size();i++)
+            final List<yqModel> yqmodels=ys.list();
+        //创建一个线程池
+        ExecutorService exec= Executors.newCachedThreadPool();
+        //闭锁
+        final CountDownLatch countDownLatch=new CountDownLatch(yqmodels.size());
+            for(int j=0;j<yqmodels.size();j++)
             {
-                if(yqmodels.get(i).getUseable().equals("1"))
-                    System.out.println("meibiyao");
-            //每个一段时间你想要做的事
-            //连接服务器
-                else
-                {
-            try {
-                apdataModel am = new apdataModel();
-                HttpURLConnection connection = connection("http://ss1.chakonger.net.cn/web/deviceqry");
-                DataOutputStream out = new DataOutputStream(
-                        connection.getOutputStream());
-                if(yqmodels.get(i).getDevID().matches("[0-9]{1,}") ){
-                    JSONObject obj = new JSONObject();
-                    obj.put("sessionID",yqmodels.get(i).getSessionID());
-                    obj.put("devID", yqmodels.get(i).getDevID());
-                    // 向腾讯请求传入编码为UTF-8格式的json数据
-                    out.write(obj.toString().getBytes("UTF-8"));
-                    out.flush();
-                    out.close();
-                    //获得服务器返回的结果
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(
-                            connection.getInputStream()));
-                    String lines;
-                    StringBuffer sb = new StringBuffer();
-                    while ((lines = reader.readLine()) != null) {
-                        sb.append(lines);
+                final int i=j;
+                exec.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(yqmodels.get(i).getUseable().equals("1"))
+                            System.out.println("meibiyao");
+                            //每个一段时间你想要做的事
+                            //连接服务器
+                        else
+                        {
+                            try {
+                                apdataModel am = new apdataModel();
+                                HttpURLConnection connection = connection("http://ss1.chakonger.net.cn/web/deviceqry");
+                                DataOutputStream out = new DataOutputStream(
+                                        connection.getOutputStream());
+                                if(yqmodels.get(i).getDevID().matches("[0-9]{1,}") ){
+                                    JSONObject obj = new JSONObject();
+                                    obj.put("sessionID",yqmodels.get(i).getSessionID());
+                                    obj.put("devID", yqmodels.get(i).getDevID());
+                                    // 向腾讯请求传入编码为UTF-8格式的json数据
+                                    out.write(obj.toString().getBytes("UTF-8"));
+                                    out.flush();
+                                    out.close();
+                                    //获得服务器返回的结果
+                                    BufferedReader reader = new BufferedReader(new InputStreamReader(
+                                            connection.getInputStream()));
+                                    String lines;
+                                    StringBuffer sb = new StringBuffer();
+                                    while ((lines = reader.readLine()) != null) {
+                                        sb.append(lines);
+                                    }
+                                    reader.close();
+                                    connection.disconnect(); // 销毁连接
+                                    JSONObject js = JSON.parseObject(sb.toString());
+                                    if(js.getString("errmsg").equals("success")==false)
+                                        System.out.println("仪器没有连接网络");
+                                    else {
+                                        DateUtil date = new DateUtil();
+                                        am.setApparatus_id(yqmodels.get(i).getId());
+                                        String dat = date.getDay();
+                                        am.setTime(dat);
+                                        String val = js.getString("socketOut_W");
+                                        am.setValue(val);
+                                        if(ur.selbyRid(yqmodels.get(i).getRoom_id()).size()==0){}
+                                        else {
+                                            am.setName(ur.selbyRid(yqmodels.get(i).getRoom_id()).get(ur.selbyRid(yqmodels.get(i).getRoom_id()).size() - 1).getUser_telephone());
+                                        }
+                                        as.add(am);
+                                    }
+                                }
+                                else
+                                {
+                                    //System.out.println("无效的仪器");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }}
+                        countDownLatch.countDown();
                     }
-                    reader.close();
-                    connection.disconnect(); // 销毁连接
-                    JSONObject js = JSON.parseObject(sb.toString());
-                    if(js.getString("errmsg").equals("success")==false)
-                        System.out.println("仪器没有连接网络");
-                    else {
-                        DateUtil date = new DateUtil();
-                        am.setApparatus_id(yqmodels.get(i).getId());
-                        String dat = date.getDay();
-                        am.setTime(dat);
-                        String val = js.getString("socketOut_W");
-                        am.setValue(val);
-                        if(ur.selbyRid(yqmodels.get(i).getRoom_id()).size()==0){}
-                        else {
-                            am.setName(ur.selbyRid(yqmodels.get(i).getRoom_id()).get(ur.selbyRid(yqmodels.get(i).getRoom_id()).size() - 1).getUser_telephone());
-                        }
-                        as.add(am);
-                    }
-                }
-                else
-                {
-                    //System.out.println("无效的仪器");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }}
+                });
         }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        exec.shutdown();
+            System.out.println("jieshu");
     }
   @Scheduled(cron = "0 59 23 * * ?")
     public void getValue0()
@@ -222,46 +243,52 @@ public class TimerTaskController {
     @Scheduled(cron = "0 0/2 * * * ?")
     public void getPower()
     {
-        List<yqModel> yqmodels=ys.list();
-        for(int i=0;i<yqmodels.size();i++) {
+        final List<yqModel> yqmodels=ys.list();
+        ExecutorService executorService=Executors.newCachedThreadPool();
+        final CountDownLatch countDownLatch=new CountDownLatch(yqmodels.size());
+        for(int j=0;j<yqmodels.size();j++) {
+            final int i=j;
             //每个一段时间你想要做的事
             //连接服务器
 //            if (yqmodels.get(i).getUseable().equals("0") || yqmodels.get(i).getUseable().equals("1")) {
 //                System.out.println("meibiyaoceshi");
 //            }
 //            else {
-                try {
-                    apdataModel am = new apdataModel();
-                    HttpURLConnection connection = connection("http://ss1.chakonger.net.cn/web/deviceqry");
-                    DataOutputStream out = new DataOutputStream(
-                            connection.getOutputStream());
-                    if (yqmodels.get(i).getDevID().matches("[0-9]{1,}")) {
-                        JSONObject obj = new JSONObject();
-                        obj.put("sessionID", yqmodels.get(i).getSessionID());
-                        obj.put("devID", yqmodels.get(i).getDevID());
-                        // 向腾讯请求传入编码为UTF-8格式的json数据
-                        out.write(obj.toString().getBytes("UTF-8"));
-                        out.flush();
-                        out.close();
-                        //获得服务器返回的结果
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(
-                                connection.getInputStream()));
-                        String lines;
-                        StringBuffer sb = new StringBuffer();
-                        while ((lines = reader.readLine()) != null) {
-                            sb.append(lines);
-                        }
-                        reader.close();
-                        connection.disconnect(); // 销毁连接
-                        JSONObject js = JSON.parseObject(sb.toString());
-                        if (js.getString("errmsg").equals("success") == false)
-                            System.out.println("仪器没有连接网络");
-                        else {
-                            DateUtil date = new DateUtil();
-                            am.setApparatus_id(yqmodels.get(i).getId());
-                            String dat = date.getTime();
-                            am.setTime(dat);
-                            String val = js.getString("socketOut_P");
+            executorService.execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        apdataModel am = new apdataModel();
+                        HttpURLConnection connection = connection("http://ss1.chakonger.net.cn/web/deviceqry");
+                        DataOutputStream out = new DataOutputStream(
+                                connection.getOutputStream());
+                        if (yqmodels.get(i).getDevID().matches("[0-9]{1,}")) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("sessionID", yqmodels.get(i).getSessionID());
+                            obj.put("devID", yqmodels.get(i).getDevID());
+                            // 向腾讯请求传入编码为UTF-8格式的json数据
+                            out.write(obj.toString().getBytes("UTF-8"));
+                            out.flush();
+                            out.close();
+                            //获得服务器返回的结果
+                            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                                    connection.getInputStream()));
+                            String lines;
+                            StringBuffer sb = new StringBuffer();
+                            while ((lines = reader.readLine()) != null) {
+                                sb.append(lines);
+                            }
+                            reader.close();
+                            connection.disconnect(); // 销毁连接
+                            JSONObject js = JSON.parseObject(sb.toString());
+                            if (js.getString("errmsg").equals("success") == false)
+                                System.out.println("仪器没有连接网络");
+                            else {
+                                DateUtil date = new DateUtil();
+                                am.setApparatus_id(yqmodels.get(i).getId());
+                                String dat = date.getTime();
+                                am.setTime(dat);
+                                String val = js.getString("socketOut_P");
 //                            if (val.equals("0")) {
 //                                //System.out.println("无效数据，丢了丢了");
 //                            } else {
@@ -273,16 +300,26 @@ public class TimerTaskController {
                                     am.setName(name);
                                 }
                                 as.addP(am);
-                           // }
+                                // }
+                            }
+                        } else {
+                            // System.out.println("无效的仪器");
                         }
-                    } else {
-                        // System.out.println("无效的仪器");
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    countDownLatch.countDown();
                 }
+            });
             //}
         }
+        try {
+            countDownLatch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        executorService.shutdown();
+        System.out.println("jieshu");
     }
     @Scheduled(cron = "0 1 0 * * ?")
     public void cleardata(){

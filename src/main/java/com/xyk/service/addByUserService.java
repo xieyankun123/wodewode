@@ -2,6 +2,8 @@ package com.xyk.service;
 
 import com.xyk.dao.addByUserDao;
 import com.xyk.model.addByUserModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

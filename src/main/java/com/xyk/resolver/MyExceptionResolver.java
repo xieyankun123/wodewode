@@ -1,5 +1,6 @@
 package com.xyk.resolver;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 * 联系方式：QQ313596790
 * @version 1.0
  */
+@Component
 public class MyExceptionResolver implements HandlerExceptionResolver {
 
 	public ModelAndView resolveException(HttpServletRequest request,

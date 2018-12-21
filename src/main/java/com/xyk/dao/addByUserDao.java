@@ -3,6 +3,7 @@ package com.xyk.dao;
 import com.xyk.model.addByUserModel;
 import org.apache.ibatis.annotations.Param;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
