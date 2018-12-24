@@ -37,7 +37,7 @@
     <mvc:annotation-driven></mvc:annotation-driven>
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/mg/**"/>
+            <mvc:mapping path="/mg/index/**"/>
             <bean class="com.xyk.Interceptor.UserLoginInterceptorBySpring"/>
         </mvc:interceptor>
     </mvc:interceptors>

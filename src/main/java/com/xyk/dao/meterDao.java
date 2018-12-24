@@ -13,6 +13,9 @@ public interface meterDao {
     List<dianModel> selbyAUid(String user_id);
     List<gasModel> selbyGUid(String user_id);
     List<waterModel> selbyWUid(String user_id);
+    dianModel selAID(int id);
+    gasModel selGID(int id);
+    waterModel selWID(int id);
     List<dianModel> selbyAID(String AID_out);
     List<gasModel> selbyGID(String GID_out);
     List<waterModel> selbyWID(String WID_out);

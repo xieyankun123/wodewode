@@ -8,9 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
 
@@ -220,4 +223,40 @@ public class meterController {
         result.put("water",waterModels);
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
-}
+    @RequestMapping("/getpic")
+    public void getpic(int id,HttpServletRequest request,HttpServletResponse response)
+    {
+        String picture="";
+        String meter = request.getParameter("meter");
+        if(meter.equals("water")) {
+            picture = ms.selWID(id).getPicture();
+        }
+        else if(meter.equals("gas")) {
+            picture = ms.selGID(id).getPicture();
+        }
+        else if(meter.equals("dian"))
+        {
+            picture = ms.selAID(id).getPicture();
+        }
+        else
+        {
+            System.out.println(11);
+        }
+        picture=request.getRealPath("/")+"/"+picture;
+            File file=new File(picture);
+            try {
+                response.setHeader("content-disposition", "filename=" + URLEncoder.encode(picture, "UTF-8"));
+                FileInputStream in = new FileInputStream(file);
+                OutputStream out = response.getOutputStream();
+                byte buffer[] = new byte[1024];
+                int len = 0;
+                while((len=in.read(buffer))>0){
+                    out.write(buffer, 0, len);
+                }
+                in.close();
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }

@@ -26,19 +26,19 @@ public class UserLoginInterceptorBySpring extends HandlerInterceptorAdapter{
         String url = requestUri.substring(contextPath.length());
         String username = (String) request.getSession().getAttribute("manager_telephone");
         if(null == username){
-            if(url.equals("/mg/checkCode")||url.equals("/mg/login"))
-            {return true;
-            }
-            else {
+//            if(url.equals("/mg/checkCode")||url.equals("/mg/login"))
+//            {return true;
+//            }
+//            else {
                 // 跳转到登录页面 请求转发
                 request.getRequestDispatcher("/WEB-INF/jsp/login.jsp").forward(request, response);
                 return false;
-            }
+//            }
         }
         else{
-            if (request.getRequestURI().equals("/mg/index")) {
-
-            }
+//            if (request.getRequestURI().equals("/mg/index")) {
+//
+//            }
             return true;
         }
     }
@@ -47,15 +47,17 @@ public class UserLoginInterceptorBySpring extends HandlerInterceptorAdapter{
 
     }
     // 在DispatcherServlet完全处理完请求之后被调用，可用于清理资源
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception{
-        HttpSession a = request.getSession();
-        String ip = "";
-        if (request.getHeader("x-forwarded-for") == null) {
-            ip = request.getRemoteAddr();
-        } else {
-            ip = request.getHeader("x-forwarded-for");
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        if (request.getRequestURL().substring(request.getContextPath().length()).contains("mg/index")) {
+            HttpSession a = request.getSession();
+            String ip = "";
+            if (request.getHeader("x-forwarded-for") == null) {
+                ip = request.getRemoteAddr();
+            } else {
+                ip = request.getHeader("x-forwarded-for");
+            }
+            System.out.println(a.getAttribute("manager_telephone") + "在" + new Date() + "登陆了" + "ip为" + ip);
         }
-        System.out.println(a.getAttribute("manager_telephone") + "在" + new Date() + "登陆了" + "ip为" + ip);
     }
 }
 

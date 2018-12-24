@@ -5,6 +5,16 @@
 
 
 <mapper namespace="com.xyk.dao.meterDao">
+    <!--根据ID查找-->
+    <select id="selAID" parameterType="java.lang.Integer" resultType="com.xyk.model.dianModel">
+      SELECT * from dian_meter_data where id=#{id}
+    </select>
+    <select id="selGID" parameterType="java.lang.Integer" resultType="com.xyk.model.gasModel">
+      SELECT * from gas_meter_data where id=#{id}
+    </select>
+    <select id="selWID" parameterType="java.lang.Integer" resultType="com.xyk.model.waterModel">
+      SELECT * from water_meter_data where id=#{id}
+    </select>
     <!--根据用户手机号查找-->
     <select id="selbyAUid" parameterType="java.lang.String" resultType="com.xyk.model.dianModel">
       SELECT * from dian_meter_data where user_id=#{user_id}
