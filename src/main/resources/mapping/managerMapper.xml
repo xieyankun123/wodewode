@@ -17,14 +17,18 @@
     <select id="getqx" parameterType="java.lang.String" resultType="java.lang.String">
       SELECT role from manager_info where manager_telephone=#{manager_telephone}
     </select>
+    <!--根据工厂查找-->
+    <select id="selbyfac" parameterType="java.lang.String" resultType="com.xyk.model.managerModel">
+      SELECT * from manager_info where factory=#{factory}
+    </select>
     <!--列出所有管理员-->
     <select id="list" resultType="com.xyk.model.managerModel">
       SELECT * from manager_info
     </select>
     <!--增加管理员-->
     <insert id="add" parameterType="com.xyk.model.managerModel">
-        insert into manager_info(manager_telephone,password,manager_nicheng,manager_name,manager_IDcard,headpic,role,nativeplace) values
-        (#{manager_telephone},#{password},#{manager_nicheng},#{manager_name},#{manager_IDcard},#{headpic},#{role},#{nativeplace});
+        insert into manager_info(manager_telephone,password,manager_nicheng,manager_name,manager_IDcard,headpic,role,nativeplace,factory) values
+        (#{manager_telephone},#{password},#{manager_nicheng},#{manager_name},#{manager_IDcard},#{headpic},#{role},#{nativeplace},#{factory});
     </insert>
     <!-- 更新管理员图片信息信息-->
     <update id="updatepic" parameterType="com.xyk.model.managerModel">

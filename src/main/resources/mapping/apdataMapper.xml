@@ -19,8 +19,8 @@
     </select>
     <!--增加数据-->
     <insert id="add" parameterType="com.xyk.model.apdataModel">
-        insert into apparatus_dayvalue(apparatus_id,time,value,name) values
-        (#{apparatus_id},#{time},#{value},#{name})
+        insert into apparatus_dayvalue(apparatus_id,time,value,name,factory) values
+        (#{apparatus_id},#{time},#{value},#{name},#{factory})
     </insert>
     <!--获取data value根据仪器-->
     <select id="getdv" parameterType="java.lang.String"  resultType="com.xyk.model.echartsModel">
@@ -30,8 +30,8 @@
 
     <!--增加数据-->
     <insert id="add0" parameterType="com.xyk.model.apdataModel">
-        insert into apparatus0_dayvalue(apparatus_id,time,value,name) values
-        (#{apparatus_id},#{time},#{value},#{name})
+        insert into apparatus0_dayvalue(apparatus_id,time,value,name,factory) values
+        (#{apparatus_id},#{time},#{value},#{name},#{factory})
     </insert>
     <!--获取data value根据仪器-->
     <select id="getdv0" parameterType="java.lang.String"  resultType="com.xyk.model.apdataModel">
@@ -43,8 +43,8 @@
 
 
     <insert id="addhour" parameterType="com.xyk.model.apdataModel">
-        insert into apparatus_hourvalue(apparatus_id,time,value,name) values
-        (#{apparatus_id},#{time},#{value},#{name})
+        insert into apparatus_hourvalue(apparatus_id,time,value,name,factory) values
+        (#{apparatus_id},#{time},#{value},#{name},#{factory})
     </insert>
     <!--获取data value根据仪器-->
     <select id="gethourBy2" parameterType="java.lang.String"  resultType="com.xyk.model.apdataModel">
@@ -70,8 +70,8 @@
     </select>
     <!--增加数据-->
     <insert id="addP" parameterType="com.xyk.model.apdataModel">
-        insert into apparatus_power(apparatus_id,time,value,name) values
-        (#{apparatus_id},#{time},#{value},#{name});
+        insert into apparatus_power(apparatus_id,time,value,name,factory) values
+        (#{apparatus_id},#{time},#{value},#{name},#{factory});
     </insert>
     <!--根据name,仪器id查找算电量-->
     <select id="selbynameP" parameterType="java.lang.String" resultType="com.xyk.model.apdataModel">

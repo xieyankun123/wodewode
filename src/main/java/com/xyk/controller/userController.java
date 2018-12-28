@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.xyk.model.ExcelBean;
 import com.xyk.model.UserModel;
 import com.xyk.model.addByUserModel;
+import com.xyk.model.managerModel;
 import com.xyk.service.addByUserService;
 import com.xyk.service.userService;
+import com.xyk.util.Cons;
 import com.xyk.util.ExcelUtil;
 import com.xyk.util.HttpOutUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user")
@@ -32,17 +35,25 @@ public class userController {
     @Resource
     private addByUserService abs;
     @RequestMapping("/user_list")
-    public ModelAndView list(HttpServletResponse response) {
+    public ModelAndView list(HttpServletRequest request) {
 //      List<UserModel> a=userservice.list();
 //        JSONObject result = new JSONObject();
 //        result.put("result", "10001");
 //        result.put("aaa",a);
 //        result.put("result","10003");
 //        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
-        List<UserModel> a = userservice.list();
         ModelAndView modelAndView = new ModelAndView();
-        //将返回给页面的数据放入模型和视图对象中
-        modelAndView.addObject("userList", a);
+        List<UserModel> a = userservice.list();
+        managerModel managerModel = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
+        if("0".equals(managerModel.getFactory()))
+        {
+            modelAndView.addObject("userList",a);
+        }
+        else {
+            List<UserModel> c = a.stream().filter(b -> b.getFactory().equals(managerModel.getFactory())).collect(Collectors.toList());
+            //将返回给页面的数据放入模型和视图对象中
+            modelAndView.addObject("userList", c);
+        }
         //指定返回的页面位置
         modelAndView.setViewName("user_list");
         return modelAndView;
@@ -83,6 +94,7 @@ public class userController {
         }
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
+    //APP接口
     @RequestMapping("/weixinLogin")
     public void weixinLogin(HttpServletRequest request,HttpServletResponse response)
     {
@@ -90,6 +102,7 @@ public class userController {
         String user_weixin=request.getParameter("user_weixin");
         List<UserModel> a=userservice.selbystate("1");
         result.put("msg",false);
+        System.out.println(a.size());
         for(int i=0;i<a.size();i++) {
 
                 if (a.get(i).getUser_weixin().equals(user_weixin)) {
@@ -113,6 +126,7 @@ public class userController {
             }
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
+    //APP接口
     @RequestMapping("/selectbystate")
     public void selbystate(HttpServletRequest request, HttpServletResponse response) {
         JSONObject result = new JSONObject();
@@ -183,9 +197,12 @@ public class userController {
     }
 
     @RequestMapping("/add")
-    public void add(UserModel userModel, HttpServletResponse response) {
+    public void add(UserModel userModel, HttpServletResponse response,HttpServletRequest request) {
         JSONObject result = new JSONObject();
+        managerModel managerModel = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
         try {
+            userModel.setFactory(managerModel.getFactory());
+            userModel.setUser_weixin("");
             boolean a = userservice.add(userModel);
             if (a) {
                 result.put("msg", "存储成功");

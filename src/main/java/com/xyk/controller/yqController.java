@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import com.xyk.model.*;
 import com.xyk.service.*;
+import com.xyk.util.Cons;
 import com.xyk.util.DateUtil;
 import com.xyk.util.HttpOutUtil;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/apparatus")
@@ -51,8 +53,6 @@ public class yqController{
         mv.addObject("apparatus_id",apparatus_id);
         mv.addObject("user_telephone",user_telephone);
         mv.setViewName("zhexian");
-        System.out.println("test1"+apparatus_id);
-        System.out.println("test2"+user_telephone);
         return mv;
     }
     @RequestMapping("/")
@@ -70,11 +70,13 @@ public class yqController{
         result.put("msg","更新成功");
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
+    //APP接口
     @RequestMapping("/yqinfo")
     public void yqinfo(HttpServletRequest request, HttpServletResponse response)
     {
         JSONObject result=new JSONObject();
         String user_telephone=request.getParameter("user_telephone");
+        String factory=us.selbytel(user_telephone).getFactory();
         if(user_telephone.equals("false"))
         {
             result.put("msg","fail");
@@ -93,7 +95,7 @@ public class yqController{
 //        }
 //        else
 //        {
-            List<yqModel> apparatus1 = ys.selbyRid(room_id);
+            List<yqModel> apparatus1 = ys.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
             if(apparatus1.size()==0)
             {result.put("msg1","10");}
             else
@@ -102,7 +104,7 @@ public class yqController{
             }
             StringBuilder a = new StringBuilder(room_id);
             a.setCharAt(4, '0');
-            List<yqModel> apparatus0 = ys.selbyRid(a.toString());
+            List<yqModel> apparatus0 = ys.selbyRid(a.toString()).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
             if(apparatus0.size()==0)
             {result.put("msg0","00");}
             else{
@@ -119,11 +121,12 @@ public class yqController{
         String room_id=request.getParameter("room_id");
         String user_telephone=request.getParameter("user_telephone");
         UserModel user=us.selbytel(user_telephone);
-        roomModel room=rs.selbyRid(room_id);
+        String factory= user.getFactory();
+        roomModel room=rs.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList()).get(0);
         List<u_rModel> u_rModels = ur.selbyUtel(user_telephone);
         String intime=u_rModels.get(u_rModels.size()-1).getIn_time();
         String outtime=u_rModels.get(u_rModels.size()-1).getOut_time();
-        room.setOwn(gs.selbyid(room.getApartment_id()).getOwner());
+        room.setOwn(gs.selbyid(room.getApartment_id()).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList()).get(0).getOwner());
         if(user.getUser_state().equals("1"))
         {
             mv.addObject("outtime","至今");
@@ -146,10 +149,10 @@ public class yqController{
 //        {
             double sum1=0.00;
             double sum2=0.00;
-            List<yqModel> apparatus1 = ys.selbyRid(room_id);
+            List<yqModel> apparatus1 = ys.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
             StringBuilder a = new StringBuilder(room_id);
             a.setCharAt(4, '0');
-            List<yqModel> apparatus0 = ys.selbyRid(a.toString());
+            List<yqModel> apparatus0 = ys.selbyRid(a.toString()).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
             DecimalFormat df = new DecimalFormat("0.00");
             for(int i=0;i<apparatus1.size();i++)
             {
@@ -200,8 +203,9 @@ public class yqController{
         DecimalFormat df = new DecimalFormat("0.00");
         ModelAndView mv=new ModelAndView();
         String room_id=request.getParameter("room_id");
-        roomModel room=rs.selbyRid(room_id);
-        room.setOwn(gs.selbyid(room.getApartment_id()).getOwner());
+        String factory=request.getParameter("factory");
+        roomModel room=rs.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList()).get(0);
+        room.setOwn(gs.selbyid(room.getApartment_id()).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList()).get(0).getOwner());
         mv.addObject("room",room);
         // result.put("msg1",user);
 //        if(room_id.endsWith("0")) {
@@ -213,7 +217,7 @@ public class yqController{
 //        else
 //        {
         if(room_id.endsWith("0")==false) {
-            List<yqModel> apparatus1 = ys.selbyRid(room_id);
+            List<yqModel> apparatus1 = ys.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
 //            for (int i = 0; i < apparatus1.size(); i++) {
 //                List<apdataModel> apdataModels = ads.selbyid(apparatus1.get(i).getId());
 //                if (apdataModels.size() == 0) {
@@ -230,7 +234,7 @@ public class yqController{
         }
         StringBuilder a=new StringBuilder(room_id);
         a.setCharAt(4, '0');
-        List<yqModel> apparatus0 = ys.selbyRid(a.toString());
+        List<yqModel> apparatus0 = ys.selbyRid(a.toString()).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
 //        for(int k=0;k<apparatus0.size();k++)
 //        {
 //            List<apdataModel> apdataModels=ads.selbyid(apparatus0.get(k).getId());
@@ -252,13 +256,12 @@ public class yqController{
         // }
         // HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
-
+    //APP接口
     @RequestMapping("/onoff")
     public void httpURLConectionGET1(int actionID,HttpServletRequest request, HttpServletResponse response) {
         String id=request.getParameter("id");
         String user_telephone=request.getParameter("user_telephone");
-        System.out.println(id);
-        System.out.println(actionID);
+        //String factory=us.selbytel(user_telephone).getFactory();
         JSONObject result=new JSONObject();
         String a="0";
         try {
@@ -295,6 +298,7 @@ public class yqController{
                         DateUtil dateUtil=new DateUtil();
                         am.setTime(dateUtil.getTime());
                         am.setUser_name_on(user_telephone);
+                        am.setFactory(us.selbytel(user_telephone).getFactory());
                         as.add(am);
                         result.put("msg","10001");
                     }
@@ -336,6 +340,7 @@ public class yqController{
                             DateUtil dateUtil=new DateUtil();
                             am.setTime(dateUtil.getTime());
                             am.setUser_name_off(user_telephone);
+                            am.setFactory(us.selbytel(user_telephone).getFactory());
                             as.add(am);
                             result.put("msg","10002");
                         }
@@ -375,21 +380,23 @@ public class yqController{
         return connection;
         // TODO Auto-generated method stub
     }
+    //APP接口
     @RequestMapping("PowerAndValue")
     public void PoweAndValue(HttpServletResponse response,HttpServletRequest request)
     {
         JSONObject result=new JSONObject();
         String user_telephone=request.getParameter("user_telephone");
+        String factory=us.selbytel(user_telephone).getFactory();
         if(user_telephone.equals("false"))
         {
             result.put("msg","fail");
         }
         else {
             String room_id = ur.selbyUtel(user_telephone).get(ur.selbyUtel(user_telephone).size() - 1).getRoom_id();
-            List<yqModel> apparatus1 = ys.selbyRid(room_id);
+            List<yqModel> apparatus1 = ys.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
             StringBuilder a = new StringBuilder(room_id);
             a.setCharAt(4, '0');
-            List<yqModel> apparatus0 = ys.selbyRid(a.toString());
+            List<yqModel> apparatus0 = ys.selbyRid(a.toString()).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
             List<EleModel> eleModels1=new ArrayList<EleModel>();
             List<EleModel> eleModels0=new ArrayList<EleModel>();
             DecimalFormat df = new DecimalFormat("0.00");
@@ -446,10 +453,9 @@ public class yqController{
         String date_end=request.getParameter("date_end");
         String room_id=request.getParameter("room_id");
         String user_telephone = request.getParameter("user_telephone");
-       System.out.println(date_start);
-       System.out.println(date_end+"dataend");
+        String factory=us.selbytel(user_telephone).getFactory();
         //私有区域总用电量
-        List<yqModel> yqModels = ys.selbyRid(room_id);
+        List<yqModel> yqModels = ys.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
         for(int j=0;j<yqModels.size();j++) {
             String apparatus_id = yqModels.get(j).getId();
             List<apdataModel> apdataModels = ads.getbyid(apparatus_id);
@@ -489,7 +495,7 @@ public class yqController{
         }
         StringBuilder a = new StringBuilder(room_id);
         a.setCharAt(4, '0');
-        List<yqModel> apparatus0 = ys.selbyRid(a.toString());
+        List<yqModel> apparatus0 = ys.selbyRid(a.toString()).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
 
         //公有区域总用电量（个人）
         for(int j=0;j<apparatus0.size();j++) {
@@ -572,9 +578,10 @@ public class yqController{
             }
         }
         //公寓总用电量
-        List<roomModel> roomModels = rs.selbyAid(rs.selbyRid(room_id).getApartment_id());
+        roomModel room=rs.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList()).get(0);
+        List<roomModel> roomModels = rs.selbyAid(room.getApartment_id()).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
         for(int i=0;i<roomModels.size();i++) {
-            List<yqModel> yqModels1 = ys.selbyRid(roomModels.get(i).getRoom_id());
+            List<yqModel> yqModels1 = ys.selbyRid(roomModels.get(i).getRoom_id()).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
             if (yqModels1.size() == 0) {
             } else {
                 for (int j = 0; j < yqModels1.size(); j++) {
@@ -621,6 +628,7 @@ public class yqController{
         result.put("sum5",df.format(sum5));
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
+    //APP接口
     @RequestMapping("updateBeizhu")
     public void updateBeizhu(HttpServletRequest request,HttpServletResponse response)
     {
@@ -638,19 +646,19 @@ public class yqController{
         {result.put("msg","更新失败");}
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
-    @RequestMapping("/add")
-    public void add(HttpServletResponse response,yqModel a)
-    {
-        JSONObject result=new JSONObject();
-        try {
-            boolean b= ys.add(a);
-            if (b) {
-                result.put("msg", "存储成功");
-            }
-        } catch (Exception e) {
-            result.put("msg1", e);
-            result.put("msg2", "参数错误添加失败");
-        }
-        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
-    }
+//    @RequestMapping("/add")
+//    public void add(HttpServletResponse response,yqModel a)
+//    {
+//        JSONObject result=new JSONObject();
+//        try {
+//            boolean b= ys.add(a);
+//            if (b) {
+//                result.put("msg", "存储成功");
+//            }
+//        } catch (Exception e) {
+//            result.put("msg1", e);
+//            result.put("msg2", "参数错误添加失败");
+//        }
+//        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+//    }
 }

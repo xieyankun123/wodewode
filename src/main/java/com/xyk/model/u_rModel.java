@@ -9,7 +9,15 @@ public class u_rModel {
     private String out_time;
     private String room_id;
     private String username;
+    private String factory;
 
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
     public String getUsername() {
         return username;
     }

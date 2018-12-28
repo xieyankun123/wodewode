@@ -2,12 +2,14 @@ package com.xyk.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xyk.model.UserModel;
+import com.xyk.model.managerModel;
 import com.xyk.model.roomModel;
 import com.xyk.model.u_rModel;
 import com.xyk.service.gyService;
 import com.xyk.service.roomService;
 import com.xyk.service.u_rService;
 import com.xyk.service.userService;
+import com.xyk.util.Cons;
 import com.xyk.util.HttpOutUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/u_r")
@@ -35,9 +38,11 @@ public class u_rcontroller {
     private gyService gs;
     //列表
     @RequestMapping("/")
-    public void list(HttpServletResponse response)
+    public void list(HttpServletResponse response,HttpServletRequest request)
     {
-        List<u_rModel> a=ur.list();
+        managerModel managerModel = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
+        List<u_rModel> aa=ur.list();
+        List<u_rModel> a= aa.stream().filter(aaa -> aaa.getFactory().equals(managerModel.getFactory())).collect(Collectors.toList());
         JSONObject result = new JSONObject();
         result.put("result", "10001");
         result.put("aaa",a);
@@ -63,7 +68,9 @@ public class u_rcontroller {
     public void add(HttpServletRequest request,HttpServletResponse response,u_rModel ur1)
     {
         JSONObject result=new JSONObject();
+        managerModel managerModel = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
         try {
+            ur1.setFactory(managerModel.getFactory());
             boolean a = ur.add(ur1) ;
             if (a) {
                 result.put("msg", "存储成功");
@@ -74,27 +81,24 @@ public class u_rcontroller {
         }
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
-    @RequestMapping("/intoout")
-    public void intoout(HttpServletResponse response)
-    {
-        JSONObject result = new JSONObject();
-        result.put("result", "10001");
-        u_rModel b=ur.selbyid(1);
-        String bb=b.getIn_time();
-        String cc=b.getOut_time();
-        String ccc=bb.substring(0,9);
-        String ddd=cc.substring(0,9);
-        result.put("result",ccc.replaceAll("-","/")+"-"+ddd.replaceAll("-","/"));
-        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
-    }
+//    @RequestMapping("/intoout")
+//    public void intoout(HttpServletResponse response)
+//    {
+//        JSONObject result = new JSONObject();
+//        result.put("result", "10001");
+//        u_rModel b=ur.selbyid(1);
+//        String bb=b.getIn_time();
+//        String cc=b.getOut_time();
+//        String ccc=bb.substring(0,9);
+//        String ddd=cc.substring(0,9);
+//        result.put("result",ccc.replaceAll("-","/")+"-"+ddd.replaceAll("-","/"));
+//        HttpOutUtil.outData(response, JSONObject.toJSONString(result));
+//    }
     @RequestMapping("/historyU")
     public ModelAndView historyU(HttpServletResponse response, HttpServletRequest request)
     {
-        System.out.println("123");
         ModelAndView mv=new ModelAndView();
-        System.out.println("123");
         String user_telephone=request.getParameter("user_telephone");
-        System.out.println(user_telephone);
         //JSONObject result=new JSONObject();
         UserModel user=us.selbytel(user_telephone);
         //result.put("msg1",user);
@@ -113,17 +117,18 @@ public class u_rcontroller {
     public ModelAndView historyR(HttpServletResponse response,HttpServletRequest request)
     {
         ModelAndView mv=new ModelAndView();
-
         //JSONObject result=new JSONObject();
         String room_id=request.getParameter("room_id");
-        roomModel room=rs.selbyRid(room_id);
-        room.setOwn(gs.selbyid(room.getApartment_id()).getOwner());
+        String factory=request.getParameter("factory");
+        List<roomModel> collect = rs.selbyRid(room_id).stream().filter(k -> k.getFactory().equals(factory)).collect(Collectors.toList());
+        roomModel room=collect.get(0);
+        //户主人数有问题--
+        room.setOwn(gs.selbyid(room.getApartment_id()).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList()).get(0).getOwner());
         if(ur.selbyRid(room.getRoom_id()).size()>0)
             room.setNum(ur.selbyRid(room.getRoom_id()).get(ur.selbyRid(room.getRoom_id()).size()-1).getUser_telephone());
-        System.out.println("123"+room.getNum()+"123");
         mv.addObject("room",room);
         //result.put("msg1",room);
-        List<u_rModel> user_room=ur.selbyRid(room_id);
+        List<u_rModel> user_room=ur.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
         for(int i=0;i<user_room.size();i++)
         {
             user_room.get(i).setUsername(us.selbytel(user_room.get(i).getUser_telephone()).getUser_name());

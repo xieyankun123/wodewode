@@ -5,7 +5,15 @@ public class gyModel {
     private int useable;
     private String location;
     private String owner;
+    private String factory;
 
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
     public String getApartment_id() {
         return apartment_id;
     }

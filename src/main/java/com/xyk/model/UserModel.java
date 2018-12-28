@@ -11,6 +11,15 @@ public class UserModel {
     private String user_state;
     private String user_email;
     private String user_weixin;
+    private String factory;
+
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
 
     public String getUser_weixin() {
         return user_weixin;

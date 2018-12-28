@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,13 +44,13 @@ public class meterController {
         UserModel user=us.selbytel(user_telephone);
         mv.addObject("user",user);
         String room_id=request.getParameter("room_id");
-        roomModel room=rs.selbyRid(room_id);
+        roomModel room=rs.selbyRid(room_id).stream().filter(k->k.getFactory().equals(user.getFactory())).collect(Collectors.toList()).get(0);
         String apid=room.getApartment_id();
-        room.setOwn(gs.selbyid(apid).getOwner());
+        room.setOwn(gs.selbyid(apid).stream().filter(k->k.getFactory().equals(user.getFactory())).collect(Collectors.toList()).get(0).getOwner());
         mv.addObject("room",room);
-        List<waterModel> water=ms.selbyWID(apid);
-        List<dianModel> dian=ms.selbyAID(apid);
-        List<gasModel> gas=ms.selbyGID(apid);
+        List<waterModel> water=ms.selbyWID(apid).stream().filter(k->k.getFactory().equals(user.getFactory())).collect(Collectors.toList());
+        List<dianModel> dian=ms.selbyAID(apid).stream().filter(k->k.getFactory().equals(user.getFactory())).collect(Collectors.toList());
+        List<gasModel> gas=ms.selbyGID(apid).stream().filter(k->k.getFactory().equals(user.getFactory())).collect(Collectors.toList());
         mv.addObject("water",water);
         mv.addObject("dian",dian);
         mv.addObject("gas",gas);
@@ -97,8 +98,9 @@ public class meterController {
     public void getbyRid(HttpServletResponse response, HttpServletRequest request)
     {
         JSONObject result=new JSONObject();
+        String factory= request.getParameter("factory");
         String room_id=request.getParameter("room_id");
-        String apid=rs.selbyRid(room_id).getApartment_id();
+        String apid=rs.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList()).get(0).getApartment_id();
         System.out.println(apid);
         List<dianModel> a=ms.selbyAID(apid);
         List<gasModel> b=ms.selbyGID(apid);
@@ -128,6 +130,7 @@ public class meterController {
     public String get32UUID(){
         return UuidUtil.get32UUID();
     }
+    //APP接口
     @RequestMapping("/insert")
     public void insert(HttpServletResponse response,HttpServletRequest request,@RequestParam(value = "file", required = false) MultipartFile file)
     {
@@ -135,7 +138,8 @@ public class meterController {
         String user_id=request.getParameter("user_id");
         String meter=request.getParameter("meter");
         String room_id=ur.selbyUtel(user_id).get(ur.selbyUtel(user_id).size()-1).getRoom_id();
-        String apid=rs.selbyRid(room_id).getApartment_id();
+        String factory=ur.selbyUtel(user_id).get(ur.selbyUtel(user_id).size()-1).getFactory();
+        String apid=rs.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList()).get(0).getApartment_id();
         DateUtil dat=new DateUtil();
         String date=dat.getDay();
         System.out.println(date);
@@ -154,6 +158,7 @@ public class meterController {
             a.setUser_id(user_id);
             a.setWID_out(apid);
             a.setTime(date);
+            a.setFactory(factory);
             ms.addW(a);
             result.put("msg","水表的信息插入成功");
         }
@@ -163,6 +168,7 @@ public class meterController {
             a.setPicture(filename);
             a.setUser_id(user_id);
             a.setGID_out(apid);
+            a.setFactory(factory);
             a.setTime(date);
             ms.addG(a);
             result.put("msg","气表的信息插入成功");
@@ -173,6 +179,7 @@ public class meterController {
             a.setPicture(filename);
             a.setUser_id(user_id);
             a.setAID_out(apid);
+            a.setFactory(factory);
             a.setTime(date);
             ms.addA(a);
             result.put("msg","电表的信息插入成功");
@@ -209,23 +216,27 @@ public class meterController {
         result.put("msg","气表的更新成功");
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
+    //APP接口
     @RequestMapping("/echarts")
     public void echarts(HttpServletRequest request,HttpServletResponse response)
     {
         JSONObject result=new JSONObject();
         String room_id=request.getParameter("room_id");
-        String apartment=rs.selbyRid(room_id).getApartment_id();
-        List<gasModel> gasModels = ms.selbyGGID(apartment);
-        List<dianModel> dianModels = ms.selbyAAID(apartment);
-        List<waterModel> waterModels = ms.selbyWWID(apartment);
+        String factory= "2";
+        String apartment=rs.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList()).get(0).getApartment_id();
+        List<gasModel> gasModels = ms.selbyGGID(apartment).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
+        List<dianModel> dianModels = ms.selbyAAID(apartment).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
+        List<waterModel> waterModels = ms.selbyWWID(apartment).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
         result.put("gas",gasModels);
         result.put("dian",dianModels);
         result.put("water",waterModels);
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
+    //APP接口
     @RequestMapping("/getpic")
     public void getpic(int id,HttpServletRequest request,HttpServletResponse response)
     {
+        JSONObject result=new JSONObject();
         String picture="";
         String meter = request.getParameter("meter");
         if(meter.equals("water")) {
@@ -242,21 +253,24 @@ public class meterController {
         {
             System.out.println(11);
         }
-        picture=request.getRealPath("/")+"/"+picture;
-            File file=new File(picture);
-            try {
-                response.setHeader("content-disposition", "filename=" + URLEncoder.encode(picture, "UTF-8"));
-                FileInputStream in = new FileInputStream(file);
-                OutputStream out = response.getOutputStream();
-                byte buffer[] = new byte[1024];
-                int len = 0;
-                while((len=in.read(buffer))>0){
-                    out.write(buffer, 0, len);
-                }
-                in.close();
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        picture="https://zigzen.net/changkongdemo/"+picture;
+        result.put("picurl",picture);
+        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+//        picture=request.getRealPath("/")+"/"+picture;
+//            File file=new File(picture);
+//            try {
+//                response.setHeader("content-disposition", "filename=" + URLEncoder.encode(picture, "UTF-8"));
+//                FileInputStream in = new FileInputStream(file);
+//                OutputStream out = response.getOutputStream();
+//                byte buffer[] = new byte[1024];
+//                int len = 0;
+//                while((len=in.read(buffer))>0){
+//                    out.write(buffer, 0, len);
+//                }
+//                in.close();
+//                out.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
     }

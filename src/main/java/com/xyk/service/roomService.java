@@ -11,7 +11,7 @@ public class roomService {
     @Resource
     private roomDao roomdao;
     // <!--根据房间号查找-->
-    public roomModel selbyRid(String room_id)
+    public List<roomModel> selbyRid(String room_id)
     {
         return roomdao.selbyRid(room_id);
     }

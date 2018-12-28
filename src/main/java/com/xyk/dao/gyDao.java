@@ -7,6 +7,6 @@ import java.util.List;
 
 @MapperScan
 public interface gyDao {
-    gyModel selbyid(String apartment_id);
+    List<gyModel> selbyid(String apartment_id);
     List<gyModel> list();
 }

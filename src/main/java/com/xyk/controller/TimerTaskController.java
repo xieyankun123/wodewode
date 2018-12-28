@@ -2,10 +2,7 @@ package com.xyk.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.xyk.model.UserModel;
-import com.xyk.model.apdataModel;
-import com.xyk.model.u_rModel;
-import com.xyk.model.yqModel;
+import com.xyk.model.*;
 import com.xyk.service.*;
 import com.xyk.util.DateUtil;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
@@ -23,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static com.xyk.controller.yqController.connection;
 
@@ -49,13 +47,14 @@ public class TimerTaskController {
        List<UserModel> userlist=userservice.selbystate("1");
        for(int i=0;i<userlist.size();i++)
        {
+           String factory=userlist.get(i).getFactory();
            List<u_rModel> u_rModels = ur.selbyUtel(userlist.get(i).getUser_telephone());
            String a1=u_rModels.get(u_rModels.size()-1).getRoom_id();
            StringBuffer a2=new StringBuffer(a1);
            a2.setCharAt(4,'0');
            String a3=a2.toString();
-           List<yqModel> yqModels = ys.selbyRid(a3);
-           List<yqModel> yqModels1=ys.selbyRid(a1);
+           List<yqModel> yqModels = ys.selbyRid(a3).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
+           List<yqModel> yqModels1=ys.selbyRid(a1).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
            DecimalFormat df = new DecimalFormat("0.00");
            if(yqModels.size()==0){}
            else
@@ -76,6 +75,7 @@ public class TimerTaskController {
                    ap.setApparatus_id(apparatus_id);
                    ap.setValue(ssum);
                    ap.setTime(dt);
+                   ap.setFactory(factory);
                    ads.addhour(ap);
                }}
            if(yqModels1.size()==0){}
@@ -97,6 +97,7 @@ public class TimerTaskController {
                    ap.setApparatus_id(apparatus_id);
                    ap.setValue(ssum);
                    ap.setTime(dt);
+                   ap.setFactory(factory);
                    ads.addhour(ap);
                }}
        }
@@ -188,13 +189,14 @@ public class TimerTaskController {
         List<UserModel> userlist=userservice.selbystate("1");
         for(int i=0;i<userlist.size();i++)
         {
+            String factory=userlist.get(i).getFactory();
             List<u_rModel> u_rModels = ur.selbyUtel(userlist.get(i).getUser_telephone());
             String a1=u_rModels.get(u_rModels.size()-1).getRoom_id();
             StringBuffer a2=new StringBuffer(a1);
             a2.setCharAt(4,'0');
             String a3=a2.toString();
-            List<yqModel> yqModels = ys.selbyRid(a3);
-           List<yqModel> yqModels1=ys.selbyRid(a1);
+            List<yqModel> yqModels = ys.selbyRid(a3).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
+           List<yqModel> yqModels1=ys.selbyRid(a1).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
             DecimalFormat df = new DecimalFormat("0.00");
             if(yqModels.size()==0){}
             else
@@ -214,6 +216,7 @@ public class TimerTaskController {
                 ap.setName(name);
                 ap.setApparatus_id(apparatus_id);
                 ap.setValue(ssum);
+                ap.setFactory(factory);
                 ap.setTime(dt);
                 ads.add0(ap);
             }}
@@ -235,6 +238,7 @@ public class TimerTaskController {
                     ap.setName(name);
                     ap.setApparatus_id(apparatus_id);
                     ap.setValue(ssum);
+                    ap.setFactory(factory);
                     ap.setTime(dt);
                     ads.add0(ap);
                 }}
@@ -247,6 +251,7 @@ public class TimerTaskController {
         ExecutorService executorService=Executors.newCachedThreadPool();
         final CountDownLatch countDownLatch=new CountDownLatch(yqmodels.size());
         for(int j=0;j<yqmodels.size();j++) {
+            String factory=yqmodels.get(j).getFactory();
             final int i=j;
             //每个一段时间你想要做的事
             //连接服务器
@@ -293,10 +298,12 @@ public class TimerTaskController {
 //                                //System.out.println("无效数据，丢了丢了");
 //                            } else {
                                 am.setValue(val);
+                                am.setFactory(factory);
                                 if(apservice.selbyid(yqmodels.get(i).getId()).size()==0)
                                 {}
                                 else {
-                                    String name = apservice.selbyid(yqmodels.get(i).getId()).get(apservice.selbyid(yqmodels.get(i).getId()).size() - 1).getUser_name_on();
+                                    List<ApModel> collect= apservice.selbyid(yqmodels.get(i).getId()).stream().filter(k -> k.getFactory().equals(factory)).collect(Collectors.toList());
+                                    String name =collect.get(collect.size()-1).getUser_name_on();
                                     am.setName(name);
                                 }
                                 as.addP(am);

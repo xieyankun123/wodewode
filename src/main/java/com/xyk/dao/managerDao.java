@@ -12,6 +12,8 @@ public interface managerDao {
     managerModel selbyname(String manager_name);
     // <!--根据手机号查找-->
     managerModel selbytel(String manager_telephone);
+    // <!--根据gongchang查找-->
+    List<managerModel> selbyfac(String factory);
     //<!--获取权限-->
     String getqx(String manager_telephone);
     //<!--列表-->

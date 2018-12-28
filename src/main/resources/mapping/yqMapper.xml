@@ -27,8 +27,8 @@
     </update>
     <!--增加信息-->
     <insert id="add" parameterType="com.xyk.model.yqModel">
-        insert into apparatus_info(id,sessionID,devID,apparatus_id,beizhu,beizhu2,OEM,useable,room_id,yonghuming,mima) values
-        (#{id},#{sessionID},#{devID},#{apparatus_id},#{beizhu},#{beizhu2},#{OEM},#{useable},#{room_id},#{yonghuming},#{mima})
+        insert into apparatus_info(id,sessionID,devID,apparatus_id,beizhu,beizhu2,OEM,useable,room_id,yonghuming,mima,factory) values
+        (#{id},#{sessionID},#{devID},#{apparatus_id},#{beizhu},#{beizhu2},#{OEM},#{useable},#{room_id},#{yonghuming},#{mima},#{factory})
     </insert>
     <!--根据仪器id查找u-->
     <select id="selbyid" parameterType="java.lang.String" resultType="com.xyk.model.yqModel">

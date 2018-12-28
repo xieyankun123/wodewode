@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.xyk.model.managerModel;
+import com.xyk.util.Cons;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 /**
@@ -24,8 +26,8 @@ public class UserLoginInterceptorBySpring extends HandlerInterceptorAdapter{
         String requestUri = request.getRequestURI();
         String contextPath = request.getContextPath();
         String url = requestUri.substring(contextPath.length());
-        String username = (String) request.getSession().getAttribute("manager_telephone");
-        if(null == username){
+        managerModel attribute = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
+        if(null == attribute){
 //            if(url.equals("/mg/checkCode")||url.equals("/mg/login"))
 //            {return true;
 //            }
@@ -49,14 +51,14 @@ public class UserLoginInterceptorBySpring extends HandlerInterceptorAdapter{
     // 在DispatcherServlet完全处理完请求之后被调用，可用于清理资源
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         if (request.getRequestURL().substring(request.getContextPath().length()).contains("mg/index")) {
-            HttpSession a = request.getSession();
+            managerModel attribute = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
             String ip = "";
             if (request.getHeader("x-forwarded-for") == null) {
                 ip = request.getRemoteAddr();
             } else {
                 ip = request.getHeader("x-forwarded-for");
             }
-            System.out.println(a.getAttribute("manager_telephone") + "在" + new Date() + "登陆了" + "ip为" + ip);
+            System.out.println(attribute.getManager_telephone() + "在" + new Date() + "登陆了" + "ip为" + ip);
         }
     }
 }

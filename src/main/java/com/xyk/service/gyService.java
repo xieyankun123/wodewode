@@ -11,6 +11,6 @@ import java.util.List;
 public class gyService {
     @Resource
     private gyDao gd;
-    public gyModel selbyid(String apartment_id){return gd.selbyid(apartment_id);}
+    public List<gyModel> selbyid(String apartment_id){return gd.selbyid(apartment_id);}
     public List<gyModel> list(){return  gd.list();}
 }

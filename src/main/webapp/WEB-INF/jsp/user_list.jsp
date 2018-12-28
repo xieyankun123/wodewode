@@ -102,22 +102,22 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
      <!---->
 
      <!---->
-     <div class="table_menu_list">
-       <table class="table table-striped table-bordered table-hover" id="sample-table">
+     <div class="table_menu_list" style="width: 100%!important;">
+       <table class="table table-striped table-bordered table-hover" id="sample-table" style="width: 100%!important;">
 		<thead>
 		 <tr>
 
-				<th width="80">序号</th>
-				<th width="100">姓名</th>
-				<th width="80">性别</th>
-				<th width="120">手机</th>
-        <th width="150">身份证号</th>
+				<th style="width:5%">序号</th>
+				<th style="width:7%">姓名</th>
+				<th style="width:7%">性别</th>
+				<th style="width:10%">手机</th>
+        <th style="width:11%">身份证号</th>
 				<!-- <th width="150">邮箱</th> -->
-				<th width="200">地址</th>
+				<th style="width:11%">地址</th>
 				<!-- <th width="180">加入时间</th> -->
-        <th width="100">租房情况</th>
-				<th width="70">状态</th>                
-				<th width="100">操作</th>
+        <th style="width:7%">租房情况</th>
+				<th style="width:7%">状态</th>
+				<th style="width:7%">操作</th>
 			</tr>
 		</thead>
 	<tbody>
@@ -236,7 +236,8 @@ jQuery(function($) {
 		  //   "bStateSave": true,//状态保存
         "paging":   true,  //分页功能
         "filter":false,   //搜索功能
-        // "columnDefs":[{"targets":[0], "searchable":false}],
+         "bAutoWidth":false,
+                    // "columnDefs":[{"targets":[0], "searchable":false}],
     // "dom": '<"top"i>rt<"bottom"flp><"clear">',
 		    "aoColumnDefs": [
 		  //{"bVisible": false, "aTargets": [ 3 ]} //控制列的隐藏显示

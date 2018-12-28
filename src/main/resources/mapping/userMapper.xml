@@ -19,8 +19,8 @@
     </select>
     <!--增加用户-->
     <insert id="add" parameterType="com.xyk.model.UserModel">
-        insert into user_info(user_name,user_telephone,user_IDcard,user_address,user_sex,user_hobby,user_state,user_email,user_weixin) values
-        (#{user_name},#{user_telephone},#{user_IDcard},#{user_address},#{user_sex},#{user_hobby},#{user_state},#{user_email},#{user_weixin});
+        insert into user_info(user_name,user_telephone,user_IDcard,user_address,user_sex,user_hobby,user_state,user_email,user_weixin,factory) values
+        (#{user_name},#{user_telephone},#{user_IDcard},#{user_address},#{user_sex},#{user_hobby},#{user_state},#{user_email},#{user_weixin},#{factory});
     </insert>
     <!--增加用户微信-->
     <update id="addweixin">

@@ -47,16 +47,16 @@
     </select>
     <!--插入信息-->
     <insert id="addA" parameterType="com.xyk.model.dianModel">
-        insert into dian_meter_data(AID_out,user_id,time,value,picture) values
-        (#{AID_out},#{user_id},#{time},#{value},#{picture})
+        insert into dian_meter_data(AID_out,user_id,time,value,picture,factory) values
+        (#{AID_out},#{user_id},#{time},#{value},#{picture},#{factory})
     </insert>
     <insert id="addG" parameterType="com.xyk.model.gasModel">
-        insert into gas_meter_data(GID_out,user_id,time,value,picture) values
-        (#{GID_out},#{user_id},#{time},#{value},#{picture})
+        insert into gas_meter_data(GID_out,user_id,time,value,picture,factory) values
+        (#{GID_out},#{user_id},#{time},#{value},#{picture},#{factory})
     </insert>
     <insert id="addW" parameterType="com.xyk.model.waterModel">
-        insert into water_meter_data(WID_out,user_id,time,value,picture) values
-        (#{WID_out},#{user_id},#{time},#{value},#{picture})
+        insert into water_meter_data(WID_out,user_id,time,value,picture,factory) values
+        (#{WID_out},#{user_id},#{time},#{value},#{picture},#{factory})
     </insert>
     <!--更新信息-->
     <update id="updateA" >

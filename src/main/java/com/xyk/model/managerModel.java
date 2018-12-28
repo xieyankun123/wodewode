@@ -9,6 +9,15 @@ public class managerModel {
     private String headpic;
     private String role;
     private String nativeplace;
+    private String factory;
+
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
 
     public String getManager_telephone() {
         return manager_telephone;

@@ -23,8 +23,8 @@
     </select>
     <!--增加信息-->
     <insert id="add" parameterType="com.xyk.model.u_rModel">
-        insert into user_room(user_telephone,in_time,out_time,room_id,user_number) values
-        (#{user_telephone},#{in_time},#{out_time},#{room_id},#{user_number});
+        insert into user_room(user_telephone,in_time,out_time,room_id,user_number,factory) values
+        (#{user_telephone},#{in_time},#{out_time},#{room_id},#{user_number},#{factory});
     </insert>
     <!-- 更新信息-->
     <update id="update" parameterType="com.xyk.model.u_rModel">

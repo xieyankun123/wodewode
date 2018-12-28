@@ -6,7 +6,15 @@ public class apdataModel {
     private String time;
     private String value;
     private String name;
+    private String factory;
 
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
     public String getName() {
         return name;
     }

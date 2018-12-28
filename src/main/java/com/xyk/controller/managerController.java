@@ -31,6 +31,8 @@ import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.xyk.controller.yqController.connection;
 import static com.xyk.util.RandomValidateCode.RANDOMCODEKEY;
@@ -44,11 +46,13 @@ public class managerController {
     private userService us;
     @Resource
     private u_rService ur;
+    //转去登录页面
     @RequestMapping("/login_toLogin")
     public String login_toLogin()
     {
         return "login";
     }
+    //主页面
     @RequestMapping("/index")
     public  ModelAndView index(HttpServletRequest request)
     {
@@ -72,31 +76,24 @@ public class managerController {
         managerModel mm=ms.selbytel(manager_telephone);
         mv.addObject("mm",mm);
        // JSONObject result=new JSONObject();
-        List<managerModel> a=ms.list();
+
         if(mm.getRole().equals("超级管理员"))
         {
+            List<managerModel> a=ms.list();
        // result.put("mg",a);
         mv.addObject("mg",a);}
         //HttpOutUtil.outData(response, JSONObject.toJSONString(result));
         else if(mm.getRole().equals("系统管理员"))
         {
-            for(int i=0;i<a.size();i++)
-            {
-                if( a.get(i).getRole().equals("超级管理员")) {
-                    a.remove(a.get(i));
-                }
-            }
-            mv.addObject("mg",a);
+            List<managerModel> selbyfac = ms.selbyfac(mm.getFactory());
+            mv.addObject("mg",selbyfac);
         }
         else if(mm.getRole().equals("普通管理员"))
         {
-            for(int i=0;i<a.size();i++)
-            {
-                if( a.get(i).getRole().equals("超级管理员")||a.get(i).getRole().equals("系统管理员")) {
-                    a.remove(a.get(i));
-                }
-            }
-            mv.addObject("mg",a);
+            List<managerModel> a = ms.selbyfac(mm.getFactory());
+            Stream<managerModel> aa = a.stream().filter(b -> b.getRole().equals("普通管理员"));
+            List<managerModel> collect = aa.collect(Collectors.toList());
+            mv.addObject("mg",collect);
         }
         mv.setViewName("administrator");
         return mv;
@@ -148,10 +145,12 @@ public class managerController {
     }
     //增加管理员
     @RequestMapping("/add")
-    public void add(HttpServletResponse response,managerModel a)
+    public void add(HttpServletResponse response,managerModel a,HttpServletRequest request)
     {
         JSONObject result=new JSONObject();
+        managerModel managerModel = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
         try {
+            a.setFactory(managerModel.getFactory());
             boolean b = ms.add(a);
             if (b) {
                 result.put("msg", "插入成功");
@@ -215,20 +214,20 @@ public class managerController {
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
     public static final String pic= "uploadpic/head_pic/";
-    //上传图片
-    @RequestMapping("/headpic")
-    @ResponseBody
-    public String uploade(HttpServletRequest request,
-                          @RequestParam(value = "file", required = false) MultipartFile file) {
-        String  ffile = DateUtil.getDays(), fileName = "";
-        System.out.println(ffile);
-        if (null != file && !file.isEmpty()) {
-            String filePath = PathUtil.getClasspath() + pic + ffile;		//文件上传路径
-            System.out.println(filePath);
-            fileName = FileUpload.fileUp(file, filePath, this.get32UUID());				//执行上传
-        }
-        return ffile + "/" + fileName;
-    }
+//    //上传图片
+//    @RequestMapping("/headpic")
+//    @ResponseBody
+//    public String uploade(HttpServletRequest request,
+//                          @RequestParam(value = "file", required = false) MultipartFile file) {
+//        String  ffile = DateUtil.getDays(), fileName = "";
+//        System.out.println(ffile);
+//        if (null != file && !file.isEmpty()) {
+//            String filePath = PathUtil.getClasspath() + pic + ffile;		//文件上传路径
+//            System.out.println(filePath);
+//            fileName = FileUpload.fileUp(file, filePath, this.get32UUID());				//执行上传
+//        }
+//        return ffile + "/" + fileName;
+//    }
     public String get32UUID(){
         return UuidUtil.get32UUID();
     }
@@ -289,7 +288,8 @@ public class managerController {
                        // result.put("errMsg", "用户名或密码错误");
                         result.put("result", "10002");
                     } else {
-                        session.setAttribute("manager_telephone",manager_telephone);
+                        managerModel selbytel = ms.selbytel(manager_telephone);
+                        session.setAttribute(Cons.MANAGER,selbytel);
                         //result.put("ehahah", "登陆成功");
                         result.put("result", "10005");
                     }

@@ -21,6 +21,9 @@ public class managerService {
     {
         return managerdao.selbytel(manager_telephone);
     }
+    public List<managerModel> selbyfac(String factory) {
+        return managerdao.selbyfac(factory);
+    }
     //<!--获取权限-->
     public String getqx(String manager_telephone)
     {

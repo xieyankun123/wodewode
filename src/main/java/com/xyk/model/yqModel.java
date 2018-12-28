@@ -13,7 +13,15 @@ public class yqModel {
     private String yonghuming;
     private String mima;
     private String totel;
+    private String factory;
 
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
     public String getTotel() {
         return totel;
     }

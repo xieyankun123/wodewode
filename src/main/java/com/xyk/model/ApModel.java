@@ -6,7 +6,15 @@ public class ApModel {
     private String time;
     private String user_name_on;
     private String user_name_off;
+    private String factory;
 
+    public String getFactory() {
+        return factory;
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
     public String getId() {
         return id;
     }

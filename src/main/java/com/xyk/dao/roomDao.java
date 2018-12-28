@@ -8,7 +8,7 @@ import java.util.List;
 @MapperScan
 public interface roomDao {
    // <!--根据房间号查找-->
-    roomModel selbyRid(String room_id);
+   List<roomModel> selbyRid(String room_id);
    // <!--根据公寓号查找-->
     List<roomModel> selbyAid(String apartment_id);
     //<!--列表空闲的房间-->

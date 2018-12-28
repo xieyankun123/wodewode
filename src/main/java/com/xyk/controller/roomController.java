@@ -1,8 +1,11 @@
 package com.xyk.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xyk.model.managerModel;
 import com.xyk.model.roomModel;
+import com.xyk.model.u_rModel;
 import com.xyk.service.*;
+import com.xyk.util.Cons;
 import com.xyk.util.HttpOutUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +15,8 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Controller
 @RequestMapping("/room")
@@ -26,27 +31,52 @@ public class roomController {
     private u_rService ur;
     //房间列表
     @RequestMapping("/house_list")
-    public ModelAndView list(HttpServletResponse response)
+    public ModelAndView list(HttpServletResponse response,HttpServletRequest request)
     {
         ModelAndView mv=new ModelAndView();
         //JSONObject result=new JSONObject();
        // result.put("result","10001");
-        List<roomModel> a=roomservice.list();
-        System.out.println(1);
-        for(int i=0;i<a.size();i++)
+        List<roomModel> aa=roomservice.list();
+        managerModel managerModel = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
+        if("0".equals(managerModel.getFactory()))
         {
-            System.out.println(2);
-            a.get(i).setOwn(gs.selbyid(a.get(i).getApartment_id()).getOwner());
+            //计划去掉
+            for(int i=0;i<aa.size();i++)
+            {
+                String q = aa.get(i).getFactory();
+                aa.get(i).setOwn(gs.selbyid(aa.get(i).getApartment_id()).stream().filter(k->k.getFactory().equals(q)).collect(Collectors.toList()).get(0).getOwner());
+            }
+            for(int i=0;i<aa.size();i++) {
+                if (aa.get(i).getUseable() != 0) {
+                    if (ur.selbyRid(aa.get(i).getRoom_id()).size() > 0) {
+                        String q = aa.get(i).getFactory();
+                        List<u_rModel> collect = ur.selbyRid(aa.get(i).getRoom_id()).stream().filter(k -> k.getFactory().equals(q)).collect(Collectors.toList());
+                        if (collect.size() > 0) {
+                            aa.get(i).setXianzuke(us.selbytel(collect.get(collect.size() - 1).getUser_telephone()).getUser_name());
+                        }
+                    }
+                }
+            }
+            mv.addObject("house",aa);
         }
-        for(int i=0;i<a.size();i++)
-        {
-            if(a.get(i).getUseable()!=0) {
-                if (ur.selbyRid(a.get(i).getRoom_id()).size() > 0)
-                {if(us.selbytel(ur.selbyRid(a.get(i).getRoom_id()).get(ur.selbyRid(a.get(i).getRoom_id()).size() - 1).getUser_telephone()).getUser_state().equals("1"))
-                    a.get(i).setXianzuke(us.selbytel(ur.selbyRid(a.get(i).getRoom_id()).get(ur.selbyRid(a.get(i).getRoom_id()).size() - 1).getUser_telephone()).getUser_name());
-                } }
+        else {
+            List<roomModel> a = aa.stream().filter(aaa -> aaa.getFactory().equals(managerModel.getFactory())).collect(Collectors.toList());
+            for (int i = 0; i < a.size(); i++) {
+                a.get(i).setOwn(gs.selbyid(a.get(i).getApartment_id()).stream().filter(aaa -> aaa.getFactory().equals(managerModel.getFactory())).collect(Collectors.toList()).get(0).getOwner());
+            }
+            for(int i=0;i<a.size();i++) {
+                if (a.get(i).getUseable() != 0) {
+                    if (ur.selbyRid(a.get(i).getRoom_id()).size() > 0) {
+                        String q = a.get(i).getFactory();
+                        List<u_rModel> collect = ur.selbyRid(a.get(i).getRoom_id()).stream().filter(k -> k.getFactory().equals(q)).collect(Collectors.toList());
+                        if (collect.size() > 0) {
+                            a.get(i).setXianzuke(us.selbytel(collect.get(collect.size() - 1).getUser_telephone()).getUser_name());
+                        }
+                        }
+                }
+            }
+            mv.addObject("house", a);
         }
-        mv.addObject("house",a);
         mv.setViewName("house_list");
         return mv;
        // result.put("result",a);
@@ -77,10 +107,12 @@ public class roomController {
         HttpOutUtil.outData(response, JSONObject.toJSONString(result));
     }
     @RequestMapping("/add")
-    public void add(HttpServletResponse response,roomModel a)
+    public void add(HttpServletResponse response,roomModel a,HttpServletRequest request)
     {
         JSONObject result = new JSONObject();
+        managerModel managerModel = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
         try {
+            a.setFactory(managerModel.getFactory());
             boolean b= roomservice.add(a);
             if(b)
             {

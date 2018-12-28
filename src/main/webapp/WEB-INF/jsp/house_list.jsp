@@ -98,8 +98,8 @@
           <td>${house.own}</td>
            <td>${house.xianzuke}</td>
           <!-- <td>2014-6-11 11:11:42</td> -->
-          <td><a href="<%=basePath%>u_r/historyR?room_id=${house.room_id}" title="点击查看" ><img style="width:25px" src="static/images/zufangjilv.png"></a></td>
-             <td><a href="<%=basePath%>apparatus/yqinfoR?room_id=${house.room_id}" title="点击查看"><img style="width:25px" src="static/images/elestate.png"></a></a></td>
+          <td><a href="<%=basePath%>u_r/historyR?room_id=${house.room_id}&factory=${house.factory}" title="点击查看" ><img style="width:25px" src="static/images/zufangjilv.png"></a></td>
+             <td><a href="<%=basePath%>apparatus/yqinfoR?room_id=${house.room_id}&factory=${house.factory}" title="点击查看"><img style="width:25px" src="static/images/elestate.png"></a></a></td>
 
         <c:choose>
             <c:when test="${house.useable=='0'}">

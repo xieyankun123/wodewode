@@ -27,8 +27,8 @@
     </select>
     <!--增加信息-->
     <insert id="add" parameterType="com.xyk.model.roomModel">
-        insert into room_info(room_id,useable,apartment_id,room_loc,room_str) values
-        (#{room_id},#{useable},#{apartment_id},#{room_loc},#{room_str});
+        insert into room_info(room_id,useable,apartment_id,room_loc,room_str,factory) values
+        (#{room_id},#{useable},#{apartment_id},#{room_loc},#{room_str},#{factory});
     </insert>
     <!-- 更新信息-->
     <update id="update" parameterType="com.xyk.model.roomModel">

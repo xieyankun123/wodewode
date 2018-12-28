@@ -21,6 +21,7 @@ public class addByUserController {
     private addByUserService abs;
     @Resource
     private userService us;
+    //APP接口
     @RequestMapping("/addbyuser")
     public void add(HttpServletResponse response, addByUserModel a)
     {
