@@ -23,7 +23,7 @@
     </insert>
     <!--插入新添加的插孔信息-->
     <insert id="add" parameterType="com.xyk.model.yqModel">
-        insert into apparatus_info (id,apparatus_id,sessionID,devID,beizhu,beizhu2,OEM,useable,room_id,yonghuming,mima) values
-        (#{id},#{apparatus_id},#{sessionID},#{devID},#{beizhu},#{beizhu2},#{OEM},#{useable},#{room_id},#{yonghuming},#{mima});
+        insert into apparatus_info (id,apparatus_id,sessionID,devID,beizhu,beizhu2,OEM,useable,room_id,yonghuming,mima,factory) values
+        (#{id},#{apparatus_id},#{sessionID},#{devID},#{beizhu},#{beizhu2},#{OEM},#{useable},#{room_id},#{yonghuming},#{mima},#{factory});
     </insert>
 </mapper>

@@ -9,4 +9,6 @@ import java.util.List;
 public interface gyDao {
     List<gyModel> selbyid(String apartment_id);
     List<gyModel> list();
+    void add(gyModel gyModel);
+    void update(gyModel gyModel);
 }

@@ -86,8 +86,9 @@
 				<!-- <th width="100px">邮箱</th> -->
                 <th width="100">角色</th>				
 				<!-- <th width="180">加入时间</th> -->
-				<th width="70">状态</th>                
-				<th width="200">操作</th>
+				<th width="70">状态</th>
+			 <th width="70">公司</th>
+			 <th width="200">操作</th>
 			</tr>
 		</thead>
 	<tbody>
@@ -107,6 +108,7 @@
 					<td class="td-status"><span class="label label-success radius">已启用</span></td>
 				</c:when>
 			</c:choose>
+			<td>${mg.factory}</td>
       <td class="td-manage">
 		  <c:choose>
 		  <c:when test="${mm.role=='超级管理员'}">
@@ -252,6 +254,7 @@
 		<li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name">
      <label><input name="form-field-radio1" type="radio" checked="checked" class="ace" value="1"><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
      <label><input name="form-field-radio1"type="radio" class="ace" value="0"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
+		<li>
 		<c:choose>
 			<c:when test="${mm.role=='超级管理员'}">
 				<div class="form-group">
@@ -279,7 +282,21 @@
 			</c:when>
 			<c:otherwise>
 			</c:otherwise>
-		</c:choose>
+		</c:choose></li>
+		<li>
+				<div class="form-group">
+					<label class="form-label">公&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;司：</label>
+					<div class="formControls "> <span class="select-box" style="width:150px;">
+						<select class="select" name="factory" size="1" style="width:165px;margin-left:9px;">
+							<c:if test="${!empty factorylist }">
+								<c:forEach items="${factorylist}" var="f" varStatus="status">
+								<option value="${f.facotry}">${f.facotry}</option>
+								</c:forEach>
+							</c:if>
+				</select>
+				</span> </div>
+				</div>
+		</li>
 
 	</ul>
 </div>
@@ -507,6 +524,7 @@ function addman(){
     var xingming= $("#add_menber_style input[data-shu='xingming']").val();
     var shoujihao=$("#add_menber_style input[data-shu='shoujihao']").val();
     var juese=$("select[name='admin-roleadd']").val();
+    var factory=$("select[name='factory']").val();
     var mima=$("#add_menber_style input[data-shu='mima']").val();
     var zhuangtai=$("#add_menber_style input[name='form-field-radio1']:checked").val();
     var shengfenzhenghao="1";
@@ -525,7 +543,7 @@ function addman(){
         type: "POST",
         url: 'mg/add',
         data: {manager_name:xingming,manager_telephone:shoujihao,role:juese1,password:mima,headpic:zhuangtai,
-            manager_IDcard:shengfenzhenghao,manager_nicheng:nicheng},
+            manager_IDcard:shengfenzhenghao,manager_nicheng:nicheng,factory:factory},
         dataType:'json',
         cache: false,
         success: function(data){

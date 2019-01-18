@@ -79,7 +79,8 @@
         <th width="80">现租客</th>
         <th width="100">租用记录</th>
         <th width="100">电器使用状态</th>
-        <th width="70">状态</th>                
+        <th width="70">状态</th>
+         <th width="70">公司</th>
         <th width="100">操作</th>
       </tr>
     </thead>
@@ -109,6 +110,7 @@
                 <td class="td-status"><span class="label label-success radius">已启用</span></td>
             </c:when>
         </c:choose>
+        <td>${house.factory}</td>
           <td class="td-manage">
           <a title="编辑" onclick="member_edit(this,'${house.apartment_id}','${house.useable}')"  href="javascript:;"  class="btn btn-xs btn-info" ><i class="icon-edit bigger-120"></i></a>
           </td>
@@ -134,17 +136,30 @@
     <ul class=" page-content">
     <li><label class="label_name">房源编号：</label><span class="add_name">
         <input value="" name="房源编号" type="text" data-shu='fangyuanbianhao' class="text_add"/></span><div class="prompt r_f"></div></li>
-    <li><label class="label_name">公寓编号：</label><span class="add_name">
-        <input value="" name="公寓编号" type="text" data-shu='fangdong' class="text_add"/></span><div class="prompt r_f"></div></li>
+    <%--<li><label class="label_name">公寓编号：</label><span class="add_name">--%>
+        <%--<input value="" name="公寓编号" type="text" data-shu='fangdong' class="text_add"/></span><div class="prompt r_f"></div></li>--%>
      <li><label class="label_name">房源地址：</label><span class="add_name">
         <input value="" name="房源地址" type="text" data-shu='fangyuandizhi' class="text_add"/></span><div class="prompt r_f"></div></li>
      <li><label class="label_name">房源结构：</label><span class="add_name">
          <input value="" name="房源结构" type="text" data-shu='fangyuanjiegou' class="text_add"/></span><div class="prompt r_f"></div></li>
-     <%--<li><label class="label_name">现&nbsp;租&nbsp;客：</label><span class="add_name">--%>
-         <%--<input name="现租客" type="text" data-shu='xianzuke' class="text_add"/></span><div class="prompt r_f"></div></li>--%>
+        <li>
+            <div class="form-group">
+                <label class="form-label">公&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;寓：</label>
+                <div class="formControls "> <span class="select-box" style="width:150px;">
+                            <select class="select" name="gongyuhao" size="1" style="width:165px;margin-left:9px;">
+                                <c:if test="${!empty list }">
+                                    <c:forEach items="${list}" var="list" varStatus="status">
+                                        <option value="${list.apartment_id}">${list.apartment_id}</option>
+                                    </c:forEach>
+                                </c:if>
+                        </select>
+                        </span> </div>
+            </div>
+        </li>
      <li><label class="label_name">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</label><span class="add_name">
-     <label><input name="form-field-radio1" type="radio" checked="checked" class="ace" value="1"><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
-     <label><input name="form-field-radio1"type="radio" class="ace" value="0"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
+         <label><input name="form-field-radio1" type="radio" checked="checked" class="ace" value="1"><span class="lbl">开启</span></label>&nbsp;&nbsp;&nbsp;
+         <label><input name="form-field-radio1"type="radio" class="ace" value="0"><span class="lbl">关闭</span></label></span><div class="prompt r_f"></div></li>
+
     </ul>
  </div>
 
@@ -208,6 +223,7 @@ jQuery(function($) {
           return 'left';
         }
       })
+
 /*用户-添加*/
  $('#member_add').on('click', function(){
     layer.open({
@@ -253,20 +269,18 @@ jQuery(function($) {
 /*添加房间*/
 
 function addroom(){
-    // alert(1);
+
     var fangyuanbianhao= $("#add_menber_style input[data-shu='fangyuanbianhao']").val();
     // var gongyuhao=$("#add_menber_style input[data-shu='gongyuhao').val();
-    var gongyuhao=$("#add_menber_style input[data-shu='fangdong']").val();
+    var gongyuhao=$("select[name='gongyuhao']").val();
+    // var gongyuhao=$("#add_menber_style input[data-shu='fangdong']").val();
     var fangyuanjiegou=$("#add_menber_style input[data-shu='fangyuanjiegou']").val();
-    // var xianzuke= $("#add_menber_style input[data-shu='xianzuke']").val();
     var dizhi=$("#add_menber_style input[data-shu='fangyuandizhi']").val();
     var zhuangtai=$("#add_menber_style input[name='form-field-radio1']:checked").val();
-    alert("获取成功");
-    // alert(fangyuanbianhao)
-    // alert(gongyuhao)
-    // alert(dizhi);
-    // alert(fangyuanjiegou);
-    // alert(zhuangtai);
+
+
+
+
     $.ajax({
         type: "POST",
         url: 'room/add',
@@ -279,25 +293,8 @@ function addroom(){
     });
 
 }
-/*用户-停用*/
-function member_stop(obj,id){
-  layer.confirm('确认要停用吗？',function(index){
-    $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class="btn btn-xs " onClick="member_start(this,id)" href="javascript:;" title="启用"><i class="icon-ok bigger-120"></i></a>');
-    $(obj).parents("tr").find(".td-status").html('<span class="label label-defaunt radius">已停用</span>');
-    $(obj).remove();
-    layer.msg('已停用!',{icon: 5,time:1000});
-  });
-}
 
-/*用户-启用*/
-function member_start(obj,id){
-  layer.confirm('确认要启用吗？',function(index){
-    $(obj).parents("tr").find(".td-manage").prepend('<a style="text-decoration:none" class="btn btn-xs btn-success" onClick="member_stop(this,id)" href="javascript:;" title="停用"><i class="icon-ok bigger-120"></i></a>');
-    $(obj).parents("tr").find(".td-status").html('<span class="label label-success radius">已启用</span>');
-    $(obj).remove();
-    layer.msg('已启用!',{icon: 6,time:1000});
-  });
-}
+
 
 
 // 编辑
@@ -315,6 +312,7 @@ function member_edit(obj,apa_id,zhuangtai){
     $("#add_menber_style2 input[data-shu='dizhi']").val(dizhi);
     $("#add_menber_style2 input[data-shu='jiegou']").val(jiegou);
     $("#add_menber_style2 input[data-shu='fangdong']").val(apa_id1);
+    var factory=$(obj).parent().parent().find("td").eq(9).html();
     // $("#add_menber_style2 input[data-shu='xianzuke']").val(xianzuke);
     if(zhuangtai1=="1"){
         // alert("状态为1启用");
@@ -351,40 +349,30 @@ function member_edit(obj,apa_id,zhuangtai){
                     icon:1,
                     yes: function(index){
                         window.location="<%=basePath%>/room/house_list";
-                        console.log(1);
+                        console.log("跳转");
                         layer.close(index);
                     }
                 });
                 layer.close(index);
-                uproom();
+                uproom(factory);
             }
         }
     });
 }
 
-function uproom(){
+function uproom(factory){
     var fangyuanbianhao= $("#add_menber_style2 input[data-shu='bianhao']").val();
     var gongyuhao=$("#add_menber_style2 input[data-shu='fangdong']").val();
     var fangyuanjiegou=$("#add_menber_style2 input[data-shu='jiegou']").val();
     var dizhi=$("#add_menber_style2 input[data-shu='dizhi']").val();
     var zhuangtai=$("#add_menber_style2 input[name='form-field-radio6']:checked").val();
 
-
-    // var zhuangtai2=$("#add_menber_style2 input[name='form-field-radio4']:checked").val();
-    // var youxiang2=$("#add_menber_style2 input[data-shu='youxiang']").val();
     console.log("提取获取了更新的数据");
-    // alert("获取成功");
-    // alert(gongyuhao);
-    // alert(fangyuanbianhao);
-    // alert(fangyuanjiegou);
-    // alert(dizhi);
-    // // alert(shengfenzheng2);alert(dizhi2);
-    // alert(zhuangtai);
-    // alert(youxiang2);
+
     $.ajax({
         type: "POST",
         url: 'room/update',
-        data: {room_id:fangyuanbianhao,useable:zhuangtai,apartment_id:gongyuhao,room_loc:dizhi,room_str:fangyuanjiegou},
+        data: {room_id:fangyuanbianhao,useable:zhuangtai,apartment_id:gongyuhao,room_loc:dizhi,room_str:fangyuanjiegou,factory:factory},
         dataType:'json',
         cache: false,
         success: function(data){
@@ -393,13 +381,9 @@ function uproom(){
     });
 
 }
-/*用户-删除*/
-function member_del(obj,id){
-  layer.confirm('确认要删除吗？',function(index){
-    $(obj).parents("tr").remove();
-    layer.msg('已删除!',{icon:1,time:1000});
-  });
-}
+
+
+// ------搜索功能
 function sousuo(){
  $('#sample-table tbody tr').hide();
    $('#sample-table tbody tr').filter(":contains('" + ($('#sousuo').val()) + "')")
@@ -407,14 +391,14 @@ function sousuo(){
 };
 $('#ss').click(function(){
   sousuo();
-  // alert(1);
+
 });
 $('#sousuo').keydown(function(event){ 
             if(event.keyCode==13){ 
                 sousuo();
             }
         });
-
+// 搜索功能------
 laydate({
     elem: '#start',
     event: 'focus' 

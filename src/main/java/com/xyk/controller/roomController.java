@@ -1,6 +1,7 @@
 package com.xyk.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xyk.model.gyModel;
 import com.xyk.model.managerModel;
 import com.xyk.model.roomModel;
 import com.xyk.model.u_rModel;
@@ -77,6 +78,8 @@ public class roomController {
             }
             mv.addObject("house", a);
         }
+        List<gyModel> gyModels = gs.list().stream().filter(b -> b.getFactory().equals(managerModel.getFactory())).collect(Collectors.toList());
+        mv.addObject("list",gyModels);
         mv.setViewName("house_list");
         return mv;
        // result.put("result",a);
@@ -87,7 +90,6 @@ public class roomController {
     @RequestMapping("/update")
     public void update(HttpServletResponse response,roomModel a)
     {
-        roomservice.update(a);
         JSONObject result = new JSONObject();
         try {
             boolean b=roomservice.update(a);

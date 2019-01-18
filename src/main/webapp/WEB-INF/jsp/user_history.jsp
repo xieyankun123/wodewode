@@ -160,13 +160,22 @@
         </li>
         <li><label class="label_name">租户姓名：</label>
             <span class="add_name">
-                <input value="" name="房源编号" type="text" data-shu="xingming"  readonly="readonly" class="text_add"/>
+                <input value="" name="租户姓名" type="text" data-shu="xingming"  readonly="readonly" class="text_add"/>
             </span><div class="prompt r_f"></div>
         </li>
-        <li><label class="label_name">房源编号：</label>
-            <span class="add_name">
-                <input value="" name="房源编号" type="text" data-shu="fangyuanbianhao" class="text_add"/>
-            </span><div class="prompt r_f"></div>
+        <li>
+            <div class="form-group">
+                <label class="form-label">房源编号：</label>
+                <div class="formControls "> <span class="select-box" style="width:150px;">
+                            <select class="select" name="fangjianhao" size="1" style="width:165px;margin-left:9px;">
+                                <c:if test="${!empty list }">
+                                    <c:forEach items="${list}" var="list" varStatus="status">
+                                        <option value="${list.room_id}">${list.room_id}</option>
+                                    </c:forEach>
+                                </c:if>
+                        </select>
+                        </span> </div>
+            </div>
         </li>
         <li><label class="label_name">入住时间：</label>
             <span class="add_name">
@@ -330,10 +339,11 @@ window.onload=function () {
 // 添加记录到后台
     function addjilv(tele){
         var tele1=tele;
-        var fangyuanbianhao1=$("#add_menber_style input[data-shu='fangyuanbianhao']").val();
+        var fangyuanbianhao1=$("select[name='fangjianhao']").val();
         var ruzhutime= $("#add_menber_style input[data-shu='ruzhutime']").val();
         var tuizutime=$("#add_menber_style input[data-shu='tuizutime']").val();
         var zuhurenshu=$("#add_menber_style input[data-shu='zurenshu']").val();
+        alert(fangyuanbianhao1);
         $.ajax({
             type: "POST",
             url: 'u_r/add',

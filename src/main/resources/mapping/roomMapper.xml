@@ -32,7 +32,7 @@
     </insert>
     <!-- 更新信息-->
     <update id="update" parameterType="com.xyk.model.roomModel">
-        update room_info set room_id=#{room_id},useable=#{useable},apartment_id=#{apartment_id},room_loc=#{room_loc},room_str=#{room_str} where room_id=#{room_id}
+        update room_info set room_id=#{room_id},useable=#{useable},apartment_id=#{apartment_id},room_loc=#{room_loc},room_str=#{room_str} where room_id=#{room_id} and factory=#{factory}
     </update>
     <!--删除房间-->
     <delete id="del" parameterType="java.lang.String">

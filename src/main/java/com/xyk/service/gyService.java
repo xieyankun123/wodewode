@@ -13,4 +13,6 @@ public class gyService {
     private gyDao gd;
     public List<gyModel> selbyid(String apartment_id){return gd.selbyid(apartment_id);}
     public List<gyModel> list(){return  gd.list();}
+    public void add(gyModel gyModel){gd.add(gyModel);}
+    public void update(gyModel gyModel){gd.update(gyModel);}
 }

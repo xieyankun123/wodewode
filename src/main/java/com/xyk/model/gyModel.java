@@ -1,11 +1,20 @@
 package com.xyk.model;
 
 public class gyModel {
+    private int id;
     private String apartment_id;
     private int useable;
     private String location;
     private String owner;
     private String factory;
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
 
     public String getFactory() {
         return factory;

@@ -1,7 +1,6 @@
 package com.xyk.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xyk.model.ExcelBean;
 import com.xyk.model.UserModel;
 import com.xyk.model.addByUserModel;
 import com.xyk.model.managerModel;
@@ -10,20 +9,16 @@ import com.xyk.service.userService;
 import com.xyk.util.Cons;
 import com.xyk.util.ExcelUtil;
 import com.xyk.util.HttpOutUtil;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -239,76 +234,25 @@ public class userController {
     @RequestMapping("/export")
     public void export(HttpServletRequest request, HttpServletResponse response) throws Exception {
         List<UserModel> list = userservice.list();
-        List<ExcelBean> excel = new ArrayList<ExcelBean>();
-        Map<Integer, List<ExcelBean>> map = new LinkedHashMap<Integer, List<ExcelBean>>();
-        XSSFWorkbook xssfWorkbook = null;
-        //设置标题栏
-        excel.add(new ExcelBean("姓名", "user_name", 0));
-        excel.add(new ExcelBean("手机号", "user_telephone", 0));
-        excel.add(new ExcelBean("身份证号", "user_IDcard", 0));
-        excel.add(new ExcelBean("地址", "user_address", 0));
-        excel.add(new ExcelBean("性别", "user_sex", 0));
-        excel.add(new ExcelBean("爱好", "user_hobby", 0));
-        excel.add(new ExcelBean("地位", "user_state", 0));
-        excel.add(new ExcelBean("邮件", "user_email", 0));
-        excel.add(new ExcelBean("微信", "user_weixin", 0));
-        map.put(0, excel);
-        String sheetName = "入住人名单";
-        //调用ExcelUtil的方法
-        xssfWorkbook = ExcelUtil.createExcelFile(UserModel.class, list, map, sheetName);
-        response.reset(); //清除buffer缓存
-        // 指定下载的文件名，浏览器都会使用本地编码，即GBK，浏览器收到这个文件名后，用ISO-8859-1来解码，然后用GBK来显示
-        // 所以我们用GBK解码，ISO-8859-1来编码，在浏览器那边会反过来执行。
-        response.setHeader("Content-Disposition", "attachment;filename=");
-        response.setContentType("application/vnd.ms-excel;charset=UTF-8");
-        response.setHeader("Pragma", "no-cache");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setDateHeader("Expires", 0);
-        //导出Excel对象
-        OutputStream output;
-        try {
-            output = response.getOutputStream();
-            BufferedOutputStream bufferedOutPut = new BufferedOutputStream(output);
-            bufferedOutPut.flush();
-            xssfWorkbook.write(bufferedOutPut);
-            bufferedOutPut.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(list.size());
+        String fileName = "一个 Excel 文件";
+        String sheetName = "第一个 sheet";
+        ExcelUtil.writeExcel(response,list,fileName,sheetName,new UserModel());
     }
 
     @RequestMapping("/import")
-    public void impotr(HttpServletResponse response,@RequestParam(value = "file", required = false) MultipartFile file) {
-        JSONObject result = new JSONObject();
-        try {
-            InputStream in = file.getInputStream();
-            List<List<Object>> listob = ExcelUtil.getBankListByExcel(in, file.getOriginalFilename());
-            //遍历listob数据，把数据放到List中
-            for (int i = 0; i < listob.size(); i++) {
-                List<Object> ob = listob.get(i);
-                UserModel user = new UserModel();
-//            //设置编号
-//            user.setSerial(SerialUtil.salarySerial());
-                //通过遍历实现把每一列封装成一个model中，再把所有的model用List集合装载
-                user.setUser_name(String.valueOf(ob.get(0)));
-                user.setUser_telephone(String.valueOf(ob.get(1)));
-                user.setUser_IDcard(String.valueOf(ob.get(2)));
-                user.setUser_address(String.valueOf(ob.get(3)));
-                user.setUser_sex(String.valueOf(ob.get(4)));
-                user.setUser_hobby(String.valueOf(ob.get(5)));
-                user.setUser_state(String.valueOf(ob.get(6)));
-                //object类型转Double类型
-//            salarymanage.setMoney(Double.parseDouble(ob.get(8).toString()));
-                user.setUser_email(String.valueOf(ob.get(7)));
-                user.setUser_weixin(String.valueOf(ob.get(8)));
-                userservice.add(user);
-            }
-            in.close();
-            result.put("msg", "插入成功");
+    @ResponseBody
+    public Object impotr(HttpServletResponse response,@RequestParam(value = "file", required = false) MultipartFile file) {
+        JSONObject result=new JSONObject();
+        result.put("msg","false");
+        List<Object> userModels =ExcelUtil.readExcel(file, new UserModel(),1,1);
+        for(Object users:userModels)
+        {
+            UserModel user= (UserModel)users;
+            userservice.add(user);
         }
-        catch(Exception e)
-        {result.put("msg","插入失败,手机号码相同，或者参数不完整");}
-        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+        result.put("msg","success");
+        return result;
     }
 }
 

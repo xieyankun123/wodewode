@@ -13,4 +13,10 @@
     <select id="list" resultType="com.xyk.model.gyModel">
         select * from apartment
     </select>
+    <insert id="add" parameterType="com.xyk.model.gyModel">
+        insert into apartment(id,factory,apartment_id,useable,location,owner) values(#{id},#{factory},#{apartment_id},#{useable},#{location},#{owner})
+    </insert>
+    <update id="update" parameterType="com.xyk.model.gyModel">
+        update apartment set factory=#{factory},apartment_id=#{apartment_id},useable=#{useable},location=#{location},owner=#{owner} where id=#{id}
+    </update>
 </mapper>

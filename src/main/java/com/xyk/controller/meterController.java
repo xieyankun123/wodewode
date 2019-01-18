@@ -222,7 +222,7 @@ public class meterController {
     {
         JSONObject result=new JSONObject();
         String room_id=request.getParameter("room_id");
-        String factory= "2";
+        String factory=request.getParameter("factory");
         String apartment=rs.selbyRid(room_id).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList()).get(0).getApartment_id();
         List<gasModel> gasModels = ms.selbyGGID(apartment).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
         List<dianModel> dianModels = ms.selbyAAID(apartment).stream().filter(k->k.getFactory().equals(factory)).collect(Collectors.toList());
@@ -253,7 +253,7 @@ public class meterController {
         {
             System.out.println(11);
         }
-        picture="https://zigzen.net/changkongdemo/"+picture;
+        picture="https://zigzen.net/"+picture;
         result.put("picurl",picture);
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
 //        picture=request.getRealPath("/")+"/"+picture;

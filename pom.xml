@@ -272,21 +272,21 @@
           <version>RELEASE</version>
           <scope>compile</scope>
       </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml</artifactId>
-      <version>3.14-beta1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml-schemas</artifactId>
-      <version>3.14-beta1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>3.14-beta1</version>
-    </dependency>
+    <!--<dependency>-->
+      <!--<groupId>org.apache.poi</groupId>-->
+      <!--<artifactId>poi-ooxml</artifactId>-->
+      <!--<version>3.14-beta1</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.apache.poi</groupId>-->
+      <!--<artifactId>poi-ooxml-schemas</artifactId>-->
+      <!--<version>3.14-beta1</version>-->
+    <!--</dependency>-->
+    <!--<dependency>-->
+      <!--<groupId>org.apache.poi</groupId>-->
+      <!--<artifactId>poi</artifactId>-->
+      <!--<version>3.14-beta1</version>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
       <artifactId>httpclient</artifactId>
@@ -314,6 +314,11 @@
           <artifactId>aspectjweaver</artifactId>
           <version>1.8.5</version>
       </dependency>
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>easyexcel</artifactId>
+      <version>1.1.2-beta4</version>
+    </dependency>
   </dependencies>
 
 </project>

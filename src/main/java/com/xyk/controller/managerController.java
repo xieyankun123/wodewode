@@ -5,11 +5,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xyk.model.UserModel;
 import com.xyk.model.apdataModel;
+import com.xyk.model.factory;
 import com.xyk.model.managerModel;
-import com.xyk.service.apdataService;
-import com.xyk.service.managerService;
-import com.xyk.service.u_rService;
-import com.xyk.service.userService;
+import com.xyk.service.*;
 import com.xyk.util.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Controller;
@@ -46,6 +44,8 @@ public class managerController {
     private userService us;
     @Resource
     private u_rService ur;
+    @Resource
+    private factoryService fs;
     //转去登录页面
     @RequestMapping("/login_toLogin")
     public String login_toLogin()
@@ -57,8 +57,7 @@ public class managerController {
     public  ModelAndView index(HttpServletRequest request)
     {
         ModelAndView mv=new ModelAndView();
-        String manager_telephone=request.getParameter("manager_telephone");
-        managerModel mm=ms.selbytel(manager_telephone);
+        managerModel mm = (managerModel) request.getSession().getAttribute(Cons.MANAGER);
         mv.addObject("mm",mm);
         mv.setViewName("index");
         return mv;
@@ -71,6 +70,7 @@ public class managerController {
     @RequestMapping("/guanliyuan")
     public ModelAndView home1(HttpServletRequest request)
     {
+        List<factory> factories=new ArrayList<factory>();
         ModelAndView mv=new ModelAndView();
         String manager_telephone=request.getParameter("manager_telephone");
         managerModel mm=ms.selbytel(manager_telephone);
@@ -80,6 +80,9 @@ public class managerController {
         if(mm.getRole().equals("超级管理员"))
         {
             List<managerModel> a=ms.list();
+            List<factory> factoryList = fs.list();
+            System.out.println(factoryList.get(0).getFacotry());
+            mv.addObject("factorylist",factoryList);
        // result.put("mg",a);
         mv.addObject("mg",a);}
         //HttpOutUtil.outData(response, JSONObject.toJSONString(result));
@@ -87,6 +90,11 @@ public class managerController {
         {
             List<managerModel> selbyfac = ms.selbyfac(mm.getFactory());
             mv.addObject("mg",selbyfac);
+            factory factoryList=new factory();
+            factoryList.setFacotry(mm.getFactory());
+            factoryList.setId(1);
+            factories.add(factoryList);
+            mv.addObject("factorylist",factories);
         }
         else if(mm.getRole().equals("普通管理员"))
         {
@@ -94,6 +102,12 @@ public class managerController {
             Stream<managerModel> aa = a.stream().filter(b -> b.getRole().equals("普通管理员"));
             List<managerModel> collect = aa.collect(Collectors.toList());
             mv.addObject("mg",collect);
+            factory factoryList=new factory();
+            factoryList.setFacotry(mm.getFactory());
+            factoryList.setId(1);
+            factories.add(factoryList);
+
+            mv.addObject("factorylist",factories);
         }
         mv.setViewName("administrator");
         return mv;
@@ -148,9 +162,7 @@ public class managerController {
     public void add(HttpServletResponse response,managerModel a,HttpServletRequest request)
     {
         JSONObject result=new JSONObject();
-        managerModel managerModel = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
         try {
-            a.setFactory(managerModel.getFactory());
             boolean b = ms.add(a);
             if (b) {
                 result.put("msg", "插入成功");

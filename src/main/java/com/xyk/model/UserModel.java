@@ -1,16 +1,28 @@
 package com.xyk.model;
 
-public class UserModel {
-    private String user_name;
-    private String user_telephone;
-    private String user_IDcard;
-    private String user_address;
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.metadata.BaseRowModel;
 
+public class UserModel extends BaseRowModel {
+    @ExcelProperty(value = "姓名",index = 0)
+    private String user_name;
+    @ExcelProperty(value = "手机号",index = 1)
+    private String user_telephone;
+    @ExcelProperty(value = "身份证号",index = 2)
+    private String user_IDcard;
+    @ExcelProperty(value = "地址",index = 3)
+    private String user_address;
+    @ExcelProperty(value = "性别",index = 4)
     private String user_sex;
+    @ExcelProperty(value = "爱好",index = 5)
     private String user_hobby;
+    @ExcelProperty(value = "状态",index = 6)
     private String user_state;
+    @ExcelProperty(value = "邮箱",index = 7)
     private String user_email;
+    @ExcelProperty(value = "微信",index = 8)
     private String user_weixin;
+    @ExcelProperty(value = "公司",index = 9)
     private String factory;
 
     public String getFactory() {

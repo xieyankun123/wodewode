@@ -98,12 +98,15 @@ public class u_rcontroller {
     public ModelAndView historyU(HttpServletResponse response, HttpServletRequest request)
     {
         ModelAndView mv=new ModelAndView();
+        managerModel managerModel = (managerModel)request.getSession().getAttribute(Cons.MANAGER);
         String user_telephone=request.getParameter("user_telephone");
         //JSONObject result=new JSONObject();
         UserModel user=us.selbytel(user_telephone);
         //result.put("msg1",user);
         String a=user.getUser_telephone();
         List<u_rModel> user_room=ur.selbyUtel(a);
+        List<roomModel> list = rs.list().stream().filter(b -> b.getFactory().equals(managerModel.getFactory())).collect(Collectors.toList());
+        mv.addObject("list",list);
         mv.addObject("user",user);
         mv.addObject("user_room",user_room);
         mv.setViewName("user_history");
