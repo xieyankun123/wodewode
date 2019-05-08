@@ -9,6 +9,7 @@ import com.xyk.model.factory;
 import com.xyk.model.managerModel;
 import com.xyk.service.*;
 import com.xyk.util.*;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,20 +22,20 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static com.xyk.controller.yqController.connection;
 import static com.xyk.util.RandomValidateCode.RANDOMCODEKEY;
-
+@Slf4j
 @Controller
 @RequestMapping("/mg")
 public class managerController {
@@ -42,8 +43,6 @@ public class managerController {
     private managerService ms;
     @Resource
     private userService us;
-    @Resource
-    private u_rService ur;
     @Resource
     private factoryService fs;
     //转去登录页面
@@ -56,8 +55,12 @@ public class managerController {
     @RequestMapping("/index")
     public  ModelAndView index(HttpServletRequest request)
     {
+        log.info("是拦截之后吗?");
         ModelAndView mv=new ModelAndView();
-        managerModel mm = (managerModel) request.getSession().getAttribute(Cons.MANAGER);
+        HttpSession session = request.getSession();
+        log.info(session.getId());
+        session.setMaxInactiveInterval(60*60);
+        managerModel mm = (managerModel)session.getAttribute(Cons.MANAGER);
         mv.addObject("mm",mm);
         mv.setViewName("index");
         return mv;
@@ -177,54 +180,39 @@ public class managerController {
         HttpOutUtil.outData(response,JSONObject.toJSONString(result));
     }
     //删除管理员
-    @RequestMapping("/del")
-    public void del(HttpServletRequest request,HttpServletResponse response)
-    {
-        JSONObject result=new JSONObject();
-        String tel=request.getParameter("manager_telephone");
-        try{ms.del(tel);
-        result.put("msg","success");
-        result.put("result","10006");
-        }
-        catch (Exception e)
-        {
-            result.put("msg","false"+" "+e);
-            result.put("result","10007");
-        }
-        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
-    }
+
     //批量删除
-    @RequestMapping("/delALL")
-      public void delALL(HttpServletRequest request, HttpServletResponse response)
-    {
-        JSONObject result=new JSONObject();
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream()));
-            String line = null;
-            StringBuilder sb = new StringBuilder();
-            while ((line = br.readLine()) != null) {
-                sb.append(line);
-            }
-            System.out.println(sb);
-            String s1 = sb.toString();
-            JSONObject obj = JSON.parseObject(s1);
-            System.out.println(obj.toString());
-            String getjsay = obj.getString("ids");
-            System.out.println(getjsay);
-            JSONArray obj1 = JSON.parseArray(getjsay);
-            System.out.println(obj1);
-            String[] a=obj1.toString().replace("[","").replace("]","").replace("\"","").split(",");
-            System.out.print(a.length);
-            for(int i=0;i<a.length;i++)
-                System.out.println(a[i]);
-            ms.delAll(a);
-            result.put("msg","success");
-        }catch(Exception e)
-        {
-            result.put("msg",e);
-        }
-        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
-    }
+//    @RequestMapping("/delALL")
+//      public void delALL(HttpServletRequest request, HttpServletResponse response)
+//    {
+//        JSONObject result=new JSONObject();
+//        try {
+//            BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream) request.getInputStream()));
+//            String line = null;
+//            StringBuilder sb = new StringBuilder();
+//            while ((line = br.readLine()) != null) {
+//                sb.append(line);
+//            }
+//            System.out.println(sb);
+//            String s1 = sb.toString();
+//            JSONObject obj = JSON.parseObject(s1);
+//            System.out.println(obj.toString());
+//            String getjsay = obj.getString("ids");
+//            System.out.println(getjsay);
+//            JSONArray obj1 = JSON.parseArray(getjsay);
+//            System.out.println(obj1);
+//            String[] a=obj1.toString().replace("[","").replace("]","").replace("\"","").split(",");
+//            System.out.print(a.length);
+//            for(int i=0;i<a.length;i++)
+//                System.out.println(a[i]);
+//            ms.delAll(a);
+//            result.put("msg","success");
+//        }catch(Exception e)
+//        {
+//            result.put("msg",e);
+//        }
+//        HttpOutUtil.outData(response,JSONObject.toJSONString(result));
+//    }
     public static final String pic= "uploadpic/head_pic/";
 //    //上传图片
 //    @RequestMapping("/headpic")
@@ -285,27 +273,42 @@ public class managerController {
         String manager_telephone = (String)request.getParameter("manager_telephone");
         String password = (String)request.getParameter("password");
         String code=request.getParameter("code");
-        RandomValidateCode rc = new RandomValidateCode();
         HttpSession session = request.getSession();
         String b= (String) session.getAttribute(RANDOMCODEKEY);
         if(code.equals(b))
         {
+            log.info("fing manager-1");
+
             if (manager_telephone == "") {
               //  result.put("errMsg", "账号不能为空");
                 result.put("result", "10004");
             } else {
+                log.info("fing manager0");
                 try {
                     managerModel a = ms.login(manager_telephone, password);
                     if (a == null) {
                        // result.put("errMsg", "用户名或密码错误");
                         result.put("result", "10002");
                     } else {
+                        log.info("fing manager");
                         managerModel selbytel = ms.selbytel(manager_telephone);
+                        log.info("fing manager1");
                         session.setAttribute(Cons.MANAGER,selbytel);
+                        log.info("fing manager2");
+                        //解决中文编码问题
+                        String encode = URLEncoder.encode(selbytel.toString(), "UTF-8");
+                        Cookie cookie=new Cookie("sessionid",encode);
+                        cookie.setMaxAge(60*60*24);
+                        //cookie.setDomain(".qiboyongxun.cn");
+                        log.info("fing manager3");
+                        response.addCookie(cookie);
+                        log.info("fing manager4");
                         //result.put("ehahah", "登陆成功");
                         result.put("result", "10005");
                     }
                 } catch (Exception e) {
+                    log.info("yichang");
+                    log.info(e.getMessage());
                     result.put("essMsg", e.getMessage());
                 }
             }

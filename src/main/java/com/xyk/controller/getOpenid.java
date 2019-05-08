@@ -25,9 +25,9 @@ public class getOpenid {
         }
 
         //小程序唯一标识   (在微信小程序管理后台获取)
-        String wxspAppid = "wxeb8c1dcfa8abbcba";
+        String wxspAppid = "wxe7123bfde594f551";
         //小程序的 app secret (在微信小程序管理后台获取)
-        String wxspSecret = "58fcc3264a20f4ca6737255b9eab398e";
+        String wxspSecret = "7025e8e7e155f0280ba0e0a443ce1b12";
         //授权（必填）
         String grant_type = "authorization_code";
 
